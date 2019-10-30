@@ -129,7 +129,7 @@ export class Panel extends Object2D {
         this.fillX(xAxisBg);
         this.add(xAxisBg);
 
-        this.resizeHandle = new Rect(0, 0, [1, 0, 0, 1]);
+        this.resizeHandle = new Rect(0, 0, [1, 1, 1, 1]);
         this.resizeHandle.originX = -0.5;
         this.resizeHandle.relativeX = 1;
         this.resizeHandle.relativeH = 1;
@@ -165,6 +165,7 @@ export class Panel extends Object2D {
         trackView.setDataSource(this.dataSource);
         trackView.setContig(this.contig);
         trackView.setRange(this.x0, this.x1);
+        trackView.setHighlightPointer('0', 0.5);
 
         this.fillX(trackView);
         this.add(trackView);
@@ -295,6 +296,7 @@ export class Panel extends Object2D {
 
             for (let trackView of this.trackViews) {
                 trackView.setAxisPointer(pointerId, fractionX, AxisPointerStyle.Secondary);
+                trackView.setHighlightPointer('0', fractionX);
             }
         }
     }
@@ -479,6 +481,7 @@ export class Panel extends Object2D {
         x1 = x1 + xScrollBasePairs;
 
         this.setRange(x0, x1);
+        this.setActiveAxisPointer(e, 'onlyHighlight');
     }
 
     // drag state
@@ -569,6 +572,7 @@ export class Panel extends Object2D {
                 }
 
                 this.setRange(x0, x1);
+                this.setActiveAxisPointer(e);
                 break;
             }
         }
@@ -623,7 +627,7 @@ export class Panel extends Object2D {
         this._dragMode = undefined;
     }
 
-    protected setActiveAxisPointer(e: InteractionEvent) {
+    protected setActiveAxisPointer(e: InteractionEvent, flag?: String) {
         let fractionX = e.fractionX;
         let span = this.x1 - this.x0;
         let axisPointerX = span * fractionX + this.x0;
@@ -631,7 +635,10 @@ export class Panel extends Object2D {
         this.activeAxisPointers[e.pointerId] = axisPointerX;
 
         for (let tile of this.trackViews) {
-            tile.setAxisPointer(e.pointerId.toString(), fractionX, AxisPointerStyle.Active);
+            if (flag !== 'onlyHighlight') {
+                tile.setAxisPointer(e.pointerId.toString(), fractionX, AxisPointerStyle.Active);
+            }
+            tile.setHighlightPointer('0', fractionX);
         }
 
         // broadcast active axis pointer change
@@ -715,6 +722,10 @@ export class Panel extends Object2D {
             this.setRangeUsingRangeSpecifier(rangeSpecifier);
         }
         this.updatePanelHeader();
+        let contigString = rangeSpecifier.split(':')[0];
+        for (let tile of this.trackViews) {
+            tile.setHighlightPointer('0', 0.5, contigString);
+        }
     }
 
     protected startEditing() {
