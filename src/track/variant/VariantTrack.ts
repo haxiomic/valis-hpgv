@@ -308,9 +308,9 @@ export class VariantTrack<Model extends VariantTrackModel = VariantTrackModel> e
 
         label.textParent.sx = label.textParent.sy = textSizePx;
 
-        if (label.text != null) {
-            label.text.color[3] = textOpacity;
-        }
+        // if (label.text != null) {
+        //     label.text.color[3] = textOpacity;
+        // }
     }
 
     protected createBaseLabel = (baseCharacter: string, color: ArrayLike<number>, onClick: (e: InteractionEvent) => void) => {

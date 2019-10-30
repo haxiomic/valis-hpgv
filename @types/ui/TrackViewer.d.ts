@@ -1,3 +1,4 @@
+import "@babel/polyfill";
 import React = require("react");
 import Object2D from "engine/ui/Object2D";
 import Rect from "engine/ui/Rect";
