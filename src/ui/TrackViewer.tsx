@@ -7,6 +7,7 @@ Dev notes:
         - Panels should be an array not a set
 */
 
+import "@babel/polyfill";
 import React = require("react");
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/Add";
