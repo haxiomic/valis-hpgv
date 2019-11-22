@@ -357,6 +357,21 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
                     }
 
                 }
+                instanceData.push({
+                    x: 0,
+                    y: 0,
+                    z: 0,
+                    w: 1,
+                    h: TRANSCRIPT_HEIGHT*5.7,
+
+                    relativeX: (((x1 - x0) / 2) - tile.x) / tile.span,
+                    relativeY: 0,
+
+                    relativeW: 1000 / tile.span,
+                    relativeH: 0,
+
+                    color: [0, 0, 0, 0],
+                });
 
                 let geneInstances = new IntervalInstances(instanceData);
                 geneInstances.y = 0;

@@ -11766,78 +11766,90 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         var a = this,
             s = this.getTileLoader(),
             l = 1 << s.macroLod;
-        s.forEachTile(e, t, l, !0, function (t) {
+        s.forEachTile(e, t, l, !0, function (r) {
           if (a.debugOptions.showTileBoundaries) {
-            var r = t.key + ":boundary";
-            a._onStageAnnotations.get(r, function () {
+            var s = r.key + ":boundary";
+            a._onStageAnnotations.get(s, function () {
               var e = new f.Rect(2, 0, [0, 1, 0, 1]);
               return e.relativeH = 1, a.add(e), e;
-            }).relativeX = (t.x - e) / n;
+            }).relativeX = (r.x - e) / n;
           }
 
-          if (t.state === g.TileState.Complete) {
-            var s = a._macroTileCache.get(a.contig + ":" + t.key, function () {
-              var e,
-                  n,
-                  r = new Array();
+          if (r.state === g.TileState.Complete) {
+            var l = a._macroTileCache.get(a.contig + ":" + r.key, function () {
+              var n,
+                  i,
+                  s = new Array();
 
               try {
-                for (var i = o(t.payload), s = i.next(); !s.done; s = i.next()) {
-                  var l = s.value;
+                for (var l = o(r.payload), u = l.next(); !u.done; u = l.next()) {
+                  var c = u.value;
 
-                  if (null == a.model.strand || l.strand === a.model.strand) {
-                    var u = l.class === m.GeneClass.NonProteinCoding ? a.colors["--non-coding"] : a.colors["--coding"];
-                    if (null != l.score && l.score > 0) u = x(u, l.class === m.GeneClass.NonProteinCoding ? a.colors["--non-coding-max-score"] : a.colors["--coding-max-score"], Math.max(0, Math.min(1, l.score / 1e3)));
-                    var c = u.slice();
-                    if (c[3] *= .689655172, a.compact) r.push({
+                  if (null == a.model.strand || c.strand === a.model.strand) {
+                    var f = c.class === m.GeneClass.NonProteinCoding ? a.colors["--non-coding"] : a.colors["--coding"];
+                    if (null != c.score && c.score > 0) f = x(f, c.class === m.GeneClass.NonProteinCoding ? a.colors["--non-coding-max-score"] : a.colors["--coding-max-score"], Math.max(0, Math.min(1, c.score / 1e3)));
+                    var d = f.slice();
+                    if (d[3] *= .689655172, a.compact) s.push({
                       x: 0,
-                      y: a.annotationY[l.strand] - .5 * A,
+                      y: a.annotationY[c.strand] - .5 * A,
                       z: 0,
                       w: 1,
                       h: A,
-                      relativeX: (l.startIndex - t.x) / t.span,
+                      relativeX: (c.startIndex - r.x) / r.span,
                       relativeY: .5,
-                      relativeW: l.length / t.span,
+                      relativeW: c.length / r.span,
                       relativeH: 0,
-                      color: c
+                      color: d
                     });else {
-                      var f = 20 * l.transcriptCount + 10 * (l.transcriptCount - 1) + 60;
-                      r.push({
+                      var h = 20 * c.transcriptCount + 10 * (c.transcriptCount - 1) + 60;
+                      s.push({
                         x: 0,
                         y: 0,
                         z: 0,
                         w: 1,
-                        h: f,
-                        relativeX: (l.startIndex - t.x) / t.span,
+                        h: h,
+                        relativeX: (c.startIndex - r.x) / r.span,
                         relativeY: 0,
-                        relativeW: l.length / t.span,
+                        relativeW: c.length / r.span,
                         relativeH: 0,
-                        color: c
+                        color: d
                       });
                     }
                   }
                 }
-              } catch (t) {
-                e = {
-                  error: t
+              } catch (e) {
+                n = {
+                  error: e
                 };
               } finally {
                 try {
-                  s && !s.done && (n = i.return) && n.call(i);
+                  u && !u.done && (i = l.return) && i.call(l);
                 } finally {
-                  if (e) throw e.error;
+                  if (n) throw n.error;
                 }
               }
 
-              var d = new v.default(r);
-              return d.y = 0, d.z = .75, d.relativeH = 1, d.mask = a, d;
+              s.push({
+                x: 0,
+                y: 0,
+                z: 0,
+                w: 1,
+                h: 5.7 * A,
+                relativeX: ((t - e) / 2 - r.x) / r.span,
+                relativeY: 0,
+                relativeW: 1e3 / r.span,
+                relativeH: 0,
+                color: [0, 0, 0, 0]
+              });
+              var p = new v.default(s);
+              return p.y = 0, p.z = .75, p.relativeH = 1, p.mask = a, p;
             });
 
-            s.relativeX = (t.x - e) / n, s.relativeW = t.span / n, s.opacity = i, a._onStageAnnotations.get("macro-gene-tile:" + a.contig + ":" + t.key, function () {
-              return a.addAnnotation(s), s;
+            l.relativeX = (r.x - e) / n, l.relativeW = r.span / n, l.opacity = i, a._onStageAnnotations.get("macro-gene-tile:" + a.contig + ":" + r.key, function () {
+              return a.addAnnotation(l), l;
             });
-          } else a._loadingTiles.get(a.contig + ":" + t.key, function () {
-            return a.createTileLoadingDependency(t);
+          } else a._loadingTiles.get(a.contig + ":" + r.key, function () {
+            return a.createTileLoadingDependency(r);
           });
         });
       }, t;
@@ -21265,7 +21277,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         }, h = this, p = 0; p < c; p++) {
           d(p);
         }
-        return s;
+        return console.log("are we displaying an interval track? if so, add here"), s;
       }, t.prototype.intervalLabelKey = function (e, t, n, r) {
         return n + ":" + r;
       }, t.prototype.createTileNode = function (e) {
@@ -31004,17 +31016,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 var GV = require('../../dist/valis-hpgv.js'); // pass a list of files to visualize in an array, the viewer will determine the best visualization to use
 
 
-var hpgv = new GV.GenomeVisualizer([// GRCh38 DNA sequence
-// 'https://s3-us-west-1.amazonaws.com/valis-file-storage/genome-data/GRCh38.vdna-dir',
-// // GRCh38 genes
-// 'https://s3-us-west-1.amazonaws.com/valis-file-storage/genome-data/GRCh38.92.vgenes-dir',
-// // Cerebellum, DNase
-'https://www.encodeproject.org/files/ENCFF833POA/@@download/ENCFF833POA.bigWig']);
+var hpgv = new GV.GenomeVisualizer(['https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vdna-dir', 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vgenes-dir', 'https://www.encodeproject.org/files/ENCFF609BMS/@@download/ENCFF609BMS.bigBed', 'https://www.encodeproject.org/files/ENCFF833POA/@@download/ENCFF833POA.bigWig']);
 hpgv.render({
   width: 800,
   height: 600
 }, document.getElementById('container'));
-},{"../../dist/valis-hpgv.js":"../../dist/valis-hpgv.js"}],"../../../../../../.npm/_npx/45545/lib/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"../../dist/valis-hpgv.js":"../../dist/valis-hpgv.js"}],"../../../../../../.npm/_npx/42696/lib/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -31042,7 +31049,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57035" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60535" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -31218,5 +31225,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../../.npm/_npx/45545/lib/node_modules/parcel/src/builtins/hmr-runtime.js","App.ts"], null)
+},{}]},{},["../../../../../../.npm/_npx/42696/lib/node_modules/parcel/src/builtins/hmr-runtime.js","App.ts"], null)
 //# sourceMappingURL=/App.7a936cda.js.map
