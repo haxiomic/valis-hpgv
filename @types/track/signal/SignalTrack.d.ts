@@ -5,10 +5,13 @@ import { Axis } from "../../ui/Axis";
 import GPUDevice, { AttributeType, GPUTexture } from "engine/rendering/GPUDevice";
 import { DrawContext } from "engine/rendering/Renderer";
 import { Tile } from "../TileLoader";
-import { AxisPointer, AxisPointerStyle } from "../TrackObject";
+import { AxisPointer, AxisPointerStyle, HighlightPointer } from "../TrackObject";
 import { Text } from "engine";
 import TrackModel from "../TrackModel";
 import { StyleProxy } from "../../ui/util/StyleProxy";
+import IntervalInstances from "../../ui/util/IntervalInstances";
+import Object2D from "engine/ui/Object2D";
+import UsageCache from "engine/ds/UsageCache";
 export declare class SignalTrack<Model extends TrackModel = SignalTrackModel> extends ShaderTrack<Model, SignalTileLoader, SignalTilePayload> {
     autoScale: boolean;
     autoScaleDelay_ms: number;
@@ -16,6 +19,7 @@ export declare class SignalTrack<Model extends TrackModel = SignalTrackModel> ex
     protected yAxis: Axis;
     protected signalReading: Text;
     protected yAxisPointer: AxisPointer;
+    protected highlightPointer: HighlightPointer;
     readonly signalReadingSnapX: boolean;
     protected showSignalReading: boolean;
     protected _displayScale: number;
@@ -26,6 +30,7 @@ export declare class SignalTrack<Model extends TrackModel = SignalTrackModel> ex
     constructor(model: Model);
     applyStyle(styleProxy: StyleProxy): void;
     setAxisPointer(id: string, fractionX: number, style: AxisPointerStyle): void;
+    setHighlightPointer(id: string, fractionX: number): void;
     removeAxisPointer(id: string): void;
     setDisplayScale(scale: number): void;
     private _animationFrameHandle;
@@ -33,13 +38,18 @@ export declare class SignalTrack<Model extends TrackModel = SignalTrackModel> ex
     private _autoScaleNeedsUpdate;
     private _autoScaleLastChangeT_ms;
     protected autoScaleNeedsUpdate(): void;
+    protected _macroTileCache: UsageCache<IntervalInstances>;
+    protected _onStageAnnotations: UsageCache<Object2D>;
     protected autoScaleOnFrame(): void;
+    protected addAnnotation: (annotation: Object2D) => void;
+    protected removeAnnotation: (annotation: Object2D) => void;
     protected scaleToFit(): void;
     protected maxValue(r: number, g: number, b: number, a: number): number;
     protected tileNodes: Set<SignalTile>;
     protected createTileNode(): ShaderTile<SignalTilePayload>;
     protected deleteTileNode(tileNode: ShaderTile<SignalTilePayload>): void;
     protected updateAxisPointerSample(): void;
+    protected setHighlightValue(value: number): void;
     protected setSignalReading(value: number | null): void;
     updateDisplay(samplingDensity: number, continuousLodLevel: number, span: number, widthPx: number): void;
 }

@@ -6,13 +6,18 @@ import { SharedResources } from "engine/SharedResources";
 import GPUDevice, { AttributeType, GPUTexture } from "engine/rendering/GPUDevice";
 import { DrawMode, DrawContext } from "engine/rendering/Renderer";
 import { Tile, TileState } from "../TileLoader";
-import { AxisPointer, AxisPointerStyle } from "../TrackObject";
+import { AxisPointer, AxisPointerStyle, HighlightPointer, HighlightStyle } from "../TrackObject";
 import { Text, Scalar } from "engine";
 import { OpenSansRegular } from "../../ui";
 import Animator from "../../Animator";
 import { Shaders } from "../../Shaders";
 import TrackModel from "../TrackModel";
 import { StyleProxy } from "../../ui/util/StyleProxy";
+import IntervalInstances, { IntervalInstance } from "../../ui/util/IntervalInstances";
+import Object2D from "engine/ui/Object2D";
+import UsageCache from "engine/ds/UsageCache";
+
+const TRANSCRIPT_HEIGHT = 20;
 
 export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends ShaderTrack<Model, SignalTileLoader, SignalTilePayload> {
 
@@ -33,6 +38,7 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
 
     protected signalReading: Text;
     protected yAxisPointer: AxisPointer;
+    protected highlightPointer: HighlightPointer;
 
     readonly signalReadingSnapX = true;
     protected showSignalReading = true;
@@ -106,7 +112,15 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
         // this.yAxisPointer.opacity = 0.3;
         this.yAxisPointer.mask = this;
         this.add(this.yAxisPointer);
-
+        
+        this.highlightPointer = new HighlightPointer(HighlightStyle.Secondary, [1, 0, 0, 0], [1, 0, 0, 0], 'x');
+        this.highlightPointer.render = true;
+        this.highlightPointer.x = 0.5;
+        this.highlightPointer.y = 0;
+        this.highlightPointer.z = 2;
+        this.highlightPointer.mask = this;
+        this.add(this.highlightPointer);
+        
         // begin frame loop
         this.frameLoop();
 
@@ -130,11 +144,22 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
         this.yAxisPointer.activeColor = this.activeAxisPointerColor;
         this.yAxisPointer.secondaryColor = this.secondaryAxisPointerColor;
         this.yAxisPointer.setStyle(this.yAxisPointer.style);
+        
+        this.highlightPointer.activeColor = [1, 0, 0, 0];
+        this.highlightPointer.secondaryColor = [1, 0, 0, 0];
+        this.highlightPointer.setStyle(this.highlightPointer.style);
     }
 
     setAxisPointer(id: string, fractionX: number, style: AxisPointerStyle) {
+        console.log('is this where set axis point is called?');
         super.setAxisPointer(id, fractionX, style);
         this.updateAxisPointerSample();
+    }
+    
+    setHighlightPointer(id: string, fractionX: number) {
+        console.log('do we get here at all?');
+        super.setHighlightPointer(id, fractionX);
+        // this.updateAxisPointerSample();
     }
 
     removeAxisPointer(id: string) {
@@ -170,6 +195,9 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
             }
         }
     }
+    
+    protected _macroTileCache = new UsageCache<IntervalInstances>(null, (instances) => instances.releaseGPUResources());
+    protected _onStageAnnotations = new UsageCache<Object2D>(null, (node) => this.removeAnnotation(node));
 
     protected autoScaleOnFrame() {
         if (this._autoScaleNeedsUpdate && this.autoScale) {
@@ -180,6 +208,59 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
             }
         }
     }
+    
+    protected addAnnotation = (annotation: Object2D) => {
+        this.add(annotation);
+    }
+    protected removeAnnotation = (annotation: Object2D) => {
+        this.remove(annotation);
+    }
+    
+    // protected addHighlight() {
+    //     let tileLoader = this.getTileLoader();
+    //     let macroSamplingDensity = 1;
+    //     const span = this.x1 - this.x0;
+    //     tileLoader.forEachTile(this.x0, this.x1, macroSamplingDensity, true, (tile) => {
+    //         // Instance Rendering
+    //         let tileObject = this._macroTileCache.get(this.contig + ':' + tile.key, () => {
+    //             // initialize macro gene instances
+    //             // create array of gene annotation data
+    //             let instanceData = new Array<IntervalInstance>();
+    //             const yPadding = 5;
+    //             instanceData = [{
+    //                 x: 0,
+    //                 y: 0,
+    //                 z: 0,
+    //                 w: 1,
+    //                 h: TRANSCRIPT_HEIGHT*5.5,
+    // 
+    //                 relativeX: (((this.x1 - this.x0) / 2) - tile.x) / span,
+    //                 relativeY: 0,
+    // 
+    //                 relativeW: 1000 / span,
+    //                 relativeH: 0,
+    // 
+    //                 color: [0, 0, 0, 0],
+    //             }];
+    // 
+    //             let geneInstances = new IntervalInstances(instanceData);
+    //             geneInstances.y = 0;
+    //             geneInstances.z = 0.75;
+    //             geneInstances.relativeH = 1;
+    //             geneInstances.mask = this;
+    //             return geneInstances;
+    //         });
+    // 
+    //         tileObject.relativeX = (tile.x - this.x0) / tile.span;
+    //         tileObject.relativeW = tile.span / tile.span;
+    //         tileObject.opacity = 1.0;
+    // 
+    //         this._onStageAnnotations.get('macro-gene-tile:' + this.contig + ':' + tile.key, () => {
+    //             this.addAnnotation(tileObject);
+    //             return tileObject;
+    //         });
+    //     });
+    // }
 
     protected scaleToFit() {
         // add a little bit of space at the top by multiplying the scale factor by a little
@@ -273,7 +354,14 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
                 
                 let tileRelativeX = (pointerTrackRelativeX - tileNode.relativeX) / tileNode.relativeW;
                 this.setSignalReading(tile.payload.getReading(tileRelativeX, 0));
-
+                
+                // console.log(tileNode);
+                
+                let highlightRelativeX = (pointerTrackRelativeX + tileNode.relativeX) / tileNode.relativeW;
+                // console.log(`pointerTrackRelativeX is ${pointerTrackRelativeX}`);
+                // console.log(`setting relative X to be ${highlightRelativeX}`);
+                // this.setHighlightValue(highlightRelativeX);
+                
                 if (this.signalReadingSnapX) {
                     let signalReadingRelativeWidth = (this.signalReading.getComputedWidth() + Math.abs(this.signalReading.x) * 2) / this.getComputedWidth();
                     this.signalReading.relativeX = Math.min(pointerTrackRelativeX, 1 - signalReadingRelativeWidth);
@@ -285,6 +373,13 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
             this.setSignalReading(null);
         }
     }
+    
+    protected setHighlightValue(value: number) {
+        console.log('we are setting a highlight value!');
+        this.highlightPointer.render = true;
+        this.highlightPointer.transparent = false;
+        this.highlightPointer.relativeX = value;
+    }
 
     protected setSignalReading(value: number | null) {
         if (value === null) {
@@ -292,10 +387,15 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
             this.signalReading.render = false;
             return;
         }
+        // console.log(`value is ${value}`);
+        // this.setHighlightValue(0.5);
+
+        this.yAxisPointer.render = true;
+        this.signalReading.render = true;
 
         this.signalReading.string = value != null ? value.toFixed(3) : 'error';
 
-        let makingVisible = this.yAxisPointer.render === false;
+        let makingVisible = true;//this.yAxisPointer.render === false;
 
         let relativeY = 1 - (value * this.displayScale);
 
@@ -327,6 +427,8 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
             super.updateDisplay(samplingDensity, continuousLodLevel, span, widthPx);
             this.autoScaleNeedsUpdate();
             this.updateAxisPointerSample();
+            // console.log('we could add a highlight here');
+            // this.addHighlight();
         } else {
             // show loading indicator until tileLoader is ready
             this.displayLoadingIndicator = true;
