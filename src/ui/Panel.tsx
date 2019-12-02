@@ -294,7 +294,10 @@ export class Panel extends Object2D {
             this.secondaryAxisPointers[pointerId] = absX;
 
             for (let trackView of this.trackViews) {
+                console.log('updating pointers');
                 trackView.setAxisPointer(pointerId, fractionX, AxisPointerStyle.Secondary);
+                console.log(`pointerId is ${pointerId}`);
+                trackView.setHighlightPointer(pointerId, fractionX);
             }
         }
     }
@@ -379,6 +382,7 @@ export class Panel extends Object2D {
     }
 
     protected onTrackWheel = (e: WheelInteractionEvent) => {
+        console.log('on track wheel');
         e.preventDefault();
         e.stopPropagation();
 
@@ -479,6 +483,7 @@ export class Panel extends Object2D {
         x1 = x1 + xScrollBasePairs;
 
         this.setRange(x0, x1);
+        this.setActiveAxisPointer(e);
     }
 
     // drag state
@@ -491,6 +496,7 @@ export class Panel extends Object2D {
     protected _dragDistLocal: number;
 
     protected onTrackDragStart = (e: InteractionEvent) => {
+        console.log('on track drag start');
         this._dragMode = undefined;
 
         if (e.buttonState !== 1) return;
@@ -569,6 +575,7 @@ export class Panel extends Object2D {
                 }
 
                 this.setRange(x0, x1);
+                this.setActiveAxisPointer(e);
                 break;
             }
         }
@@ -599,6 +606,11 @@ export class Panel extends Object2D {
                 
                 // zoom into region
                 this.setRange(x0, x1, true);
+                for (let pointerId in this.secondaryAxisPointers) {
+                    for (let trackView of this.trackViews) {
+                        trackView.setHighlightPointer(pointerId, 0.5);
+                    }
+                }
                 break;
             }
             case DragMode.Move: {
@@ -632,6 +644,7 @@ export class Panel extends Object2D {
 
         for (let tile of this.trackViews) {
             tile.setAxisPointer(e.pointerId.toString(), fractionX, AxisPointerStyle.Active);
+            tile.setHighlightPointer(e.pointerId.toString(), fractionX);
         }
 
         // broadcast active axis pointer change

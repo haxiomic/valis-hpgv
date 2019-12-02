@@ -34,6 +34,8 @@ export class TrackObject<
     protected axisPointers: { [id: string]: AxisPointer } = {};
     protected activeAxisPointerColor = [1, 1, 1, 0.8];
     protected secondaryAxisPointerColor = [0.2, 0.2, 0.2, 1];
+    
+    protected highlightPointers: { [id: string]: HighlightPointer } = {};
 
     protected focusRegionRectLeft: Rect;
     protected focusRegionRectRight: Rect;
@@ -108,7 +110,7 @@ export class TrackObject<
             // !withinBounds means do not draw, so we don't need to create the object
             if (!withinBounds) return;
             // create axis pointer
-            axisPointer = new AxisPointer(style, this.activeAxisPointerColor, this.secondaryAxisPointerColor, 'x');
+            axisPointer = new AxisPointer(null, this.activeAxisPointerColor, this.secondaryAxisPointerColor, 'x');
             axisPointer.z = 2;
             this.add(axisPointer);
             this.axisPointers[id] = axisPointer;
@@ -123,6 +125,37 @@ export class TrackObject<
         if (axisPointer.style !== style) {
             axisPointer.setStyle(style);
         }
+    }
+    
+    setHighlightPointer(id: string, fractionX: number) {
+        console.log('SET HIGHLIGHT POINTER');
+        let withinBounds = fractionX >= 0 && fractionX <= 1;
+    
+        let highlightPointer = this.highlightPointers[id];
+    
+        if (highlightPointer === undefined) {
+            // !withinBounds means do not draw, so we don't need to create the object
+            if (!withinBounds) return;
+            // create axis pointer
+            highlightPointer = new HighlightPointer(null, [1, 0, 0, 0], [1, 0, 0, 0], 'x');
+            highlightPointer.z = 2;
+            this.add(highlightPointer);
+            this.highlightPointers[id] = highlightPointer;
+        }
+    
+        highlightPointer.render = withinBounds;
+        
+        console.log((this.x1 - this.x0 / 2));
+    
+        if (withinBounds) {
+            console.log('update!');
+            highlightPointer.relativeX = (124780544 - this.x0) / (this.x1 - this.x0);//fractionX;
+            console.log(`fractionX is ${fractionX}`);
+        }
+    
+        // if (highlightPointer.style !== style) {
+        //     highlightPointer.setStyle(style);
+        // }
     }
 
     removeAxisPointer(id: string) {
@@ -311,6 +344,42 @@ export class AxisPointer extends Rect {
                 break;
             case AxisPointerStyle.Secondary:
                 this.color = this.secondaryColor;
+                break;
+        }
+
+        (this.style as any) = style;
+    }
+
+}
+
+export enum HighlightStyle {
+    Active = 0,
+    Secondary = 1,
+}
+
+export class HighlightPointer extends Rect {
+
+    readonly style: HighlightStyle;
+
+    constructor(style: HighlightStyle, public activeColor: ArrayLike<number>, public secondaryColor: ArrayLike<number>, axis: 'x' | 'y') {
+        super(0, 0);
+
+        this.originX = -0.5;
+        this.relativeH = 1;
+        this.w = 20;
+
+        this.transparent = true;
+
+        this.setStyle(style);
+    }
+    
+    setStyle(style: HighlightStyle) {
+        switch (style) {
+            case HighlightStyle.Active:
+                this.color = [1, 0, 0, 0];
+                break;
+            case HighlightStyle.Secondary:
+                this.color = [1, 0, 0, 0];
                 break;
         }
 

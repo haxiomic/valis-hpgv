@@ -276,7 +276,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }, function (e, t, n) {
     var r = n(2),
         i = n(180),
-        o = n(40),
+        o = n(41),
         a = Object.defineProperty;
     t.f = n(11) ? Object.defineProperty : function (e, t, n) {
       if (r(e), t = o(t, !0), r(n), i) try {
@@ -1526,7 +1526,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var r = n(71),
         i = n(58),
         o = n(19),
-        a = n(40),
+        a = n(41),
         s = n(21),
         l = n(180),
         u = Object.getOwnPropertyDescriptor;
@@ -1596,7 +1596,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           v = n(8),
           g = n(154),
           y = n(54),
-          m = n(40),
+          m = n(41),
           A = n(21),
           b = n(70),
           x = n(1),
@@ -1988,6 +1988,57 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     Object.defineProperty(t, "__esModule", {
       value: !0
     });
+
+    var r = function () {
+      function e(e, t) {
+        this.onCacheMiss = e, this.onRemove = t, this.cache = {}, this.count = 0;
+      }
+
+      return e.prototype.get = function (e, t) {
+        var n = this.cache[e];
+
+        if (void 0 === n) {
+          var r = null != t ? t(e) : this.onCacheMiss(e);
+          n = this.cache[e] = {
+            value: r,
+            used: !0
+          }, this.count++;
+        }
+
+        return n.used = !0, n.value;
+      }, e.prototype.keys = function () {
+        return Object.keys(this.cache);
+      }, e.prototype.forEachUsed = function (e) {
+        for (var t in this.cache) {
+          var n = this.cache[t];
+          n.used && e(n.value);
+        }
+      }, e.prototype.markUnused = function (e) {
+        this.cache[e].used = !1;
+      }, e.prototype.markAllUnused = function () {
+        for (var e in this.cache) {
+          this.cache[e].used = !1;
+        }
+      }, e.prototype.remove = function (e) {
+        var t = this.cache[e];
+        void 0 !== t && (this.count--, this.onRemove(t.value), delete this.cache[e]);
+      }, e.prototype.removeUnused = function () {
+        for (var e in this.cache) {
+          var t = this.cache[e];
+          t.used || (this.count--, this.onRemove(t.value), delete this.cache[e]);
+        }
+      }, e.prototype.removeAll = function () {
+        this.markAllUnused(), this.removeUnused();
+      }, e;
+    }();
+
+    t.UsageCache = r, t.default = r;
+  }, function (e, t, n) {
+    "use strict";
+
+    Object.defineProperty(t, "__esModule", {
+      value: !0
+    });
     var r = n(233);
     t.Animator = new r.default(), t.default = t.Animator;
   }, function (e, t, n) {
@@ -2098,9 +2149,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     var o = n(543),
         a = n(22),
-        s = n(45),
+        s = n(46),
         l = n(14),
-        u = n(43),
+        u = n(44),
         c = function (e) {
       function t(t, n, r, i) {
         void 0 === r && (r = 16), void 0 === i && (i = [0, 0, 0, 1]);
@@ -2473,8 +2524,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     });
 
     var i = n(22),
-        o = n(43),
-        a = n(45),
+        o = n(44),
+        a = n(46),
         s = function (e) {
       function t(t, n, r) {
         void 0 === t && (t = 10), void 0 === n && (n = 10), void 0 === r && (r = [1, 0, 0, 1]);
@@ -2733,57 +2784,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }, function (e, t, n) {
     "use strict";
 
-    Object.defineProperty(t, "__esModule", {
-      value: !0
-    });
-
-    var r = function () {
-      function e(e, t) {
-        this.onCacheMiss = e, this.onRemove = t, this.cache = {}, this.count = 0;
-      }
-
-      return e.prototype.get = function (e, t) {
-        var n = this.cache[e];
-
-        if (void 0 === n) {
-          var r = null != t ? t(e) : this.onCacheMiss(e);
-          n = this.cache[e] = {
-            value: r,
-            used: !0
-          }, this.count++;
-        }
-
-        return n.used = !0, n.value;
-      }, e.prototype.keys = function () {
-        return Object.keys(this.cache);
-      }, e.prototype.forEachUsed = function (e) {
-        for (var t in this.cache) {
-          var n = this.cache[t];
-          n.used && e(n.value);
-        }
-      }, e.prototype.markUnused = function (e) {
-        this.cache[e].used = !1;
-      }, e.prototype.markAllUnused = function () {
-        for (var e in this.cache) {
-          this.cache[e].used = !1;
-        }
-      }, e.prototype.remove = function (e) {
-        var t = this.cache[e];
-        void 0 !== t && (this.count--, this.onRemove(t.value), delete this.cache[e]);
-      }, e.prototype.removeUnused = function () {
-        for (var e in this.cache) {
-          var t = this.cache[e];
-          t.used || (this.count--, this.onRemove(t.value), delete this.cache[e]);
-        }
-      }, e.prototype.removeAll = function () {
-        this.markAllUnused(), this.removeUnused();
-      }, e;
-    }();
-
-    t.UsageCache = r, t.default = r;
-  }, function (e, t, n) {
-    "use strict";
-
     var r = "undefined" != typeof Uint8Array && "undefined" != typeof Uint16Array && "undefined" != typeof Int32Array;
 
     function i(e, t) {
@@ -2982,17 +2982,17 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     });
 
     var i,
-        o = n(38),
-        a = n(46),
-        s = n(44),
-        l = n(42),
+        o = n(39),
+        a = n(38),
+        s = n(45),
+        l = n(43),
         u = n(68),
         c = n(18),
         f = n(48),
         d = function (e) {
       function t(t) {
         var n = e.call(this, 0, 0) || this;
-        n.model = t, n.displayLoadingIndicator = !1, n._pixelRatio = window.devicePixelRatio || 1, n.defaultCursor = "crosshair", n.axisPointers = {}, n.activeAxisPointerColor = [1, 1, 1, .8], n.secondaryAxisPointerColor = [.2, .2, .2, 1], n.displayNeedUpdate = !0, n.loadingIndicatorPadding = .1, n._loadingTiles = new a.default(null, function (e) {
+        n.model = t, n.displayLoadingIndicator = !1, n._pixelRatio = window.devicePixelRatio || 1, n.defaultCursor = "crosshair", n.axisPointers = {}, n.activeAxisPointerColor = [1, 1, 1, .8], n.secondaryAxisPointerColor = [.2, .2, .2, 1], n.highlightPointers = {}, n.displayNeedUpdate = !0, n.loadingIndicatorPadding = .1, n._loadingTiles = new a.default(null, function (e) {
           return n.removeTileLoadingDependency(e);
         }), n.createTileLoadingDependency = function (e) {
           return e.addEventListener("complete", n.onDependentTileComplete), e;
@@ -3006,7 +3006,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           return n.cursorStyle = n.defaultCursor;
         }), n.addInteractionListener("dragend", function () {
           return n.cursorStyle = n.defaultCursor;
-        }), n.loadingIndicator = new p(), n.loadingIndicator.cursorStyle = "pointer", n.loadingIndicator.originY = -1, n.loadingIndicator.originX = -1, n.loadingIndicator.relativeX = 1, n.loadingIndicator.relativeY = 1, n.loadingIndicator.x = -20, n.loadingIndicator.y = -10, n.loadingIndicator.mask = n, n.add(n.loadingIndicator), n.toggleLoadingIndicator(!1, !1);
+        }), n.loadingIndicator = new g(), n.loadingIndicator.cursorStyle = "pointer", n.loadingIndicator.originY = -1, n.loadingIndicator.originX = -1, n.loadingIndicator.relativeX = 1, n.loadingIndicator.relativeY = 1, n.loadingIndicator.x = -20, n.loadingIndicator.y = -10, n.loadingIndicator.mask = n, n.add(n.loadingIndicator), n.toggleLoadingIndicator(!1, !1);
         var r = [.1, .1, .1, 1];
         return n.focusRegionRectLeft = new s.default(0, 0, r), n.focusRegionRectRight = new s.default(0, 0, r), n.focusRegionRectLeft.opacity = n.focusRegionRectRight.opacity = .7, n.focusRegionRectLeft.relativeH = n.focusRegionRectRight.relativeH = 1, n.focusRegionRectLeft.z = n.focusRegionRectRight.z = 10, n.add(n.focusRegionRectLeft), n.add(n.focusRegionRectRight), n.clearFocusRegion(), n;
       }
@@ -3032,10 +3032,21 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
         if (void 0 === i) {
           if (!r) return;
-          (i = new h(n, this.activeAxisPointerColor, this.secondaryAxisPointerColor, "x")).z = 2, this.add(i), this.axisPointers[e] = i;
+          (i = new p(null, this.activeAxisPointerColor, this.secondaryAxisPointerColor, "x")).z = 2, this.add(i), this.axisPointers[e] = i;
         }
 
         i.render = r, r && (i.relativeX = t), i.style !== n && i.setStyle(n);
+      }, t.prototype.setHighlightPointer = function (e, t) {
+        console.log("SET HIGHLIGHT POINTER");
+        var n = t >= 0 && t <= 1,
+            r = this.highlightPointers[e];
+
+        if (void 0 === r) {
+          if (!n) return;
+          (r = new v(null, [1, 0, 0, 0], [1, 0, 0, 0], "x")).z = 2, this.add(r), this.highlightPointers[e] = r;
+        }
+
+        r.render = n, console.log(this.x1 - this.x0 / 2), n && (console.log("update!"), r.relativeX = (124478211 - this.x0) / (this.x1 - this.x0), console.log("fractionX is " + t));
       }, t.prototype.removeAxisPointer = function (e) {
         var t = this.axisPointers[e];
         void 0 !== t && (this.remove(t), delete this.axisPointers[e]);
@@ -3093,7 +3104,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       e[e.Active = 0] = "Active", e[e.Secondary = 1] = "Secondary";
     }(i = t.AxisPointerStyle || (t.AxisPointerStyle = {}));
 
-    var h = function (e) {
+    var h,
+        p = function (e) {
       function t(t, n, r, i) {
         var o = e.call(this, 0, 0) || this;
         return o.activeColor = n, o.secondaryColor = r, "y" === i ? (o.originY = -.5, o.relativeW = 1, o.h = 1) : (o.originX = -.5, o.relativeH = 1, o.w = 1), o.transparent = !0, o.setStyle(t), o;
@@ -3113,9 +3125,30 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }, t;
     }(s.default);
 
-    t.AxisPointer = h;
+    t.AxisPointer = p, function (e) {
+      e[e.Active = 0] = "Active", e[e.Secondary = 1] = "Secondary";
+    }(h = t.HighlightStyle || (t.HighlightStyle = {}));
 
-    var p = function (e) {
+    var v = function (e) {
+      function t(t, n, r, i) {
+        var o = e.call(this, 0, 0) || this;
+        return o.activeColor = n, o.secondaryColor = r, o.originX = -.5, o.relativeH = 1, o.w = 20, o.transparent = !0, o.setStyle(t), o;
+      }
+
+      return r(t, e), t.prototype.setStyle = function (e) {
+        switch (e) {
+          case h.Active:
+          case h.Secondary:
+            this.color = [1, 0, 0, 0];
+        }
+
+        this.style = e;
+      }, t;
+    }(s.default);
+
+    t.HighlightPointer = v;
+
+    var g = function (e) {
       function t() {
         return e.call(this, u.OpenSansRegular, "Loading", 12, [1, 1, 1, 1]) || this;
       }
@@ -3602,7 +3635,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         i = n(0),
         o = n(17),
         a = n(60),
-        s = n(39),
+        s = n(40),
         l = n(85),
         u = n(61),
         c = n(1),
@@ -3985,7 +4018,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     Object.defineProperty(t, "__esModule", {
       value: !0
     }), t.default = t.sheetsManager = void 0;
-    var i = r(n(41)),
+    var i = r(n(42)),
         o = r(n(15)),
         a = r(n(78)),
         s = r(n(77)),
@@ -4324,8 +4357,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     });
 
     var o = n(22),
-        a = n(45),
-        s = n(43),
+        a = n(46),
+        s = n(44),
         l = function (e) {
       function t(t) {
         var n = e.call(this, t, [{
@@ -5216,11 +5249,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       value: !0
     });
 
-    var o = n(46),
+    var o = n(38),
         a = n(48),
         s = n(14),
-        l = n(44),
-        u = n(42),
+        l = n(45),
+        u = n(43),
         c = n(137),
         f = function (e) {
       function t(t) {
@@ -5578,8 +5611,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       value: !0
     });
 
-    var a = n(38),
-        s = n(46),
+    var a = n(39),
+        s = n(38),
         l = n(14),
         u = n(140),
         c = n(18),
@@ -5846,7 +5879,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     var o = n(6),
         a = n(102),
-        s = n(38),
+        s = n(39),
         l = n(235),
         u = n(232),
         c = n(201),
@@ -6067,12 +6100,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       value: !0
     });
 
-    var o = n(38),
-        a = n(46),
+    var o = n(39),
+        a = n(38),
         s = n(48),
         l = n(14),
-        u = n(44),
-        c = n(42),
+        u = n(45),
+        c = n(43),
         f = n(68),
         d = n(100),
         h = n(139),
@@ -6438,7 +6471,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     "use strict";
 
     var r = n(60),
-        i = n(39).getWeak,
+        i = n(40).getWeak,
         o = n(2),
         a = n(1),
         s = n(61),
@@ -6516,7 +6549,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         c = n(163),
         f = n(62),
         d = n(11),
-        h = n(39).fastKey,
+        h = n(40).fastKey,
         p = n(49),
         v = d ? "_s" : "size",
         g = function g(e, t) {
@@ -7145,10 +7178,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         u = n(182),
         c = n(244),
         f = n(243),
-        d = n(38),
+        d = n(39),
         h = n(14),
-        p = n(44),
-        v = n(42),
+        p = n(45),
+        v = n(43),
         g = n(146),
         y = n(99),
         m = n(198),
@@ -9130,10 +9163,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         c = n(434),
         f = n(182),
         d = n(433),
-        h = n(38),
+        h = n(39),
         p = n(136),
         v = n(14),
-        g = n(44),
+        g = n(45),
         y = n(6),
         m = n(59),
         A = n(99),
@@ -9173,7 +9206,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         }, l.onTrackPointerMove = function (e) {
           l.tileHovering = !0, l._dragMode = void 0, l.setActiveAxisPointer(e);
         }, l.onTrackWheel = function (e) {
-          e.preventDefault(), e.stopPropagation();
+          console.log("on track wheel"), e.preventDefault(), e.stopPropagation();
           var t = 0,
               n = 0;
 
@@ -9211,10 +9244,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           var g = h * v,
               y = g + f,
               m = .5 * ((d = y + h * (1 - v) * c) - (f = y - g * c) + h) / l.getComputedWidth() * t;
-          f += m, d += m, l.setRange(f, d);
+          f += m, d += m, l.setRange(f, d), l.setActiveAxisPointer(e);
         }, l.onTrackDragStart = function (e) {
           var t, n;
-          if (l._dragMode = void 0, 1 === e.buttonState) switch (e.shiftKey ? l._dragMode = o.SelectRegion : l._dragMode = o.Move, l._dragXF0 = e.fractionX, l._dragX00 = l.x0, l._lastDragLX = e.localX, l._dragDistLocal = 0, l._dragMode) {
+          if (console.log("on track drag start"), l._dragMode = void 0, 1 === e.buttonState) switch (e.shiftKey ? l._dragMode = o.SelectRegion : l._dragMode = o.Move, l._dragXF0 = e.fractionX, l._dragX00 = l.x0, l._lastDragLX = e.localX, l._dragDistLocal = 0, l._dragMode) {
             case o.SelectRegion:
               e.preventDefault();
 
@@ -9276,23 +9309,41 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                     p = l.applyLimits(d, h),
                     v = Math.abs(p.x0 - d),
                     g = Math.abs(p.x1 - h);
-                v > 0 && (h = (d = p.x0) + c), g > 0 && (d = (h = p.x1) - c), l.setRange(d, h);
+                v > 0 && (h = (d = p.x0) + c), g > 0 && (d = (h = p.x1) - c), l.setRange(d, h), l.setActiveAxisPointer(e);
             }
 
             l.setActiveAxisPointer(e);
           }
         }, l.onTrackDragEnd = function (e) {
-          var t, n;
+          var t, n, r, a;
 
           switch (e.stopPropagation(), l._dragMode) {
             case o.SelectRegion:
               e.preventDefault();
-              var r = l.x1 - l.x0,
-                  a = l.x0 + r * l._dragXF0,
-                  s = l.x0 + r * e.fractionX,
-                  u = Math.min(a, s),
-                  c = Math.max(a, s);
-              u = Math.max(u, l.x0), c = Math.min(c, l.x1), l.setRange(u, c, !0);
+              var s = l.x1 - l.x0,
+                  u = l.x0 + s * l._dragXF0,
+                  c = l.x0 + s * e.fractionX,
+                  f = Math.min(u, c),
+                  d = Math.max(u, c);
+
+              for (var h in f = Math.max(f, l.x0), d = Math.min(d, l.x1), l.setRange(f, d, !0), l.secondaryAxisPointers) {
+                try {
+                  for (var p = i(l.trackViews), v = p.next(); !v.done; v = p.next()) {
+                    v.value.setHighlightPointer(h, .5);
+                  }
+                } catch (e) {
+                  t = {
+                    error: e
+                  };
+                } finally {
+                  try {
+                    v && !v.done && (n = p.return) && n.call(p);
+                  } finally {
+                    if (t) throw t.error;
+                  }
+                }
+              }
+
               break;
 
             case o.Move:
@@ -9300,18 +9351,18 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           }
 
           try {
-            for (var f = i(l.trackViews), d = f.next(); !d.done; d = f.next()) {
-              d.value.clearFocusRegion();
+            for (var g = i(l.trackViews), y = g.next(); !y.done; y = g.next()) {
+              y.value.clearFocusRegion();
             }
           } catch (e) {
-            t = {
+            r = {
               error: e
             };
           } finally {
             try {
-              d && !d.done && (n = f.return) && n.call(f);
+              y && !y.done && (a = g.return) && a.call(g);
             } finally {
-              if (t) throw t.error;
+              if (r) throw r.error;
             }
           }
 
@@ -9455,7 +9506,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         for (var a in this.secondaryAxisPointers) {
           if (void 0 === e[a] && void 0 === this.activeAxisPointers[a]) try {
             for (var s = i(this.trackViews), l = s.next(); !l.done; l = s.next()) {
-              l.value.removeAxisPointer(a);
+              (p = l.value).removeAxisPointer(a);
             }
           } catch (e) {
             t = {
@@ -9479,7 +9530,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
             try {
               for (var d = i(this.trackViews), h = d.next(); !h.done; h = d.next()) {
-                h.value.setAxisPointer(a, f, m.AxisPointerStyle.Secondary);
+                var p = h.value;
+                console.log("updating pointers"), p.setAxisPointer(a, f, m.AxisPointerStyle.Secondary), console.log("pointerId is " + a), p.setHighlightPointer(a, f);
               }
             } catch (e) {
               r = {
@@ -9559,7 +9611,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
         try {
           for (var a = i(this.trackViews), s = a.next(); !s.done; s = a.next()) {
-            s.value.setAxisPointer(e.pointerId.toString(), r, m.AxisPointerStyle.Active);
+            var l = s.value;
+            l.setAxisPointer(e.pointerId.toString(), r, m.AxisPointerStyle.Active), l.setHighlightPointer(e.pointerId.toString(), r);
           }
         } catch (e) {
           t = {
@@ -9993,9 +10046,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     var a = n(22),
         s = n(101),
-        l = n(45),
+        l = n(46),
         u = n(203),
-        c = n(43),
+        c = n(44),
         f = n(136),
         d = n(14),
         h = n(6),
@@ -10425,7 +10478,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     Object.defineProperty(t, "__esModule", {
       value: !0
-    }), r(n(536)), r(n(535)), r(n(534)), r(n(533)), r(n(532)), r(n(43));
+    }), r(n(536)), r(n(535)), r(n(534)), r(n(533)), r(n(532)), r(n(44));
   }, function (e, t, n) {
     "use strict";
 
@@ -10469,23 +10522,32 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     var o = n(141),
         a = n(138),
-        s = n(43),
+        s = n(44),
         l = n(22),
-        u = n(45),
+        u = n(46),
         c = n(18),
         f = n(59),
         d = n(204),
         h = n(202),
-        p = n(38),
-        v = function (e) {
+        p = n(39),
+        v = n(38),
+        g = function (e) {
       function t(t) {
-        var n = e.call(this, t, g) || this;
+        var n = e.call(this, t, y) || this;
         return n.autoScale = !0, n.autoScaleDelay_ms = 300, n.signalReadingSnapX = !0, n.showSignalReading = !0, n._displayScale = 1, n.sharedState = {
           track: null,
           signalColor: [0, 1, 0]
         }, n._animationFrameHandle = -1, n.frameLoop = function () {
           n._animationFrameHandle = window.requestAnimationFrame(n.frameLoop), n.autoScaleOnFrame();
-        }, n._autoScaleNeedsUpdate = !1, n._autoScaleLastChangeT_ms = -1 / 0, n.tileNodes = new Set(), n.sharedState.track = n, null != t.color && (n.sharedState.signalColor = t.color), null != t.autoScale && (n.autoScale = t.autoScale), null != t.scale && (n.displayScale = t.scale), n.yAxis = new a.Axis({
+        }, n._autoScaleNeedsUpdate = !1, n._autoScaleLastChangeT_ms = -1 / 0, n._macroTileCache = new v.default(null, function (e) {
+          return e.releaseGPUResources();
+        }), n._onStageAnnotations = new v.default(null, function (e) {
+          return n.removeAnnotation(e);
+        }), n.addAnnotation = function (e) {
+          n.add(e);
+        }, n.removeAnnotation = function (e) {
+          n.remove(e);
+        }, n.tileNodes = new Set(), n.sharedState.track = n, null != t.color && (n.sharedState.signalColor = t.color), null != t.autoScale && (n.autoScale = t.autoScale), null != t.scale && (n.displayScale = t.scale), n.yAxis = new a.Axis({
           x0: 0,
           x1: 1,
           align: "left",
@@ -10494,7 +10556,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           fontSizePx: 10,
           tickSpacingPx: 15,
           color: [1, 1, 1, 1]
-        }), n.yAxis.x = 5, n.yAxis.w = 25, n.yAxis.h = 0, n.yAxis.relativeH = 1, n.yAxis.z = 2, n.yAxis.mask = n, n.add(n.yAxis), n.signalReading = new d.Text(h.OpenSansRegular, "", 13, [1, 1, 1, 1]), n.signalReading.render = !1, n.signalReading.x = -20, n.signalReading.y = -5, n.signalReading.originX = -1, n.signalReading.originY = -1, n.signalReading.relativeX = 1, n.signalReading.z = 3, n.signalReading.opacity = .6, n.signalReading.mask = n, n.signalReadingSnapX && (n.signalReading.originX = 0, n.signalReading.x = 10), n.add(n.signalReading), n.yAxisPointer = new f.AxisPointer(f.AxisPointerStyle.Secondary, n.activeAxisPointerColor, n.secondaryAxisPointerColor, "y"), n.yAxisPointer.render = !1, n.yAxisPointer.x = 0, n.yAxisPointer.y = 0, n.yAxisPointer.z = 2, n.yAxisPointer.mask = n, n.add(n.yAxisPointer), n.frameLoop(), window.scaleToFit = function () {
+        }), n.yAxis.x = 5, n.yAxis.w = 25, n.yAxis.h = 0, n.yAxis.relativeH = 1, n.yAxis.z = 2, n.yAxis.mask = n, n.add(n.yAxis), n.signalReading = new d.Text(h.OpenSansRegular, "", 13, [1, 1, 1, 1]), n.signalReading.render = !1, n.signalReading.x = -20, n.signalReading.y = -5, n.signalReading.originX = -1, n.signalReading.originY = -1, n.signalReading.relativeX = 1, n.signalReading.z = 3, n.signalReading.opacity = .6, n.signalReading.mask = n, n.signalReadingSnapX && (n.signalReading.originX = 0, n.signalReading.x = 10), n.add(n.signalReading), n.yAxisPointer = new f.AxisPointer(f.AxisPointerStyle.Secondary, n.activeAxisPointerColor, n.secondaryAxisPointerColor, "y"), n.yAxisPointer.render = !1, n.yAxisPointer.x = 0, n.yAxisPointer.y = 0, n.yAxisPointer.z = 2, n.yAxisPointer.mask = n, n.add(n.yAxisPointer), n.highlightPointer = new f.HighlightPointer(f.HighlightStyle.Secondary, [1, 0, 0, 0], [1, 0, 0, 0], "x"), n.highlightPointer.render = !0, n.highlightPointer.x = .5, n.highlightPointer.y = 0, n.highlightPointer.z = 2, n.highlightPointer.mask = n, n.add(n.highlightPointer), n.frameLoop(), window.scaleToFit = function () {
           n.scaleToFit();
         }, window.setDisplayScale = function (e) {
           n.setDisplayScale(e);
@@ -10511,9 +10573,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         enumerable: !0,
         configurable: !0
       }), t.prototype.applyStyle = function (t) {
-        e.prototype.applyStyle.call(this, t), this.yAxis.color = t.getColor("color") || this.yAxis.color, this.signalReading.color = t.getColor("color") || this.signalReading.color, this.sharedState.signalColor = this.model.color || t.getColor("--signal-color") || this.sharedState.signalColor, this.yAxisPointer.activeColor = this.activeAxisPointerColor, this.yAxisPointer.secondaryColor = this.secondaryAxisPointerColor, this.yAxisPointer.setStyle(this.yAxisPointer.style);
+        e.prototype.applyStyle.call(this, t), this.yAxis.color = t.getColor("color") || this.yAxis.color, this.signalReading.color = t.getColor("color") || this.signalReading.color, this.sharedState.signalColor = this.model.color || t.getColor("--signal-color") || this.sharedState.signalColor, this.yAxisPointer.activeColor = this.activeAxisPointerColor, this.yAxisPointer.secondaryColor = this.secondaryAxisPointerColor, this.yAxisPointer.setStyle(this.yAxisPointer.style), this.highlightPointer.activeColor = [1, 0, 0, 0], this.highlightPointer.secondaryColor = [1, 0, 0, 0], this.highlightPointer.setStyle(this.highlightPointer.style);
       }, t.prototype.setAxisPointer = function (t, n, r) {
-        e.prototype.setAxisPointer.call(this, t, n, r), this.updateAxisPointerSample();
+        console.log("is this where set axis point is called?"), e.prototype.setAxisPointer.call(this, t, n, r), this.updateAxisPointerSample();
+      }, t.prototype.setHighlightPointer = function (t, n) {
+        console.log("do we get here at all?"), e.prototype.setHighlightPointer.call(this, t, n);
       }, t.prototype.removeAxisPointer = function (t) {
         e.prototype.removeAxisPointer.call(this, t), this.updateAxisPointerSample();
       }, t.prototype.setDisplayScale = function (e) {
@@ -10603,34 +10667,33 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             if (null != p) {
               var m = p.getTile(),
                   A = (d - p.relativeX) / p.relativeW;
+              this.setSignalReading(m.payload.getReading(A, 0));
+              p.relativeX, p.relativeW;
 
-              if (this.setSignalReading(m.payload.getReading(A, 0)), this.signalReadingSnapX) {
+              if (this.signalReadingSnapX) {
                 var b = (this.signalReading.getComputedWidth() + 2 * Math.abs(this.signalReading.x)) / this.getComputedWidth();
                 this.signalReading.relativeX = Math.min(d, 1 - b);
               }
             } else this.setSignalReading(null);
           } else this.setSignalReading(null);
         } else this.setSignalReading(null);
+      }, t.prototype.setHighlightValue = function (e) {
+        console.log("we are setting a highlight value!"), this.highlightPointer.render = !0, this.highlightPointer.transparent = !1, this.highlightPointer.relativeX = e;
       }, t.prototype.setSignalReading = function (e) {
         if (null === e) return this.yAxisPointer.render = !1, void (this.signalReading.render = !1);
-        this.signalReading.string = null != e ? e.toFixed(3) : "error";
-        var t = !1 === this.yAxisPointer.render,
-            n = 1 - e * this.displayScale,
-            r = (this.signalReading.getComputedHeight() + 2 * Math.abs(this.signalReading.y)) / this.getComputedHeight(),
-            i = Math.min(Math.max(n, r), 1);
-        t ? (p.default.stop(this.yAxisPointer, ["relativeY"]), p.default.stop(this.signalReading, ["relativeY"]), this.yAxisPointer.relativeY = n, this.signalReading.relativeY = i) : (p.default.springTo(this.yAxisPointer, {
-          relativeY: n
-        }, 4e3), p.default.springTo(this.signalReading, {
-          relativeY: i
-        }, 4e3)), this.yAxisPointer.render = !0, this.signalReading.render = !0;
+        this.yAxisPointer.render = !0, this.signalReading.render = !0, this.signalReading.string = null != e ? e.toFixed(3) : "error";
+        var t = 1 - e * this.displayScale,
+            n = (this.signalReading.getComputedHeight() + 2 * Math.abs(this.signalReading.y)) / this.getComputedHeight(),
+            r = Math.min(Math.max(t, n), 1);
+        p.default.stop(this.yAxisPointer, ["relativeY"]), p.default.stop(this.signalReading, ["relativeY"]), this.yAxisPointer.relativeY = t, this.signalReading.relativeY = r, this.yAxisPointer.render = !0, this.signalReading.render = !0;
       }, t.prototype.updateDisplay = function (t, n, r, i) {
         this.getTileLoader().ready ? (this.yAxis.setRange(0, 1 / this.displayScale), this.displayLoadingIndicator = !1, e.prototype.updateDisplay.call(this, t, n, r, i), this.autoScaleNeedsUpdate(), this.updateAxisPointerSample()) : (this.displayLoadingIndicator = !0, this._tileNodeCache.count > 0 && this._tileNodeCache.removeAll(), this.displayNeedUpdate = !0);
       }, t;
     }(o.ShaderTrack);
 
-    t.SignalTrack = v;
+    t.SignalTrack = g;
 
-    var g = function (e) {
+    var y = function (e) {
       function t(t) {
         var n = e.call(this) || this;
         return n.sharedState = t, n.signalShaderFunction = "\n        vec4 signalRGBA(vec4 textureSample) {\n            float signalAlpha = antialiasedSignalAlpha(textureSample.r);\n            return vec4(signalColor, signalAlpha);\n        }\n    ", n;
@@ -10654,7 +10717,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }], t.vertexShader = "\n        #version 100\n\n        precision mediump float;\n        attribute vec2 position;\n        uniform mat4 model;\n        uniform vec2 size;\n        uniform float memoryBlockY;\n\n        uniform vec2 viewport;\n\n        varying vec2 texCoord;\n\n        varying vec4 rect_px; // x, y, width, height\n\n        void main() {\n            texCoord = vec2(position.x, memoryBlockY);\n\n            gl_Position = model * vec4(position * size, 0., 1.0);\n\n            // we store the rect coordinates in viewport pixels so we can compute pixel offset for anti-aliasing\n            // account for y-flip in the model\n            vec2 rectBL_px = ((model * vec4(vec2(0.0, 1.0) * size, 0., 1.0)).xy + 1.0) * 0.5 * viewport;\n            vec2 rectTL_px = ((model * vec4(vec2(1.0, 0.0) * size, 0., 1.0)).xy + 1.0) * 0.5 * viewport;\n\n            rect_px = vec4(\n                rectBL_px,\n                rectTL_px - rectBL_px\n            );\n        }\n    ", t;
     }(o.ShaderTile);
 
-    t.SignalTile = g;
+    t.SignalTile = y;
   }, function (e, t, n) {
     "use strict";
 
@@ -11013,14 +11076,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       value: !0
     });
 
-    var i = n(46),
+    var i = n(38),
         o = n(48),
         a = n(18),
         s = n(22),
-        l = n(45),
+        l = n(46),
         u = n(14),
-        c = n(43),
-        f = n(42),
+        c = n(44),
+        f = n(43),
         d = n(68),
         h = n(141),
         p = n(139),
@@ -11374,7 +11437,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     var o = n(22),
         a = n(14),
-        s = n(43),
+        s = n(44),
         l = function (e) {
       function t(t, n, r, a) {
         var s,
@@ -11612,13 +11675,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       value: !0
     });
 
-    var a = n(38),
-        s = n(46),
+    var a = n(39),
+        s = n(38),
         l = n(48),
-        u = n(45),
+        u = n(46),
         c = n(14),
-        f = n(44),
-        d = n(42),
+        f = n(45),
+        d = n(43),
         h = n(542),
         p = n(68),
         v = n(100),
@@ -11697,9 +11760,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }, t.prototype.updateDisplay = function (e, t, n, r) {
         if (this._onStageAnnotations.markAllUnused(), r > 0) {
           var i = n / r,
-              o = l.Scalar.linstep(this.macroLodThresholdLow, this.macroLodThresholdHigh, t),
-              a = 1 - o;
-          a > 0 && this.updateMicroAnnotations(this.x0, this.x1, n, i, t, a), o > 0 && this.updateMacroAnnotations(this.x0, this.x1, n, i, o);
+              o = l.Scalar.linstep(this.macroLodThresholdLow, this.macroLodThresholdHigh, t);
+          0, (o = 1) > 0 && this.updateMacroAnnotations(this.x0, this.x1, n, i, o);
         }
 
         this._onStageAnnotations.removeUnused();
@@ -11708,20 +11770,20 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
         this._annotationCache.markAllUnused();
 
-        var u = 1 - l.Scalar.linstep(this.namesLodThresholdLow, this.namesLodThresholdHigh, i);
+        l.Scalar.linstep(this.namesLodThresholdLow, this.namesLodThresholdHigh, i);
         this.getTileLoader().forEachTile(e, t, 1, !0, function (r) {
           var i, l;
 
           if (s.debugOptions.showTileBoundaries) {
-            var c = r.key + ":boundary";
-            s._onStageAnnotations.get(c, function () {
+            var u = r.key + ":boundary";
+            s._onStageAnnotations.get(u, function () {
               var e = new f.Rect(2, 0, [1, 0, 0, 1]);
               return e.relativeH = 1, s.add(e), e;
             }).relativeX = (r.x - e) / n;
           }
 
           if (r.state === g.TileState.Complete) {
-            var h = function h(r) {
+            var c = function c(r) {
               if (!(r.startIndex <= t && r.startIndex + r.length >= e)) return "continue";
               if (null != s.model.strand && r.strand !== s.model.strand) return "continue";
 
@@ -11738,7 +11800,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                 };
               });
 
-              o.gene.relativeW = r.length / n, o.gene.relativeX = (r.startIndex - e) / n, o.gene.opacity = a, o.name.visible = u > 0, o.name.opacity = u, o.name.x = 5, o.name.relativeX = Math.max(o.gene.relativeX, 0), s._onStageAnnotations.get(i, function () {
+              o.gene.relativeW = r.length / n, o.gene.relativeX = (r.startIndex - e) / n, o.gene.opacity = a, o.name.visible = !0, o.name.opacity = 1, o.name.x = 5, o.name.relativeX = Math.max(o.gene.relativeX, 0), s._onStageAnnotations.get(i, function () {
                 return s.add(o.gene), o.gene;
               }), s._onStageAnnotations.get(i + ":name", function () {
                 return s.add(o.name), o.name;
@@ -11746,8 +11808,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             };
 
             try {
-              for (var v = o(r.payload), y = v.next(); !y.done; y = v.next()) {
-                h(y.value);
+              for (var h = o(r.payload), v = h.next(); !v.done; v = h.next()) {
+                c(v.value);
               }
             } catch (e) {
               i = {
@@ -11755,7 +11817,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
               };
             } finally {
               try {
-                y && !y.done && (l = v.return) && l.call(v);
+                v && !v.done && (l = h.return) && l.call(h);
               } finally {
                 if (i) throw i.error;
               }
@@ -11776,7 +11838,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           }
 
           if (r.state === g.TileState.Complete) {
-            var l = a._macroTileCache.get(a.contig + ":" + r.key, function () {
+            var l = r.payload[0];
+            l.startIndex = (t - e) / 2 - 10, l.length = 20, l.score = 1, r.payload.push(l);
+
+            var u = a._macroTileCache.get(a.contig + ":" + r.key, function () {
               var n,
                   i,
                   s = new Array();
@@ -11834,19 +11899,19 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                 y: 0,
                 z: 0,
                 w: 1,
-                h: 5.7 * A,
-                relativeX: ((t - e) / 2 - r.x) / r.span,
+                h: 5.5 * A,
+                relativeX: ((t - e) / 2 - 10 - r.x) / r.span,
                 relativeY: 0,
-                relativeW: 1e3 / r.span,
-                relativeH: 0,
-                color: [0, 0, 0, 0]
-              });
+                relativeW: 20 / r.span,
+                relativeH: 10,
+                color: [1, 0, 0, 0]
+              }), console.log((t - e) / 2);
               var p = new v.default(s);
               return p.y = 0, p.z = .75, p.relativeH = 1, p.mask = a, p;
             });
 
-            l.relativeX = (r.x - e) / n, l.relativeW = r.span / n, l.opacity = i, a._onStageAnnotations.get("macro-gene-tile:" + a.contig + ":" + r.key, function () {
-              return a.addAnnotation(l), l;
+            u.relativeX = (r.x - e) / n, u.relativeW = r.span / n, u.opacity = i, a._onStageAnnotations.get("macro-gene-tile:" + a.contig + ":" + r.key, function () {
+              return a.addAnnotation(u), u;
             });
           } else a._loadingTiles.get(a.contig + ":" + r.key, function () {
             return a.createTileLoadingDependency(r);
@@ -12030,7 +12095,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           t.pointerOver && e.isPrimary && (e.preventDefault(), e.stopPropagation(), r(e, n));
         });
         var o = new f.Rect(0, 0, [1, 1, 1, 1]);
-        o.relativeW = 1, o.relativeH = 1, o.opacity = 0, o.additiveBlending = .5, i.add(o);
+        o.relativeW = 1, o.relativeH = 1, o.opacity = 0, o.additiveBlending = 0, i.add(o);
         return i.addInteractionListener("pointerenter", function (e) {
           i.cursorStyle = "pointer", a.default.springTo(o, {
             opacity: .1
@@ -12047,7 +12112,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         P = function (e) {
       function t(t, n, r) {
         var i = e.call(this, t, n, r) || this;
-        return i.color = t.colors["--non-coding"], i.transparent = !0, i;
+        return i.color = t.colors["--non-coding"], i.transparent = !1, i;
       }
 
       return r(t, e), t.prototype.draw = function (t) {
@@ -12071,7 +12136,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         k = function (e) {
       function t(t, n, r, i, o) {
         var a = e.call(this, t, n, r) || this;
-        return a.length_bases = n.length, a.phase = n.phase, (a.phase > 0 ? 1 : 0) !== Math.floor(o / 3) % 2 && (a.phase += 3), a.reverse = i === h.Strand.Negative ? 1 : 0, a.color = t.colors["--coding"], a.transparent = !0, a.blendMode = u.BlendMode.PREMULTIPLIED_ALPHA, a;
+        return a.length_bases = n.length, a.phase = n.phase, (a.phase > 0 ? 1 : 0) !== Math.floor(o / 3) % 2 && (a.phase += 3), a.reverse = i === h.Strand.Negative ? 1 : 0, a.color = t.colors["--coding"], a.transparent = !0, a.blendMode = u.BlendMode.PREMULTIPLIED_ALPHA, console.log("bleeeeend mode"), console.log(u.BlendMode.PREMULTIPLIED_ALPHA), a;
       }
 
       return r(t, e), t.prototype.draw = function (t) {
@@ -13749,7 +13814,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     Object.defineProperty(t, "__esModule", {
       value: !0
-    }), r(n(583)), r(n(228)), r(n(231)), r(n(202)), r(n(38)), r(n(238)), r(n(146)), r(n(207));
+    }), r(n(583)), r(n(228)), r(n(231)), r(n(202)), r(n(39)), r(n(238)), r(n(146)), r(n(207));
   }, function (e, t, n) {
     "use strict";
 
@@ -14762,7 +14827,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var r = n(10),
         i = n(0),
         o = n(2),
-        a = n(40);
+        a = n(41);
     i(i.S + i.F * n(3)(function () {
       Reflect.defineProperty(r.f({}, 1, {
         value: 1
@@ -14991,7 +15056,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         i = n(4),
         o = n(27)(0),
         a = n(17),
-        s = n(39),
+        s = n(40),
         l = n(175),
         u = n(155),
         c = n(1),
@@ -15692,7 +15757,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     "use strict";
 
     var r = n(2),
-        i = n(40);
+        i = n(41);
 
     e.exports = function (e) {
       if ("string" !== e && "number" !== e && "default" !== e) throw TypeError("Incorrect hint");
@@ -15743,7 +15808,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     var r = n(0),
         i = n(12),
-        o = n(40);
+        o = n(41);
     r(r.P + r.F * n(3)(function () {
       return null !== new Date(NaN).toJSON() || 1 !== Date.prototype.toJSON.call({
         toISOString: function toISOString() {
@@ -16289,7 +16354,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         i = n(21),
         o = n(36),
         a = n(123),
-        s = n(40),
+        s = n(41),
         l = n(3),
         u = n(52).f,
         c = n(29).f,
@@ -16446,7 +16511,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     });
   }, function (e, t, n) {
     var r = n(1),
-        i = n(39).onFreeze;
+        i = n(40).onFreeze;
     n(28)("preventExtensions", function (e) {
       return function (t) {
         return e && r(t) ? e(i(t)) : t;
@@ -16454,7 +16519,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     });
   }, function (e, t, n) {
     var r = n(1),
-        i = n(39).onFreeze;
+        i = n(40).onFreeze;
     n(28)("seal", function (e) {
       return function (t) {
         return e && r(t) ? e(i(t)) : t;
@@ -16462,7 +16527,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     });
   }, function (e, t, n) {
     var r = n(1),
-        i = n(39).onFreeze;
+        i = n(40).onFreeze;
     n(28)("freeze", function (e) {
       return function (t) {
         return e && r(t) ? e(i(t)) : t;
@@ -16534,7 +16599,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         o = n(11),
         a = n(0),
         s = n(17),
-        l = n(39).KEY,
+        l = n(40).KEY,
         u = n(3),
         c = n(93),
         f = n(65),
@@ -16548,7 +16613,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         A = n(1),
         b = n(12),
         x = n(19),
-        w = n(40),
+        w = n(41),
         C = n(58),
         S = n(53),
         P = n(176),
@@ -16798,7 +16863,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }), t.default = t.styles = void 0;
 
     var i = r(n(15)),
-        o = r(n(41)),
+        o = r(n(42)),
         a = r(n(26)),
         s = r(n(6)),
         l = (r(n(33)), r(n(79))),
@@ -17262,7 +17327,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }), t.default = void 0;
 
     var i = r(n(15)),
-        o = r(n(41)),
+        o = r(n(42)),
         a = r(n(26)),
         s = r(n(78)),
         l = r(n(77)),
@@ -17835,7 +17900,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     Object.defineProperty(t, "__esModule", {
       value: !0
     }), t.default = t.specialProperty = void 0;
-    r(n(41)), r(n(15));
+    r(n(42)), r(n(15));
     var i = "exact-prop: ​";
     t.specialProperty = i;
 
@@ -17943,7 +18008,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       value: !0
     }), t.default = t.styles = void 0;
     var i = r(n(15)),
-        o = r(n(41)),
+        o = r(n(42)),
         a = r(n(26)),
         s = r(n(78)),
         l = r(n(77)),
@@ -18238,7 +18303,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     Object.defineProperty(t, "__esModule", {
       value: !0
     }), t.default = t.CHANNEL = void 0;
-    var i = r(n(41)),
+    var i = r(n(42)),
         o = "__THEMING__";
     t.CHANNEL = o;
     var a = {
@@ -18798,7 +18863,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         }), r)
       }, n);
     };
-    var i = r(n(41)),
+    var i = r(n(42)),
         o = r(n(15));
   }, function (e, t, n) {
     "use strict";
@@ -20985,7 +21050,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }), t.default = t.styles = void 0;
 
     var i = r(n(15)),
-        o = r(n(41)),
+        o = r(n(42)),
         a = r(n(26)),
         s = r(n(6)),
         l = (r(n(33)), r(n(79))),
@@ -21111,7 +21176,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     Object.defineProperty(t, "__esModule", {
       value: !0
-    }), r(n(136)), r(n(14)), r(n(211)), r(n(44)), r(n(42));
+    }), r(n(136)), r(n(14)), r(n(211)), r(n(45)), r(n(43));
   }, function (e, t, n) {
     "use strict";
 
@@ -21123,7 +21188,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     Object.defineProperty(t, "__esModule", {
       value: !0
-    }), r(n(22)), r(n(212)), r(n(203)), r(n(101)), r(n(45));
+    }), r(n(22)), r(n(212)), r(n(203)), r(n(101)), r(n(46));
   }, function (e, t, n) {
     "use strict";
 
@@ -21143,7 +21208,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       for (var n in e) {
         t.hasOwnProperty(n) || (t[n] = e[n]);
       }
-    }(n(46));
+    }(n(38));
   }, function (e, t, n) {
     "use strict";
 
@@ -21207,14 +21272,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       value: !0
     });
 
-    var i = n(46),
+    var i = n(38),
         o = n(48),
         a = n(14),
-        s = n(42),
+        s = n(43),
         l = n(100),
         u = n(18),
         c = n(59),
-        f = n(44),
+        f = n(45),
         d = n(68),
         h = function (e) {
       function t(t) {
@@ -31021,7 +31086,7 @@ hpgv.render({
   width: 800,
   height: 600
 }, document.getElementById('container'));
-},{"../../dist/valis-hpgv.js":"../../dist/valis-hpgv.js"}],"../../../../../../.npm/_npx/42696/lib/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"../../dist/valis-hpgv.js":"../../dist/valis-hpgv.js"}],"../../../../../../.npm/_npx/64851/lib/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -31049,7 +31114,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60535" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50522" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -31225,5 +31290,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../../.npm/_npx/42696/lib/node_modules/parcel/src/builtins/hmr-runtime.js","App.ts"], null)
+},{}]},{},["../../../../../../.npm/_npx/64851/lib/node_modules/parcel/src/builtins/hmr-runtime.js","App.ts"], null)
 //# sourceMappingURL=/App.7a936cda.js.map

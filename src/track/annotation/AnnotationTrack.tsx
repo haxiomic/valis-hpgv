@@ -130,6 +130,12 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
 
             let macroOpacity: number = Scalar.linstep(this.macroLodThresholdLow, this.macroLodThresholdHigh, continuousLodLevel);
             let microOpacity: number = 1.0 - macroOpacity;
+            
+            microOpacity = 0;
+            macroOpacity = 1;
+            
+            // console.log(`macroOpacity is ${macroOpacity}`);
+            // console.log(`microOpacity is ${microOpacity}`);
 
             if (microOpacity > 0) {
                 this.updateMicroAnnotations(this.x0, this.x1, span, basePairsPerDOMPixel, continuousLodLevel, microOpacity);
@@ -147,6 +153,9 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
         this._annotationCache.markAllUnused();
 
         let namesOpacity = 1.0 - Scalar.linstep(this.namesLodThresholdLow, this.namesLodThresholdHigh, continuousLodLevel);
+        
+        // console.log(`namesOpacity is ${namesOpacity}`);
+        namesOpacity = 1;
 
         let microSamplingDensity = 1;
 
@@ -299,6 +308,12 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
                 this._loadingTiles.get(this.contig + ':' + tile.key, () => this.createTileLoadingDependency(tile));
                 return;
             }
+            
+            const fakePayload = tile.payload[0];
+            fakePayload.startIndex = ((x1 - x0) / 2 - 10);
+            fakePayload.length = 20;
+            fakePayload.score = 1;
+            tile.payload.push(fakePayload);
 
             // Instance Rendering
             let tileObject = this._macroTileCache.get(this.contig + ':' + tile.key, () => {
@@ -362,16 +377,18 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
                     y: 0,
                     z: 0,
                     w: 1,
-                    h: TRANSCRIPT_HEIGHT*5.7,
+                    h: TRANSCRIPT_HEIGHT*5.5,
 
-                    relativeX: (((x1 - x0) / 2) - tile.x) / tile.span,
+                    relativeX: (((x1 - x0) / 2 - 10) - tile.x) / tile.span,
                     relativeY: 0,
 
-                    relativeW: 1000 / tile.span,
-                    relativeH: 0,
+                    relativeW: 20 / tile.span,
+                    relativeH: 10,
 
-                    color: [0, 0, 0, 0],
+                    color: [1, 0, 0, 0],
                 });
+                
+                console.log((x1 - x0) / 2);
 
                 let geneInstances = new IntervalInstances(instanceData);
                 geneInstances.y = 0;
@@ -637,11 +654,12 @@ class TranscriptComponent extends Rect {
             }
         });
 
+        // I have essentially disabled the hover overlay here by setting the opacity to 0
         let hoverOverlay = new Rect(0, 0, [1, 1, 1, 1]);
         hoverOverlay.relativeW = 1;
         hoverOverlay.relativeH = 1;
         hoverOverlay.opacity = 0;
-        hoverOverlay.additiveBlending = 0.5;
+        hoverOverlay.additiveBlending = 0;
         this.add(hoverOverlay);
 
         // highlight on mouse-over
@@ -664,7 +682,7 @@ class Exon extends TranscriptComponent {
     constructor(sharedState: AnnotationTrack['sharedState'], info: TranscriptComponentInfo, onAnnotationClicked: (e: InteractionEvent, feature: GenomeFeature) => void) {
         super(sharedState, info, onAnnotationClicked);
         this.color = sharedState.colors['--non-coding'];
-        this.transparent = true;
+        this.transparent = false;//true;
     }
 
     draw(context: DrawContext) {
@@ -791,6 +809,8 @@ class CDS extends TranscriptComponent {
         this.color = sharedState.colors['--coding']; // rgba(26, 174, 222, 0.58)
         this.transparent = true;
         this.blendMode = BlendMode.PREMULTIPLIED_ALPHA;
+        console.log('bleeeeend mode');
+        console.log(BlendMode.PREMULTIPLIED_ALPHA);
     }
 
     draw(context: DrawContext) {
