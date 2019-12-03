@@ -151,7 +151,6 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
 
         let namesOpacity = 1.0 - Scalar.linstep(this.namesLodThresholdLow, this.namesLodThresholdHigh, continuousLodLevel);
         
-        // console.log(`namesOpacity is ${namesOpacity}`);
         namesOpacity = 1;
 
         let microSamplingDensity = 1;
@@ -649,7 +648,6 @@ class TranscriptComponent extends Rect {
             }
         });
 
-        // I have essentially disabled the hover overlay here by setting the opacity to 0
         let hoverOverlay = new Rect(0, 0, [1, 1, 1, 1]);
         hoverOverlay.relativeW = 1;
         hoverOverlay.relativeH = 1;
