@@ -128,7 +128,6 @@ export class TrackObject<
     }
     
     setHighlightPointer(id: string, fractionX: number) {
-        console.log('SET HIGHLIGHT POINTER');
         let withinBounds = fractionX >= 0 && fractionX <= 1;
     
         let highlightPointer = this.highlightPointers[id];
@@ -137,20 +136,16 @@ export class TrackObject<
             // !withinBounds means do not draw, so we don't need to create the object
             if (!withinBounds) return;
             // create axis pointer
-            highlightPointer = new HighlightPointer(null, [1, 0, 0, 0], [1, 0, 0, 0], 'x');
+            highlightPointer = new HighlightPointer(null, [1, 0, 0, 0.5], [1, 0, 0, 0.5], 'x');
             highlightPointer.z = 2;
             this.add(highlightPointer);
             this.highlightPointers[id] = highlightPointer;
         }
     
         highlightPointer.render = withinBounds;
-        
-        console.log((this.x1 - this.x0 / 2));
     
         if (withinBounds) {
-            console.log('update!');
-            highlightPointer.relativeX = (124780544 - this.x0) / (this.x1 - this.x0);//fractionX;
-            console.log(`fractionX is ${fractionX}`);
+            highlightPointer.relativeX = (124780544 - this.x0) / (this.x1 - this.x0);
         }
     
         // if (highlightPointer.style !== style) {

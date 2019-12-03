@@ -3043,10 +3043,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
         if (void 0 === r) {
           if (!n) return;
-          (r = new v(null, [1, 0, 0, 0], [1, 0, 0, 0], "x")).z = 2, this.add(r), this.highlightPointers[e] = r;
+          (r = new v(null, [1, 0, 0, .5], [1, 0, 0, .5], "x")).z = 2, this.add(r), this.highlightPointers[e] = r;
         }
 
-        r.render = n, console.log(this.x1 - this.x0 / 2), n && (console.log("update!"), r.relativeX = (124478211 - this.x0) / (this.x1 - this.x0), console.log("fractionX is " + t));
+        r.render = n, n && (r.relativeX = (124780544 - this.x0) / (this.x1 - this.x0));
       }, t.prototype.removeAxisPointer = function (e) {
         var t = this.axisPointers[e];
         void 0 !== t && (this.remove(t), delete this.axisPointers[e]);
@@ -9206,7 +9206,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         }, l.onTrackPointerMove = function (e) {
           l.tileHovering = !0, l._dragMode = void 0, l.setActiveAxisPointer(e);
         }, l.onTrackWheel = function (e) {
-          console.log("on track wheel"), e.preventDefault(), e.stopPropagation();
+          e.preventDefault(), e.stopPropagation();
           var t = 0,
               n = 0;
 
@@ -9247,7 +9247,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           f += m, d += m, l.setRange(f, d), l.setActiveAxisPointer(e);
         }, l.onTrackDragStart = function (e) {
           var t, n;
-          if (console.log("on track drag start"), l._dragMode = void 0, 1 === e.buttonState) switch (e.shiftKey ? l._dragMode = o.SelectRegion : l._dragMode = o.Move, l._dragXF0 = e.fractionX, l._dragX00 = l.x0, l._lastDragLX = e.localX, l._dragDistLocal = 0, l._dragMode) {
+          if (l._dragMode = void 0, 1 === e.buttonState) switch (e.shiftKey ? l._dragMode = o.SelectRegion : l._dragMode = o.Move, l._dragXF0 = e.fractionX, l._dragX00 = l.x0, l._lastDragLX = e.localX, l._dragDistLocal = 0, l._dragMode) {
             case o.SelectRegion:
               e.preventDefault();
 
@@ -9329,7 +9329,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
               for (var h in f = Math.max(f, l.x0), d = Math.min(d, l.x1), l.setRange(f, d, !0), l.secondaryAxisPointers) {
                 try {
                   for (var p = i(l.trackViews), v = p.next(); !v.done; v = p.next()) {
-                    v.value.setHighlightPointer(h, .5);
+                    var g = v.value;
+                    console.log("are we getting here"), g.setHighlightPointer("0", .5);
                   }
                 } catch (e) {
                   t = {
@@ -9351,8 +9352,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           }
 
           try {
-            for (var g = i(l.trackViews), y = g.next(); !y.done; y = g.next()) {
-              y.value.clearFocusRegion();
+            for (var y = i(l.trackViews), m = y.next(); !m.done; m = y.next()) {
+              m.value.clearFocusRegion();
             }
           } catch (e) {
             r = {
@@ -9360,7 +9361,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             };
           } finally {
             try {
-              y && !y.done && (a = g.return) && a.call(g);
+              m && !m.done && (a = y.return) && a.call(y);
             } finally {
               if (r) throw r.error;
             }
@@ -9530,8 +9531,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
             try {
               for (var d = i(this.trackViews), h = d.next(); !h.done; h = d.next()) {
-                var p = h.value;
-                console.log("updating pointers"), p.setAxisPointer(a, f, m.AxisPointerStyle.Secondary), console.log("pointerId is " + a), p.setHighlightPointer(a, f);
+                var p;
+                (p = h.value).setAxisPointer(a, f, m.AxisPointerStyle.Secondary), p.setHighlightPointer("0", f);
               }
             } catch (e) {
               r = {
@@ -9612,7 +9613,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         try {
           for (var a = i(this.trackViews), s = a.next(); !s.done; s = a.next()) {
             var l = s.value;
-            l.setAxisPointer(e.pointerId.toString(), r, m.AxisPointerStyle.Active), l.setHighlightPointer(e.pointerId.toString(), r);
+            l.setAxisPointer(e.pointerId.toString(), r, m.AxisPointerStyle.Active), l.setHighlightPointer("0", r);
           }
         } catch (e) {
           t = {
@@ -10575,9 +10576,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }), t.prototype.applyStyle = function (t) {
         e.prototype.applyStyle.call(this, t), this.yAxis.color = t.getColor("color") || this.yAxis.color, this.signalReading.color = t.getColor("color") || this.signalReading.color, this.sharedState.signalColor = this.model.color || t.getColor("--signal-color") || this.sharedState.signalColor, this.yAxisPointer.activeColor = this.activeAxisPointerColor, this.yAxisPointer.secondaryColor = this.secondaryAxisPointerColor, this.yAxisPointer.setStyle(this.yAxisPointer.style), this.highlightPointer.activeColor = [1, 0, 0, 0], this.highlightPointer.secondaryColor = [1, 0, 0, 0], this.highlightPointer.setStyle(this.highlightPointer.style);
       }, t.prototype.setAxisPointer = function (t, n, r) {
-        console.log("is this where set axis point is called?"), e.prototype.setAxisPointer.call(this, t, n, r), this.updateAxisPointerSample();
+        e.prototype.setAxisPointer.call(this, t, n, r), this.updateAxisPointerSample();
       }, t.prototype.setHighlightPointer = function (t, n) {
-        console.log("do we get here at all?"), e.prototype.setHighlightPointer.call(this, t, n);
+        e.prototype.setHighlightPointer.call(this, t, n);
       }, t.prototype.removeAxisPointer = function (t) {
         e.prototype.removeAxisPointer.call(this, t), this.updateAxisPointerSample();
       }, t.prototype.setDisplayScale = function (e) {
@@ -31086,7 +31087,7 @@ hpgv.render({
   width: 800,
   height: 600
 }, document.getElementById('container'));
-},{"../../dist/valis-hpgv.js":"../../dist/valis-hpgv.js"}],"../../../../../../.npm/_npx/64851/lib/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"../../dist/valis-hpgv.js":"../../dist/valis-hpgv.js"}],"../../../../../../.npm/_npx/65885/lib/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -31114,7 +31115,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50522" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61288" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -31290,5 +31291,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../../.npm/_npx/64851/lib/node_modules/parcel/src/builtins/hmr-runtime.js","App.ts"], null)
+},{}]},{},["../../../../../../.npm/_npx/65885/lib/node_modules/parcel/src/builtins/hmr-runtime.js","App.ts"], null)
 //# sourceMappingURL=/App.7a936cda.js.map
