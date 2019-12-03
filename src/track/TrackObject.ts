@@ -110,7 +110,7 @@ export class TrackObject<
             // !withinBounds means do not draw, so we don't need to create the object
             if (!withinBounds) return;
             // create axis pointer
-            axisPointer = new AxisPointer(null, this.activeAxisPointerColor, this.secondaryAxisPointerColor, 'x');
+            axisPointer = new AxisPointer(style, this.activeAxisPointerColor, this.secondaryAxisPointerColor, 'x');
             axisPointer.z = 2;
             this.add(axisPointer);
             this.axisPointers[id] = axisPointer;

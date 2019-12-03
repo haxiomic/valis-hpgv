@@ -3032,12 +3032,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
         if (void 0 === i) {
           if (!r) return;
-          (i = new p(null, this.activeAxisPointerColor, this.secondaryAxisPointerColor, "x")).z = 2, this.add(i), this.axisPointers[e] = i;
+          (i = new p(n, this.activeAxisPointerColor, this.secondaryAxisPointerColor, "x")).z = 2, this.add(i), this.axisPointers[e] = i;
         }
 
         i.render = r, r && (i.relativeX = t), i.style !== n && i.setStyle(n);
       }, t.prototype.setHighlightPointer = function (e, t) {
-        console.log("SET HIGHLIGHT POINTER");
         var n = t >= 0 && t <= 1,
             r = this.highlightPointers[e];
 
@@ -9244,7 +9243,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           var g = h * v,
               y = g + f,
               m = .5 * ((d = y + h * (1 - v) * c) - (f = y - g * c) + h) / l.getComputedWidth() * t;
-          f += m, d += m, l.setRange(f, d), l.setActiveAxisPointer(e);
+          f += m, d += m, l.setRange(f, d), l.setActiveAxisPointer(e, "onlyHighlight");
         }, l.onTrackDragStart = function (e) {
           var t, n;
           if (l._dragMode = void 0, 1 === e.buttonState) switch (e.shiftKey ? l._dragMode = o.SelectRegion : l._dragMode = o.Move, l._dragXF0 = e.fractionX, l._dragX00 = l.x0, l._lastDragLX = e.localX, l._dragDistLocal = 0, l._dragMode) {
@@ -9315,36 +9314,17 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             l.setActiveAxisPointer(e);
           }
         }, l.onTrackDragEnd = function (e) {
-          var t, n, r, a;
+          var t, n;
 
           switch (e.stopPropagation(), l._dragMode) {
             case o.SelectRegion:
               e.preventDefault();
-              var s = l.x1 - l.x0,
-                  u = l.x0 + s * l._dragXF0,
-                  c = l.x0 + s * e.fractionX,
-                  f = Math.min(u, c),
-                  d = Math.max(u, c);
-
-              for (var h in f = Math.max(f, l.x0), d = Math.min(d, l.x1), l.setRange(f, d, !0), l.secondaryAxisPointers) {
-                try {
-                  for (var p = i(l.trackViews), v = p.next(); !v.done; v = p.next()) {
-                    var g = v.value;
-                    console.log("are we getting here"), g.setHighlightPointer("0", .5);
-                  }
-                } catch (e) {
-                  t = {
-                    error: e
-                  };
-                } finally {
-                  try {
-                    v && !v.done && (n = p.return) && n.call(p);
-                  } finally {
-                    if (t) throw t.error;
-                  }
-                }
-              }
-
+              var r = l.x1 - l.x0,
+                  a = l.x0 + r * l._dragXF0,
+                  s = l.x0 + r * e.fractionX,
+                  u = Math.min(a, s),
+                  c = Math.max(a, s);
+              u = Math.max(u, l.x0), c = Math.min(c, l.x1), l.setRange(u, c, !0);
               break;
 
             case o.Move:
@@ -9352,18 +9332,18 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           }
 
           try {
-            for (var y = i(l.trackViews), m = y.next(); !m.done; m = y.next()) {
-              m.value.clearFocusRegion();
+            for (var f = i(l.trackViews), d = f.next(); !d.done; d = f.next()) {
+              d.value.clearFocusRegion();
             }
           } catch (e) {
-            r = {
+            t = {
               error: e
             };
           } finally {
             try {
-              m && !m.done && (a = y.return) && a.call(y);
+              d && !d.done && (n = f.return) && n.call(f);
             } finally {
-              if (r) throw r.error;
+              if (t) throw t.error;
             }
           }
 
@@ -9424,7 +9404,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }, t.prototype.setResizable = function (e) {
         this.remove(this.resizeHandle), e && this.add(this.resizeHandle), this.resizeHandle.cursorStyle = e ? "col-resize" : null, this.resizeHandle.color = e ? [0, 1, 0, 1] : [.3, .3, .3, 1];
       }, t.prototype.addTrackView = function (e) {
-        e.addInteractionListener("dragstart", this.onTrackDragStart), e.addInteractionListener("dragmove", this.onTrackDragMove), e.addInteractionListener("dragend", this.onTrackDragEnd), e.addInteractionListener("pointerup", this.onTrackDragEnd), e.addInteractionListener("wheel", this.onTrackWheel), e.addInteractionListener("pointermove", this.onTrackPointerMove), e.addInteractionListener("pointerleave", this.onTrackLeave), e.setDataSource(this.dataSource), e.setContig(this.contig), e.setRange(this.x0, this.x1), this.fillX(e), this.add(e), this.trackViews.add(e);
+        e.addInteractionListener("dragstart", this.onTrackDragStart), e.addInteractionListener("dragmove", this.onTrackDragMove), e.addInteractionListener("dragend", this.onTrackDragEnd), e.addInteractionListener("pointerup", this.onTrackDragEnd), e.addInteractionListener("wheel", this.onTrackWheel), e.addInteractionListener("pointermove", this.onTrackPointerMove), e.addInteractionListener("pointerleave", this.onTrackLeave), e.setDataSource(this.dataSource), e.setContig(this.contig), e.setRange(this.x0, this.x1), e.setHighlightPointer("0", .5), this.fillX(e), this.add(e), this.trackViews.add(e);
       }, t.prototype.removeTrackView = function (e) {
         e.removeInteractionListener("dragstart", this.onTrackDragStart), e.removeInteractionListener("dragmove", this.onTrackDragMove), e.removeInteractionListener("dragend", this.onTrackDragEnd), e.removeInteractionListener("pointerup", this.onTrackDragEnd), e.removeInteractionListener("wheel", this.onTrackWheel), e.removeInteractionListener("pointermove", this.onTrackPointerMove), e.removeInteractionListener("pointerleave", this.onTrackLeave), this.remove(e), this.trackViews.delete(e);
       }, t.prototype.setDataSource = function (e) {
@@ -9603,27 +9583,27 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           x0: e,
           x1: t
         };
-      }, t.prototype.setActiveAxisPointer = function (e) {
-        var t,
-            n,
-            r = e.fractionX,
-            o = (this.x1 - this.x0) * r + this.x0;
-        this.activeAxisPointers[e.pointerId] = o;
+      }, t.prototype.setActiveAxisPointer = function (e, t) {
+        var n,
+            r,
+            o = e.fractionX,
+            a = (this.x1 - this.x0) * o + this.x0;
+        this.activeAxisPointers[e.pointerId] = a;
 
         try {
-          for (var a = i(this.trackViews), s = a.next(); !s.done; s = a.next()) {
-            var l = s.value;
-            l.setAxisPointer(e.pointerId.toString(), r, m.AxisPointerStyle.Active), l.setHighlightPointer("0", r);
+          for (var s = i(this.trackViews), l = s.next(); !l.done; l = s.next()) {
+            var u = l.value;
+            "onlyHighlight" !== t && u.setAxisPointer(e.pointerId.toString(), o, m.AxisPointerStyle.Active), u.setHighlightPointer("0", o);
           }
         } catch (e) {
-          t = {
+          n = {
             error: e
           };
         } finally {
           try {
-            s && !s.done && (n = a.return) && n.call(a);
+            l && !l.done && (r = s.return) && r.call(s);
           } finally {
-            if (t) throw t.error;
+            if (n) throw n.error;
           }
         }
 
@@ -10682,11 +10662,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         console.log("we are setting a highlight value!"), this.highlightPointer.render = !0, this.highlightPointer.transparent = !1, this.highlightPointer.relativeX = e;
       }, t.prototype.setSignalReading = function (e) {
         if (null === e) return this.yAxisPointer.render = !1, void (this.signalReading.render = !1);
-        this.yAxisPointer.render = !0, this.signalReading.render = !0, this.signalReading.string = null != e ? e.toFixed(3) : "error";
-        var t = 1 - e * this.displayScale,
-            n = (this.signalReading.getComputedHeight() + 2 * Math.abs(this.signalReading.y)) / this.getComputedHeight(),
-            r = Math.min(Math.max(t, n), 1);
-        p.default.stop(this.yAxisPointer, ["relativeY"]), p.default.stop(this.signalReading, ["relativeY"]), this.yAxisPointer.relativeY = t, this.signalReading.relativeY = r, this.yAxisPointer.render = !0, this.signalReading.render = !0;
+        this.signalReading.string = null != e ? e.toFixed(3) : "error";
+        var t = !1 === this.yAxisPointer.render,
+            n = 1 - e * this.displayScale,
+            r = (this.signalReading.getComputedHeight() + 2 * Math.abs(this.signalReading.y)) / this.getComputedHeight(),
+            i = Math.min(Math.max(n, r), 1);
+        t ? (p.default.stop(this.yAxisPointer, ["relativeY"]), p.default.stop(this.signalReading, ["relativeY"]), this.yAxisPointer.relativeY = n, this.signalReading.relativeY = i) : (p.default.springTo(this.yAxisPointer, {
+          relativeY: n
+        }, 4e3), p.default.springTo(this.signalReading, {
+          relativeY: i
+        }, 4e3)), this.yAxisPointer.render = !0, this.signalReading.render = !0;
       }, t.prototype.updateDisplay = function (t, n, r, i) {
         this.getTileLoader().ready ? (this.yAxis.setRange(0, 1 / this.displayScale), this.displayLoadingIndicator = !1, e.prototype.updateDisplay.call(this, t, n, r, i), this.autoScaleNeedsUpdate(), this.updateAxisPointerSample()) : (this.displayLoadingIndicator = !0, this._tileNodeCache.count > 0 && this._tileNodeCache.removeAll(), this.displayNeedUpdate = !0);
       }, t;
@@ -11906,7 +11891,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                 relativeW: 20 / r.span,
                 relativeH: 10,
                 color: [1, 0, 0, 0]
-              }), console.log((t - e) / 2);
+              });
               var p = new v.default(s);
               return p.y = 0, p.z = .75, p.relativeH = 1, p.mask = a, p;
             });
@@ -12137,7 +12122,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         k = function (e) {
       function t(t, n, r, i, o) {
         var a = e.call(this, t, n, r) || this;
-        return a.length_bases = n.length, a.phase = n.phase, (a.phase > 0 ? 1 : 0) !== Math.floor(o / 3) % 2 && (a.phase += 3), a.reverse = i === h.Strand.Negative ? 1 : 0, a.color = t.colors["--coding"], a.transparent = !0, a.blendMode = u.BlendMode.PREMULTIPLIED_ALPHA, console.log("bleeeeend mode"), console.log(u.BlendMode.PREMULTIPLIED_ALPHA), a;
+        return a.length_bases = n.length, a.phase = n.phase, (a.phase > 0 ? 1 : 0) !== Math.floor(o / 3) % 2 && (a.phase += 3), a.reverse = i === h.Strand.Negative ? 1 : 0, a.color = t.colors["--coding"], a.transparent = !0, a.blendMode = u.BlendMode.PREMULTIPLIED_ALPHA, a;
       }
 
       return r(t, e), t.prototype.draw = function (t) {
@@ -31087,7 +31072,7 @@ hpgv.render({
   width: 800,
   height: 600
 }, document.getElementById('container'));
-},{"../../dist/valis-hpgv.js":"../../dist/valis-hpgv.js"}],"../../../../../../.npm/_npx/65885/lib/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"../../dist/valis-hpgv.js":"../../dist/valis-hpgv.js"}],"../../../../../../.npm/_npx/66845/lib/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -31115,7 +31100,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61288" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52520" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -31291,5 +31276,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../../.npm/_npx/65885/lib/node_modules/parcel/src/builtins/hmr-runtime.js","App.ts"], null)
+},{}]},{},["../../../../../../.npm/_npx/66845/lib/node_modules/parcel/src/builtins/hmr-runtime.js","App.ts"], null)
 //# sourceMappingURL=/App.7a936cda.js.map

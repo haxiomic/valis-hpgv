@@ -380,12 +380,12 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
             return;
         }
 
-        this.yAxisPointer.render = true;
-        this.signalReading.render = true;
+        // this.yAxisPointer.render = true;
+        // this.signalReading.render = true;
 
         this.signalReading.string = value != null ? value.toFixed(3) : 'error';
 
-        let makingVisible = true;//this.yAxisPointer.render === false;
+        let makingVisible = this.yAxisPointer.render === false;
 
         let relativeY = 1 - (value * this.displayScale);
 
