@@ -151,15 +151,12 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
     }
 
     setAxisPointer(id: string, fractionX: number, style: AxisPointerStyle) {
-        console.log('is this where set axis point is called?');
         super.setAxisPointer(id, fractionX, style);
         this.updateAxisPointerSample();
     }
     
     setHighlightPointer(id: string, fractionX: number) {
-        console.log('do we get here at all?');
         super.setHighlightPointer(id, fractionX);
-        // this.updateAxisPointerSample();
     }
 
     removeAxisPointer(id: string) {
@@ -355,12 +352,7 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
                 let tileRelativeX = (pointerTrackRelativeX - tileNode.relativeX) / tileNode.relativeW;
                 this.setSignalReading(tile.payload.getReading(tileRelativeX, 0));
                 
-                // console.log(tileNode);
-                
                 let highlightRelativeX = (pointerTrackRelativeX + tileNode.relativeX) / tileNode.relativeW;
-                // console.log(`pointerTrackRelativeX is ${pointerTrackRelativeX}`);
-                // console.log(`setting relative X to be ${highlightRelativeX}`);
-                // this.setHighlightValue(highlightRelativeX);
                 
                 if (this.signalReadingSnapX) {
                     let signalReadingRelativeWidth = (this.signalReading.getComputedWidth() + Math.abs(this.signalReading.x) * 2) / this.getComputedWidth();
@@ -387,8 +379,6 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
             this.signalReading.render = false;
             return;
         }
-        // console.log(`value is ${value}`);
-        // this.setHighlightValue(0.5);
 
         this.yAxisPointer.render = true;
         this.signalReading.render = true;
