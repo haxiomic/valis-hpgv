@@ -13,11 +13,6 @@ import Animator from "../../Animator";
 import { Shaders } from "../../Shaders";
 import TrackModel from "../TrackModel";
 import { StyleProxy } from "../../ui/util/StyleProxy";
-import IntervalInstances, { IntervalInstance } from "../../ui/util/IntervalInstances";
-import Object2D from "engine/ui/Object2D";
-import UsageCache from "engine/ds/UsageCache";
-
-const TRANSCRIPT_HEIGHT = 20;
 
 export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends ShaderTrack<Model, SignalTileLoader, SignalTilePayload> {
 
@@ -192,9 +187,6 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
             }
         }
     }
-    
-    protected _macroTileCache = new UsageCache<IntervalInstances>(null, (instances) => instances.releaseGPUResources());
-    protected _onStageAnnotations = new UsageCache<Object2D>(null, (node) => this.removeAnnotation(node));
 
     protected autoScaleOnFrame() {
         if (this._autoScaleNeedsUpdate && this.autoScale) {
@@ -205,59 +197,6 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
             }
         }
     }
-    
-    protected addAnnotation = (annotation: Object2D) => {
-        this.add(annotation);
-    }
-    protected removeAnnotation = (annotation: Object2D) => {
-        this.remove(annotation);
-    }
-    
-    // protected addHighlight() {
-    //     let tileLoader = this.getTileLoader();
-    //     let macroSamplingDensity = 1;
-    //     const span = this.x1 - this.x0;
-    //     tileLoader.forEachTile(this.x0, this.x1, macroSamplingDensity, true, (tile) => {
-    //         // Instance Rendering
-    //         let tileObject = this._macroTileCache.get(this.contig + ':' + tile.key, () => {
-    //             // initialize macro gene instances
-    //             // create array of gene annotation data
-    //             let instanceData = new Array<IntervalInstance>();
-    //             const yPadding = 5;
-    //             instanceData = [{
-    //                 x: 0,
-    //                 y: 0,
-    //                 z: 0,
-    //                 w: 1,
-    //                 h: TRANSCRIPT_HEIGHT*5.5,
-    // 
-    //                 relativeX: (((this.x1 - this.x0) / 2) - tile.x) / span,
-    //                 relativeY: 0,
-    // 
-    //                 relativeW: 1000 / span,
-    //                 relativeH: 0,
-    // 
-    //                 color: [0, 0, 0, 0],
-    //             }];
-    // 
-    //             let geneInstances = new IntervalInstances(instanceData);
-    //             geneInstances.y = 0;
-    //             geneInstances.z = 0.75;
-    //             geneInstances.relativeH = 1;
-    //             geneInstances.mask = this;
-    //             return geneInstances;
-    //         });
-    // 
-    //         tileObject.relativeX = (tile.x - this.x0) / tile.span;
-    //         tileObject.relativeW = tile.span / tile.span;
-    //         tileObject.opacity = 1.0;
-    // 
-    //         this._onStageAnnotations.get('macro-gene-tile:' + this.contig + ':' + tile.key, () => {
-    //             this.addAnnotation(tileObject);
-    //             return tileObject;
-    //         });
-    //     });
-    // }
 
     protected scaleToFit() {
         // add a little bit of space at the top by multiplying the scale factor by a little
@@ -380,9 +319,6 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
             return;
         }
 
-        // this.yAxisPointer.render = true;
-        // this.signalReading.render = true;
-
         this.signalReading.string = value != null ? value.toFixed(3) : 'error';
 
         let makingVisible = this.yAxisPointer.render === false;
@@ -417,8 +353,6 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
             super.updateDisplay(samplingDensity, continuousLodLevel, span, widthPx);
             this.autoScaleNeedsUpdate();
             this.updateAxisPointerSample();
-            // console.log('we could add a highlight here');
-            // this.addHighlight();
         } else {
             // show loading indicator until tileLoader is ready
             this.displayLoadingIndicator = true;
