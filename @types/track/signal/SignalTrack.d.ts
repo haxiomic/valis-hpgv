@@ -9,9 +9,6 @@ import { AxisPointer, AxisPointerStyle, HighlightPointer } from "../TrackObject"
 import { Text } from "engine";
 import TrackModel from "../TrackModel";
 import { StyleProxy } from "../../ui/util/StyleProxy";
-import IntervalInstances from "../../ui/util/IntervalInstances";
-import Object2D from "engine/ui/Object2D";
-import UsageCache from "engine/ds/UsageCache";
 export declare class SignalTrack<Model extends TrackModel = SignalTrackModel> extends ShaderTrack<Model, SignalTileLoader, SignalTilePayload> {
     autoScale: boolean;
     autoScaleDelay_ms: number;
@@ -38,11 +35,7 @@ export declare class SignalTrack<Model extends TrackModel = SignalTrackModel> ex
     private _autoScaleNeedsUpdate;
     private _autoScaleLastChangeT_ms;
     protected autoScaleNeedsUpdate(): void;
-    protected _macroTileCache: UsageCache<IntervalInstances>;
-    protected _onStageAnnotations: UsageCache<Object2D>;
     protected autoScaleOnFrame(): void;
-    protected addAnnotation: (annotation: Object2D) => void;
-    protected removeAnnotation: (annotation: Object2D) => void;
     protected scaleToFit(): void;
     protected maxValue(r: number, g: number, b: number, a: number): number;
     protected tileNodes: Set<SignalTile>;

@@ -129,7 +129,7 @@ export class Panel extends Object2D {
         this.fillX(xAxisBg);
         this.add(xAxisBg);
 
-        this.resizeHandle = new Rect(0, 0, [1, 0, 0, 1]);
+        this.resizeHandle = new Rect(0, 0, [1, 1, 1, 1]);
         this.resizeHandle.originX = -0.5;
         this.resizeHandle.relativeX = 1;
         this.resizeHandle.relativeH = 1;

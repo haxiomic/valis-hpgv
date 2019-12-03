@@ -108,7 +108,7 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
         this.yAxisPointer.mask = this;
         this.add(this.yAxisPointer);
         
-        this.highlightPointer = new HighlightPointer(HighlightStyle.Secondary, [1, 0, 0, 0], [1, 0, 0, 0], 'x');
+        this.highlightPointer = new HighlightPointer(HighlightStyle.Secondary, [1, 1, 1, 0], [1, 1, 1, 0], 'x');
         this.highlightPointer.render = true;
         this.highlightPointer.x = 0.5;
         this.highlightPointer.y = 0;
@@ -140,8 +140,8 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
         this.yAxisPointer.secondaryColor = this.secondaryAxisPointerColor;
         this.yAxisPointer.setStyle(this.yAxisPointer.style);
         
-        this.highlightPointer.activeColor = [1, 0, 0, 0];
-        this.highlightPointer.secondaryColor = [1, 0, 0, 0];
+        this.highlightPointer.activeColor = [1, 1, 1, 0.5];
+        this.highlightPointer.secondaryColor = [1, 1, 1, 0.5];
         this.highlightPointer.setStyle(this.highlightPointer.style);
     }
 
