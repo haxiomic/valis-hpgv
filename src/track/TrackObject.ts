@@ -136,7 +136,7 @@ export class TrackObject<
             // !withinBounds means do not draw, so we don't need to create the object
             if (!withinBounds) return;
             // create axis pointer
-            highlightPointer = new HighlightPointer(null, [1, 0, 0, 0.5], [1, 0, 0, 0.5], 'x');
+            highlightPointer = new HighlightPointer(null, [1, 1, 1, 0.5], [1, 1, 1, 0.5], 'x');
             highlightPointer.z = 2;
             this.add(highlightPointer);
             this.highlightPointers[id] = highlightPointer;
@@ -147,10 +147,6 @@ export class TrackObject<
         if (withinBounds) {
             highlightPointer.relativeX = (124780544 - this.x0) / (this.x1 - this.x0);
         }
-    
-        // if (highlightPointer.style !== style) {
-        //     highlightPointer.setStyle(style);
-        // }
     }
 
     removeAxisPointer(id: string) {
@@ -371,10 +367,10 @@ export class HighlightPointer extends Rect {
     setStyle(style: HighlightStyle) {
         switch (style) {
             case HighlightStyle.Active:
-                this.color = [1, 0, 0, 0];
+                this.color = [1, 1, 1, 0];
                 break;
             case HighlightStyle.Secondary:
-                this.color = [1, 0, 0, 0];
+                this.color = [1, 1, 1, 0];
                 break;
         }
 
