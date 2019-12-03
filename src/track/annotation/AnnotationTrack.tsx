@@ -133,9 +133,6 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
             
             microOpacity = 0;
             macroOpacity = 1;
-            
-            // console.log(`macroOpacity is ${macroOpacity}`);
-            // console.log(`microOpacity is ${microOpacity}`);
 
             if (microOpacity > 0) {
                 this.updateMicroAnnotations(this.x0, this.x1, span, basePairsPerDOMPixel, continuousLodLevel, microOpacity);
@@ -387,8 +384,6 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
 
                     color: [1, 0, 0, 0],
                 });
-                
-                console.log((x1 - x0) / 2);
 
                 let geneInstances = new IntervalInstances(instanceData);
                 geneInstances.y = 0;
@@ -809,8 +804,6 @@ class CDS extends TranscriptComponent {
         this.color = sharedState.colors['--coding']; // rgba(26, 174, 222, 0.58)
         this.transparent = true;
         this.blendMode = BlendMode.PREMULTIPLIED_ALPHA;
-        console.log('bleeeeend mode');
-        console.log(BlendMode.PREMULTIPLIED_ALPHA);
     }
 
     draw(context: DrawContext) {
