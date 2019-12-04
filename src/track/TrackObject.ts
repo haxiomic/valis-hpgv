@@ -30,6 +30,7 @@ export class TrackObject<
     protected x1: number;
     
     protected defaultCursor = 'crosshair';
+    protected highlightLocation: number;
 
     protected axisPointers: { [id: string]: AxisPointer } = {};
     protected activeAxisPointerColor = [1, 1, 1, 0.8];
@@ -50,6 +51,10 @@ export class TrackObject<
         
         // set default background color
         this.color = [0.1, 0.1, 0.1, 1];
+        
+        console.log('model for the track object');
+        console.log(model);
+        this.highlightLocation = model["highlightLocation"];
 
         this.cursorStyle = this.defaultCursor;
     
@@ -128,6 +133,7 @@ export class TrackObject<
     }
     
     setHighlightPointer(id: string, fractionX: number) {
+        console.log('this is where I need the highlight value');
         let withinBounds = fractionX >= 0 && fractionX <= 1;
     
         let highlightPointer = this.highlightPointers[id];
@@ -145,7 +151,7 @@ export class TrackObject<
         highlightPointer.render = withinBounds;
     
         if (withinBounds) {
-            highlightPointer.relativeX = (124780544 - this.x0) / (this.x1 - this.x0);
+            highlightPointer.relativeX = (this.highlightLocation - this.x0) / (this.x1 - this.x0);
         }
     }
 

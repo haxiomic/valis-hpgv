@@ -3000,7 +3000,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           e.removeEventListener("complete", n.onDependentTileComplete);
         }, n.onDependentTileComplete = function () {
           n.triggerDisplayUpdate();
-        }, n.color = [.1, .1, .1, 1], n.cursorStyle = n.defaultCursor, n.addInteractionListener("pointerdown", function () {
+        }, n.color = [.1, .1, .1, 1], console.log("model for the track object"), console.log(t), n.highlightLocation = t.highlightLocation, n.cursorStyle = n.defaultCursor, n.addInteractionListener("pointerdown", function () {
           return n.cursorStyle = "pointer";
         }), n.addInteractionListener("pointerup", function () {
           return n.cursorStyle = n.defaultCursor;
@@ -3037,6 +3037,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
         i.render = r, r && (i.relativeX = t), i.style !== n && i.setStyle(n);
       }, t.prototype.setHighlightPointer = function (e, t) {
+        console.log("this is where I need the highlight value");
         var n = t >= 0 && t <= 1,
             r = this.highlightPointers[e];
 
@@ -3045,7 +3046,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           (r = new v(null, [1, 1, 1, .5], [1, 1, 1, .5], "x")).z = 2, this.add(r), this.highlightPointers[e] = r;
         }
 
-        r.render = n, n && (r.relativeX = (124780544 - this.x0) / (this.x1 - this.x0));
+        r.render = n, n && (r.relativeX = (this.highlightLocation - this.x0) / (this.x1 - this.x0));
       }, t.prototype.removeAxisPointer = function (e) {
         var t = this.axisPointers[e];
         void 0 !== t && (this.remove(t), delete this.axisPointers[e]);
@@ -5901,8 +5902,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
         if (this._frameLoopHandle = 0, this.frameLoop = function () {
           null != o.appCanvasRef && (o._frameLoopHandle = window.requestAnimationFrame(o.frameLoop), o.appCanvasRef.handleUserInteraction(), s.Animator.frame(), o.appCanvasRef.renderCanvas());
-        }, this.trackViewer = new f.TrackViewer(), this.setDataSource(t), Array.isArray(e)) {
-          if (e.length > 0) try {
+        }, this.trackViewer = new f.TrackViewer(), this.setDataSource(t), console.log(e), Array.isArray(e)) {
+          if (console.log("is the config an array?"), e.length > 0) try {
             for (var a = i(e), l = a.next(); !l.done; l = a.next()) {
               var u = l.value;
               this.addTrackFromFilePath(u, void 0, !1);
@@ -5918,7 +5919,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
               if (n) throw n.error;
             }
           }
-        } else null != e && this.setConfiguration(e);
+        } else console.log("is the config more complicated?"), null != e && this.setConfiguration(e);
       }
 
       return e.prototype.setDataSource = function (e) {
@@ -5934,47 +5935,47 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         this.getPanels().length > 0 && this.getPanels()[0].setContig(e);
       }, e.prototype.setRange = function (e, t) {
         this.getPanels().length > 0 && this.getPanels()[0].setRange(e, t);
-      }, e.prototype.addTrack = function (e, t) {
-        return void 0 === t && (t = !0), this.trackViewer.addTrack(e, t);
-      }, e.prototype.addTrackFromFilePath = function (e, t, n) {
-        var r = e.split("/").pop().split("\\").pop().split(".");
-        r.pop();
-        var i = r.join("."),
-            o = null != t ? t : i;
+      }, e.prototype.addTrack = function (e, t, n) {
+        return void 0 === t && (t = !0), this.trackViewer.addTrack(e, t, n);
+      }, e.prototype.addTrackFromFilePath = function (e, t, n, r) {
+        var i = e.split("/").pop().split("\\").pop().split(".");
+        i.pop();
+        var o = i.join("."),
+            a = null != t ? t : o;
 
-        switch (x.Formats.determineFormat(e)) {
+        switch (console.log("trackNames is " + a), console.log("highlightLocation is " + r), x.Formats.determineFormat(e)) {
           case x.GenomicFileFormat.BigWig:
-            var a = {
+            var s = {
               type: "signal",
-              name: o,
+              name: a,
               path: e
             };
-            return this.addTrack(a, n);
+            return this.addTrack(s, n, r);
 
           case x.GenomicFileFormat.ValisGenes:
           case x.GenomicFileFormat.BigBed:
-            a = {
+            s = {
               type: "annotation",
-              name: o,
+              name: a,
               path: e
             };
-            return this.addTrack(a, n);
+            return this.addTrack(s, n, r);
 
           case x.GenomicFileFormat.ValisDna:
-            a = {
+            s = {
               type: "sequence",
-              name: o,
+              name: a,
               path: e
             };
-            return this.addTrack(a, n);
+            return this.addTrack(s, n, r);
 
           case x.GenomicFileFormat.ValisVariants:
-            a = {
+            s = {
               type: "variant",
-              name: o,
+              name: a,
               path: e
             };
-            return this.addTrack(a, n);
+            return this.addTrack(s, n, r);
 
           default:
             console.error('Error adding track: Unsupported file "' + e + '"');
@@ -5982,7 +5983,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
         return null;
       }, e.prototype.addPanel = function (e, t) {
-        return this.trackViewer.addPanel(e, t);
+        return this.trackViewer.addPanel(e, t, 12345);
       }, e.prototype.closeTrack = function (e, t, n) {
         return void 0 === t && (t = !0), this.trackViewer.closeTrack(e, t, n);
       }, e.prototype.closePanel = function (e, t, n) {
@@ -7316,7 +7317,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           n.addPanelButton.relativeX = r;
         }, n.onResize = function (e) {
           n.applyOverflowLimits(), n.layoutTrackRows(!1);
-        }, n._resizingPanels = new Set(), n._resizingTracks = new Set(), n.render = !1, n.relativeW = 1, n.relativeH = 1, n.grid = new p.default(0, 0, [.9, .9, .9, 1]), n.grid.render = !1, n.add(n.grid), n.initializeDragPanning(), n.initializeGridResizing(), n.addPanelButton = new y.default(a.createElement(t.AddPanelButton, {
+        }, n._resizingPanels = new Set(), n._resizingTracks = new Set(), n.render = !1, n.relativeW = 1, n.relativeH = 1, n.grid = new p.default(0, 0, [.9, .9, .9, 1]), n.grid.render = !1, n.add(n.grid), n.initializeDragPanning(), n.initializeGridResizing(), console.log("we are making a panel"), console.log(n), n.addPanelButton = new y.default(a.createElement(t.AddPanelButton, {
           onClick: function onClick() {
             n.addPanel({
               contig: "chr1",
@@ -7356,7 +7357,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             u,
             c = e.panels || [],
             f = null != e.clampToTracks && e.clampToTracks;
-        this.allowNewPanels = null != e.allowNewPanels && e.allowNewPanels, this.setRemovableTracks(null == e.removableTracks || e.removableTracks), this.grid.toggleChild(this.addPanelButton, this.allowNewPanels);
+        this.allowNewPanels = null != e.allowNewPanels && e.allowNewPanels, this.setRemovableTracks(null == e.removableTracks || e.removableTracks), this.grid.toggleChild(this.addPanelButton, this.allowNewPanels), console.log("state is"), console.log(e);
         var d = new Set(this.panels);
 
         try {
@@ -7418,7 +7419,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         if (this.layoutPanels(!1), null != e.tracks) try {
           for (var T = o(e.tracks), k = T.next(); !k.done; k = T.next()) {
             A = k.value;
-            this.addTrack(A, !1);
+            this.addTrack(A, !1, e.highlightLocation);
           }
         } catch (e) {
           a = {
@@ -7530,19 +7531,19 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             if (t) throw t.error;
           }
         }
-      }, t.prototype.addTrack = function (e, t) {
-        var n,
-            r,
-            i = this;
+      }, t.prototype.addTrack = function (e, t, n) {
+        var r,
+            i,
+            a = this;
         void 0 === t && (t = !0);
-        var a = g.default.getTrackType(e.type);
-        a.tileLoaderClass.getAvailableContigs(e).then(function (e) {
+        var s = g.default.getTrackType(e.type);
+        console.log("this is the add track function"), console.log(e), console.log(t), console.log(n), e.highlightLocation = n, s.tileLoaderClass.getAvailableContigs(e).then(function (e) {
           var t, n;
 
           try {
-            for (var r = o(e), a = r.next(); !a.done; a = r.next()) {
-              var s = a.value;
-              i.dataSource.addContig(s);
+            for (var r = o(e), i = r.next(); !i.done; i = r.next()) {
+              var s = i.value;
+              a.dataSource.addContig(s);
             }
           } catch (e) {
             t = {
@@ -7550,58 +7551,58 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             };
           } finally {
             try {
-              a && !a.done && (n = r.return) && n.call(r);
+              i && !i.done && (n = r.return) && n.call(r);
             } finally {
               if (t) throw t.error;
             }
           }
 
-          0 === i.panels.size && i.dataSource.getContigs().then(function (e) {
-            e.length > 0 && 0 === i.panels.size && i.addPanel({
+          0 === a.panels.size && a.dataSource.getContigs().then(function (e) {
+            e.length > 0 && 0 === a.panels.size && a.addPanel({
               contig: e[0].id,
               x0: e[0].startIndex,
               x1: e[0].startIndex + e[0].span
             }, !1);
           });
         });
-        var s = null != a.trackObjectClass.getDefaultHeightPx ? a.trackObjectClass.getDefaultHeightPx(e) : 100,
-            l = null == a.trackObjectClass.getExpandable || a.trackObjectClass.getExpandable(e),
-            u = null != e.heightPx ? e.heightPx : s,
-            c = new C(e, u, function (e) {
-          "heightPx" === e && i.emit("track-resize", c), i.layoutTrackRows(!0);
+        var l = null != s.trackObjectClass.getDefaultHeightPx ? s.trackObjectClass.getDefaultHeightPx(e) : 100,
+            u = null == s.trackObjectClass.getExpandable || s.trackObjectClass.getExpandable(e),
+            c = null != e.heightPx ? e.heightPx : l,
+            f = new C(e, c, function (e) {
+          "heightPx" === e && a.emit("track-resize", f), a.layoutTrackRows(!0);
         }),
-            f = new S(e, u, l, this.spacing, function () {
-          return i.closeTrack(c);
+            d = new S(e, c, u, this.spacing, function () {
+          return a.closeTrack(f);
         }, function (e) {
-          return c.heightPx = e;
+          return f.heightPx = e;
         }, function () {
-          return c.heightPx;
+          return f.heightPx;
         });
-        c.rowObject = f;
+        f.rowObject = d;
 
         try {
-          for (var d = o(this.panels), h = d.next(); !h.done; h = d.next()) {
-            var p = h.value;
-            this.createTrackObject(e, p, f);
+          for (var h = o(this.panels), p = h.next(); !p.done; p = h.next()) {
+            var v = p.value;
+            this.createTrackObject(e, v, d);
           }
         } catch (e) {
-          n = {
+          r = {
             error: e
           };
         } finally {
           try {
-            h && !h.done && (r = d.return) && r.call(d);
+            p && !p.done && (i = h.return) && i.call(h);
           } finally {
-            if (n) throw n.error;
+            if (r) throw r.error;
           }
         }
 
-        var v = this.trackStyleProxies[c.model.type];
-        return v && c.applyStyle(v), this.tracks.push(c), f.closeButton.relativeX = 1, f.closeButton.x = -this.spacing.x, f.closeButton.w = 50, f.header.x = -this.trackHeaderWidth + .5 * this.spacing.x, f.header.w = this.trackHeaderWidth, f.resizeHandle.relativeW = 1, f.resizeHandle.x = -this.trackHeaderWidth, f.resizeHandle.w = this.trackHeaderWidth, f.resizeHandle.addInteractionListener("dragstart", function (e) {
-          e.isPrimary && 1 === e.buttonState && (e.preventDefault(), i.startResizingTrack(c));
-        }), f.resizeHandle.addInteractionListener("dragend", function (e) {
-          e.isPrimary && (e.preventDefault(), i.endResizingTrack(c));
-        }), f.setResizable(!0), this.grid.add(f.header), this.grid.add(f.resizeHandle), this._removableTracks && this.grid.add(f.closeButton), this.layoutTrackRows(!1, f), f.h = 0, this.layoutTrackRows(t), c;
+        var y = this.trackStyleProxies[f.model.type];
+        return y && f.applyStyle(y), this.tracks.push(f), d.closeButton.relativeX = 1, d.closeButton.x = -this.spacing.x, d.closeButton.w = 50, d.header.x = -this.trackHeaderWidth + .5 * this.spacing.x, d.header.w = this.trackHeaderWidth, d.resizeHandle.relativeW = 1, d.resizeHandle.x = -this.trackHeaderWidth, d.resizeHandle.w = this.trackHeaderWidth, d.resizeHandle.addInteractionListener("dragstart", function (e) {
+          e.isPrimary && 1 === e.buttonState && (e.preventDefault(), a.startResizingTrack(f));
+        }), d.resizeHandle.addInteractionListener("dragend", function (e) {
+          e.isPrimary && (e.preventDefault(), a.endResizingTrack(f));
+        }), d.setResizable(!0), this.grid.add(d.header), this.grid.add(d.resizeHandle), this._removableTracks && this.grid.add(d.closeButton), this.layoutTrackRows(!1, d), d.h = 0, this.layoutTrackRows(t), console.log("here we return the track"), console.log(f), f;
       }, t.prototype.closeTrack = function (e, t, n) {
         var r = this;
 
@@ -7612,49 +7613,49 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             r.deleteTrack(e), n();
           }, !0) : (d.default.stop(o), this.deleteTrack(e), n()), this.layoutTrackRows(t));
         }
-      }, t.prototype.addPanel = function (e, t) {
-        var n,
-            r,
-            i = this;
+      }, t.prototype.addPanel = function (e, t, n) {
+        var r,
+            i,
+            a = this;
         void 0 === t && (t = !0);
-        var a = this.panelEdges,
-            s = Math.max(a.length - 1, 0);
-        0 === a.length && a.push(0);
-        var l = 1 + (0 == s ? 1 : 1 / s);
-        a.push(l);
-        var u = new m.default(function (e) {
-          return i.closePanel(e, !0);
+        var s = this.panelEdges,
+            l = Math.max(s.length - 1, 0);
+        0 === s.length && s.push(0);
+        var u = 1 + (0 == l ? 1 : 1 / l);
+        s.push(u);
+        var c = new m.default(function (e) {
+          return a.closePanel(e, !0);
         }, this.spacing, this.panelHeaderHeight, this.xAxisHeight, this.dataSource);
-        u.setContig(e.contig), u.setRange(e.x0, e.x1), u.column = s, u.relativeH = 1, this.grid.add(u), null != this.panelStyleProxy && u.applyStyle(this.panelStyleProxy);
+        c.setContig(e.contig), c.setRange(e.x0, e.x1), c.column = l, c.relativeH = 1, this.grid.add(c), null != this.panelStyleProxy && c.applyStyle(this.panelStyleProxy);
 
         try {
-          for (var c = o(this.tracks), f = c.next(); !f.done; f = c.next()) {
-            var d = f.value;
-            this.createTrackObject(d.model, u, d.rowObject);
+          for (var f = o(this.tracks), d = f.next(); !d.done; d = f.next()) {
+            var h = d.value;
+            this.createTrackObject(h.model, c, h.rowObject);
           }
         } catch (e) {
-          n = {
+          r = {
             error: e
           };
         } finally {
           try {
-            f && !f.done && (r = c.return) && r.call(c);
+            d && !d.done && (i = f.return) && i.call(f);
           } finally {
-            if (n) throw n.error;
+            if (r) throw r.error;
           }
         }
 
-        this.panels.add(u), this.onPanelsChanged(), u.resizeHandle.addInteractionListener("dragstart", function (e) {
-          e.isPrimary && 1 === e.buttonState && (e.preventDefault(), i.startResizingPanel(u));
-        }), u.resizeHandle.addInteractionListener("dragend", function (e) {
-          e.isPrimary && (e.preventDefault(), i.endResizingPanel(u));
-        }), u.addEventListener("axisPointerUpdate", function (e) {
+        this.panels.add(c), this.onPanelsChanged(), c.resizeHandle.addInteractionListener("dragstart", function (e) {
+          e.isPrimary && 1 === e.buttonState && (e.preventDefault(), a.startResizingPanel(c));
+        }), c.resizeHandle.addInteractionListener("dragend", function (e) {
+          e.isPrimary && (e.preventDefault(), a.endResizingPanel(c));
+        }), c.addEventListener("axisPointerUpdate", function (e) {
           var t, n;
 
           try {
-            for (var r = o(i.panels), a = r.next(); !a.done; a = r.next()) {
-              var s = a.value;
-              s !== u && s.setSecondaryAxisPointers(e);
+            for (var r = o(a.panels), i = r.next(); !i.done; i = r.next()) {
+              var s = i.value;
+              s !== c && s.setSecondaryAxisPointers(e);
             }
           } catch (e) {
             t = {
@@ -7662,15 +7663,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             };
           } finally {
             try {
-              a && !a.done && (n = r.return) && n.call(r);
+              i && !i.done && (n = r.return) && n.call(r);
             } finally {
               if (t) throw t.error;
             }
           }
-        }), this.layoutPanels(!1, u);
+        }), this.layoutPanels(!1, c);
 
-        for (var h = 1 / l, p = 0; p < a.length; p++) {
-          a[p] *= h;
+        for (var p = 1 / u, v = 0; v < s.length; v++) {
+          s[v] *= p;
         }
 
         this.layoutPanels(t);
@@ -7779,7 +7780,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }, t.prototype.createTrackObject = function (e, t, n) {
         var r = this,
             i = new (0, g.default.getTrackType(e.type).trackObjectClass)(e);
-        t.addTrackView(i), n.addTrackView(i), i.addEventListener("track-event", function (e) {
+        console.log("model for creating a track object"), console.log(e), t.addTrackView(i), n.addTrackView(i), console.log(i), i.addEventListener("track-event", function (e) {
           r.emit("track-event", e), r.emit(e.type, e);
         });
       }, t.prototype.setTrackStyleNode = function (e, t) {
@@ -8281,7 +8282,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         var s = this;
         this.model = e, this.defaultHeightPx = t, this.defaultExpandable = n, this.spacing = r, this.onClose = i, this.setHeight = o, this.getHeight = a, this.trackViews = new Set(), this._opacity = 1, this._headerIsExpandedState = void 0, this.interactionDisabled = !1, this.isExpanded = function () {
           return s.getHeight() >= s.expandedTrackHeightPx;
-        }, this.header = new y.default(), this.closeButton = new y.default(), this.resizeHandle = new p.default(0, 0, [1, 1, 1, 1]), this.resizeHandle.h = this.spacing.y, this.resizeHandle.z = 1, this.resizeHandle.render = !1, this.setResizable(!1), this.expandedTrackHeightPx = null != this.model.expandedHeightPx ? this.model.expandedHeightPx : 2 * t, this.updateHeader();
+        }, this.header = new y.default(), this.closeButton = new y.default(), this.resizeHandle = new p.default(0, 0, [1, 0, 0, 1]), this.resizeHandle.h = this.spacing.y, this.resizeHandle.z = 1, this.resizeHandle.render = !1, this.setResizable(!1), this.expandedTrackHeightPx = null != this.model.expandedHeightPx ? this.model.expandedHeightPx : 2 * t, this.updateHeader();
       }
 
       return Object.defineProperty(e.prototype, "y", {
@@ -31058,12 +31059,33 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 var GV = require('../../dist/valis-hpgv.js'); // pass a list of files to visualize in an array, the viewer will determine the best visualization to use
 
 
-var hpgv = new GV.GenomeVisualizer(['https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vdna-dir', 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vgenes-dir', 'https://www.encodeproject.org/files/ENCFF609BMS/@@download/ENCFF609BMS.bigBed', 'https://www.encodeproject.org/files/ENCFF833POA/@@download/ENCFF833POA.bigWig']);
+var config = {
+  allowNewPanels: true,
+  highlightLocation: 194780544,
+  tracks: [{
+    name: 'GRCh37',
+    type: 'sequence',
+    path: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vdna-dir'
+  }, {
+    name: 'Valis Genes',
+    type: 'annotation',
+    path: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vgenes-dir'
+  }, {
+    name: 'bigBed',
+    type: 'annotation',
+    path: 'https://www.encodeproject.org/files/ENCFF609BMS/@@download/ENCFF609BMS.bigBed'
+  }, {
+    name: 'bigWig',
+    type: 'signal',
+    path: 'https://www.encodeproject.org/files/ENCFF833POA/@@download/ENCFF833POA.bigWig'
+  }]
+};
+var hpgv = new GV.GenomeVisualizer(config);
 hpgv.render({
   width: 800,
   height: 600
 }, document.getElementById('container'));
-},{"../../dist/valis-hpgv.js":"../../dist/valis-hpgv.js"}],"../../../../../../.npm/_npx/67466/lib/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"../../dist/valis-hpgv.js":"../../dist/valis-hpgv.js"}],"../../../../../../.npm/_npx/70916/lib/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -31091,7 +31113,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49587" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58887" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -31267,5 +31289,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../../.npm/_npx/67466/lib/node_modules/parcel/src/builtins/hmr-runtime.js","App.ts"], null)
+},{}]},{},["../../../../../../.npm/_npx/70916/lib/node_modules/parcel/src/builtins/hmr-runtime.js","App.ts"], null)
 //# sourceMappingURL=/App.7a936cda.js.map
