@@ -66,6 +66,8 @@ export class TrackViewer extends Object2D {
     protected panelStyleProxy: StyleProxy;
     protected trackStyleProxies: { [trackType: string]: StyleProxy } = {};
     
+    protected highlightLocation: number;
+    
     constructor() {
         super();
 
@@ -81,10 +83,14 @@ export class TrackViewer extends Object2D {
 
         this.initializeDragPanning();
         this.initializeGridResizing();
+        
+        console.log('we are making a panel');
+        // console.log(this.highlightLocation);
+        console.log(this);
 
         this.addPanelButton = new ReactObject(
             <TrackViewer.AddPanelButton onClick={() => {
-                this.addPanel({ contig: 'chr1', x0: 0, x1: 249e6}, true);
+                this.addPanel({ contig: 'chr1', x0: 0, x1: 249e6}, true);// FIX ME!!!
             }} />,
             this.panelHeaderHeight,
             this.trackButtonWidth,
@@ -140,6 +146,9 @@ export class TrackViewer extends Object2D {
         this.allowNewPanels = state.allowNewPanels == null ? false : state.allowNewPanels;
         this.setRemovableTracks(state.removableTracks == null ? true : state.removableTracks);
         this.grid.toggleChild(this.addPanelButton, this.allowNewPanels);
+        
+        console.log('state is');
+        console.log(state);
 
         // Panels
         // clear current panels
@@ -191,7 +200,7 @@ export class TrackViewer extends Object2D {
         // create rows
         if (state.tracks != null) {
             for (let track of state.tracks) {
-                this.addTrack(track, false);
+                this.addTrack(track, false, state.highlightLocation);
             }
         }
 
@@ -248,8 +257,15 @@ export class TrackViewer extends Object2D {
     }
 
     // track-viewer state deltas
-    addTrack(model: TrackModel, animate: boolean = true): Track {
+    addTrack(model: TrackModel, animate: boolean = true, highlightLocation: number): Track {
         let trackClasses = GenomeVisualizer.getTrackType(model.type);
+        
+        console.log('this is the add track function');
+        console.log(model);
+        console.log(animate);
+        console.log(highlightLocation);
+        
+        model.highlightLocation = highlightLocation;
 
         trackClasses.tileLoaderClass.getAvailableContigs(model).then(contigs => {
             for(let contig of contigs) this.dataSource.addContig(contig);
@@ -347,6 +363,9 @@ export class TrackViewer extends Object2D {
 
         // then animate all the tracks to the new layout
         this.layoutTrackRows(animate);
+        
+        console.log('here we return the track');
+        console.log(track);
 
         return track;
     }
@@ -388,7 +407,7 @@ export class TrackViewer extends Object2D {
         this.layoutTrackRows(animate);
     }
 
-    addPanel(location: GenomicLocation, animate: boolean = true) {
+    addPanel(location: GenomicLocation, animate: boolean = true, highlightLocation?: number) {
         let edges = this.panelEdges;
         let newColumnIndex = Math.max(edges.length - 1, 0);
 
@@ -552,8 +571,11 @@ export class TrackViewer extends Object2D {
     protected createTrackObject(model: TrackModel, panel: Panel, rowObject: RowObject) {
         const trackObjectClass = GenomeVisualizer.getTrackType(model.type).trackObjectClass;
         let trackObject = new trackObjectClass(model);
+        console.log('model for creating a track object');
+        console.log(model);
         panel.addTrackView(trackObject);
         rowObject.addTrackView(trackObject);
+        console.log(trackObject);
         
         // unwrap and forward track events, so you can do, trackViewer.addEventListener(<track-event>, ...)
         trackObject.addEventListener('track-event', (eventData: TrackEvent) => {

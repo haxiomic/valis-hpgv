@@ -16,6 +16,7 @@ export declare class TrackObject<ModelType extends TrackModel = TrackModel, Tile
     protected x0: number;
     protected x1: number;
     protected defaultCursor: string;
+    protected highlightLocation: number;
     protected axisPointers: {
         [id: string]: AxisPointer;
     };

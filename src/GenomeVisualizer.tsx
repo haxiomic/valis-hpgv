@@ -33,6 +33,7 @@ export interface GenomeVisualizerRenderProps {
 
     pixelRatio?: number,
     style?: React.CSSProperties,
+    highlightLocation?: number,
 }
 
 interface CustomTileLoader<ModelType> {
@@ -57,12 +58,17 @@ export class GenomeVisualizer {
     protected appCanvasRef: AppCanvas;
     protected internalDataSource: InternalDataSource;
 
-    constructor(configuration?: GenomeVisualizerConfiguration | Array<string>, dataSource?: IDataSource | string){
+    constructor(configuration?: GenomeVisualizerConfiguration, dataSource?: IDataSource | string){
         this.trackViewer = new TrackViewer();
 
         this.setDataSource(dataSource);
+        
+        console.log(configuration);
+        // const highlightLocation = +configuration.highlightLocation;
+        // console.log(highlightLocation);
 
         if (Array.isArray(configuration)) {
+            console.log('is the config an array?');
             if (configuration.length > 0) {
                 // add tracks from path list
                 for (let path of configuration) {
@@ -70,6 +76,7 @@ export class GenomeVisualizer {
                 }
             }
         } else {
+            console.log('is the config more complicated?');
             if (configuration != null) {
                 this.setConfiguration(configuration);
             }
@@ -136,11 +143,11 @@ export class GenomeVisualizer {
         }
     }
 
-    addTrack(model: TrackModel, animateIn: boolean = true) {
-        return this.trackViewer.addTrack(model, animateIn);
+    addTrack(model: TrackModel, animateIn: boolean = true, highlightLocation: number) {
+        return this.trackViewer.addTrack(model, animateIn, highlightLocation);
     }
 
-    addTrackFromFilePath(path: string, name?: string, animateIn?: boolean) {
+    addTrackFromFilePath(path: string, name?: string, animateIn?: boolean, highlightLocation?: number) {
         // we don't know what contigs are available so we must read the first file for this
         let basename = path.split('/').pop().split('\\').pop();
         let parts = basename.split('.');
@@ -148,6 +155,9 @@ export class GenomeVisualizer {
         let filename = parts.join('.');
 
         let trackName = (name != null ? name : filename);
+        
+        console.log(`trackNames is ${trackName}`);
+        console.log(`highlightLocation is ${highlightLocation}`)
 
         let format = Formats.determineFormat(path);
 
@@ -158,7 +168,7 @@ export class GenomeVisualizer {
                     name: trackName,
                     path: path,
                 };
-                return this.addTrack(model, animateIn);
+                return this.addTrack(model, animateIn, highlightLocation);
             }
             case GenomicFileFormat.ValisGenes:
             case GenomicFileFormat.BigBed:
@@ -168,7 +178,7 @@ export class GenomeVisualizer {
                     name: trackName,
                     path: path,
                 };
-                return this.addTrack(model, animateIn);
+                return this.addTrack(model, animateIn, highlightLocation);
             }
             case GenomicFileFormat.ValisDna: {
                 let model: SequenceTrackModel = {
@@ -176,7 +186,7 @@ export class GenomeVisualizer {
                     name: trackName,
                     path: path,
                 };
-                return this.addTrack(model, animateIn);
+                return this.addTrack(model, animateIn, highlightLocation);
             }
             case GenomicFileFormat.ValisVariants: {
                 let model: VariantTrackModel = {
@@ -184,7 +194,7 @@ export class GenomeVisualizer {
                     name: trackName,
                     path: path,
                 };
-                return this.addTrack(model, animateIn);
+                return this.addTrack(model, animateIn, highlightLocation);
             }
             /*
             case 'bam': { break; }
@@ -202,7 +212,7 @@ export class GenomeVisualizer {
     }
 
     addPanel(location: GenomicLocation, animateIn: boolean) {
-        return this.trackViewer.addPanel(location, animateIn);
+        return this.trackViewer.addPanel(location, animateIn, 12345);// FIX ME!!!
     }
 
     closeTrack(track: Track, animateOut: boolean = true, onComplete?: () => void) {

@@ -21,5 +21,6 @@ export interface TrackViewerConfiguration {
      * Default `false`
      */
     clampToTracks?: boolean;
+    highlightLocation?: number;
 }
 export default TrackViewerConfiguration;
