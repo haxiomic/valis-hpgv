@@ -3,7 +3,7 @@ const GV = require('../../dist/valis-hpgv.js');
 // pass a list of files to visualize in an array, the viewer will determine the best visualization to use
 let config = {
     allowNewPanels: true,
-    highlightLocation: 194780544,
+    highlightLocation: 94780544,
     tracks: [
         {
             name: 'GRCh37',
@@ -25,6 +25,11 @@ let config = {
             type: 'signal',
             path: 'https://www.encodeproject.org/files/ENCFF833POA/@@download/ENCFF833POA.bigWig',
         },
+        {
+            name: 'bigWig',
+            type: 'signal',
+            path: 'https://www.encodeproject.org/files/ENCFF985ZQU/@@download/ENCFF985ZQU.bigWig',
+        }
     ],
 };
 

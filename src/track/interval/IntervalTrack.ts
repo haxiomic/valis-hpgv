@@ -112,7 +112,6 @@ export class IntervalTrack<Model extends IntervalTrackModel = IntervalTrackModel
                 intervalLabel.relativeW = intervalSpan / span;
             }
         }
-        console.log('are we displaying an interval track? if so, add here');
 
         return node;
     }

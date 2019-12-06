@@ -52,8 +52,6 @@ export class TrackObject<
         // set default background color
         this.color = [0.1, 0.1, 0.1, 1];
         
-        console.log('model for the track object');
-        console.log(model);
         this.highlightLocation = model["highlightLocation"];
 
         this.cursorStyle = this.defaultCursor;
@@ -133,7 +131,6 @@ export class TrackObject<
     }
     
     setHighlightPointer(id: string, fractionX: number) {
-        console.log('this is where I need the highlight value');
         let withinBounds = fractionX >= 0 && fractionX <= 1;
     
         let highlightPointer = this.highlightPointers[id];
@@ -142,16 +139,17 @@ export class TrackObject<
             // !withinBounds means do not draw, so we don't need to create the object
             if (!withinBounds) return;
             // create axis pointer
-            highlightPointer = new HighlightPointer(null, [1, 1, 1, 0.5], [1, 1, 1, 0.5], 'x');
+            highlightPointer = new HighlightPointer(null, [0.2, 0.2, 0.2, 0.5], [0.2, 0.2, 0.2, 0.5], 'x');
             highlightPointer.z = 2;
             this.add(highlightPointer);
             this.highlightPointers[id] = highlightPointer;
         }
+        highlightPointer.color = [0.988, 0.858, 0.435, 0.4]
     
         highlightPointer.render = withinBounds;
     
         if (withinBounds) {
-            highlightPointer.relativeX = (this.highlightLocation - this.x0) / (this.x1 - this.x0);
+            highlightPointer.relativeX = (this.highlightLocation - this.x0 - 0.5) / (this.x1 - this.x0);
         }
     }
 
@@ -363,6 +361,8 @@ export class HighlightPointer extends Rect {
 
         this.originX = -0.5;
         this.relativeH = 1;
+        // this is the width, in pixels, of the highlight region
+        // the highlight width should really scale on zoom
         this.w = 20;
 
         this.transparent = true;
@@ -373,16 +373,14 @@ export class HighlightPointer extends Rect {
     setStyle(style: HighlightStyle) {
         switch (style) {
             case HighlightStyle.Active:
-                this.color = [1, 1, 1, 0];
+                this.color = [0.2, 0.2, 0.2, 0];
                 break;
             case HighlightStyle.Secondary:
-                this.color = [1, 1, 1, 0];
+                this.color = [0.2, 0.2, 0.2, 0];
                 break;
         }
-
         (this.style as any) = style;
     }
-
 }
 
 class LoadingIndicator extends Text {

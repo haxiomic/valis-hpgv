@@ -305,11 +305,13 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
                 return;
             }
             
-            const fakePayload = tile.payload[0];
-            fakePayload.startIndex = ((x1 - x0) / 2 - 10);
-            fakePayload.length = 20;
-            fakePayload.score = 1;
-            tile.payload.push(fakePayload);
+            // Second method for adding a highlight location to an annotation track
+            
+            // const fakePayload = tile.payload[0];
+            // fakePayload.startIndex = ((x1 - x0) / 2 - 10);
+            // fakePayload.length = 20;
+            // fakePayload.score = 1;
+            // tile.payload.push(fakePayload);
 
             // Instance Rendering
             let tileObject = this._macroTileCache.get(this.contig + ':' + tile.key, () => {
@@ -368,21 +370,22 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
                     }
 
                 }
-                instanceData.push({
-                    x: 0,
-                    y: 0,
-                    z: 0,
-                    w: 1,
-                    h: TRANSCRIPT_HEIGHT*5.5,
-
-                    relativeX: (((x1 - x0) / 2 - 10) - tile.x) / tile.span,
-                    relativeY: 0,
-
-                    relativeW: 20 / tile.span,
-                    relativeH: 10,
-
-                    color: [1, 0, 0, 0],
-                });
+                // first method for adding a highlight to an annotation track
+                // instanceData.push({
+                //     x: 0,
+                //     y: 0,
+                //     z: 0,
+                //     w: 1,
+                //     h: TRANSCRIPT_HEIGHT*5.5,
+                // 
+                //     relativeX: (((x1 - x0) / 2 - 10) - tile.x) / tile.span,
+                //     relativeY: 0,
+                // 
+                //     relativeW: 20 / tile.span,
+                //     relativeH: 10,
+                // 
+                //     color: [1, 0, 0, 0],
+                // });
 
                 let geneInstances = new IntervalInstances(instanceData);
                 geneInstances.y = 0;

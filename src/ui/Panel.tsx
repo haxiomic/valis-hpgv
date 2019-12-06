@@ -603,13 +603,6 @@ export class Panel extends Object2D {
                 
                 // zoom into region
                 this.setRange(x0, x1, true);
-                // don't think we need this --->
-                // for (let pointerId in this.secondaryAxisPointers) {
-                //     for (let trackView of this.trackViews) {
-                //         console.log('are we getting here');
-                //         trackView.setHighlightPointer('0', 0.5);
-                //     }
-                // }
                 break;
             }
             case DragMode.Move: {
