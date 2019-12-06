@@ -1,17 +1,9 @@
 {
   "name": "genome-visualizer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
-  "main": "./dist/valis-hpgv.react-peer.js",
+  "main": "index.js",
   "types": "./@types/index.d.ts",
-  "scripts": {
-    "clean": "rimraf ./@types ./dist",
-    "prod": "npm run clean && cti src && webpack --mode=production && webpack --mode=production --env.includeReact",
-    "dev": "webpack-dev-server --mode=development",
-    "dev-react": "webpack-dev-server --mode=development --env.includeReact",
-    "analyze": "npm run clean && cti src && webpack --mode=production --env.analyze",
-    "build": "npm run prod"
-  },
   "bin": {
     "hpgv": "./cli.js"
   },
