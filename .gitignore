@@ -2,4 +2,3 @@ node_modules
 _built
 *.tgz
 .cache
-dist
