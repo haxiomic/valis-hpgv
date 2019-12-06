@@ -3045,7 +3045,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           (r = new v(null, [.2, .2, .2, .5], [.2, .2, .2, .5], "x")).z = 2, this.add(r), this.highlightPointers[e] = r;
         }
 
-        r.color = [.988, .858, .435, .4], r.render = n, n && (r.relativeX = (this.highlightLocation - this.x0 - .5) / (this.x1 - this.x0));
+        r.color = [.788, .094, .094, .6], r.render = n, n && (r.relativeX = (this.highlightLocation - this.x0 - .5) / (this.x1 - this.x0));
       }, t.prototype.removeAxisPointer = function (e) {
         var t = this.axisPointers[e];
         void 0 !== t && (this.remove(t), delete this.axisPointers[e]);
@@ -31073,7 +31073,7 @@ hpgv.render({
   width: 800,
   height: 600
 }, document.getElementById('container'));
-},{"../../dist/valis-hpgv.js":"../../dist/valis-hpgv.js"}],"../../../../../../.npm/_npx/79870/lib/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"../../dist/valis-hpgv.js":"../../dist/valis-hpgv.js"}],"../../../../../../.npm/_npx/80366/lib/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -31101,7 +31101,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50899" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55720" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -31277,5 +31277,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../../.npm/_npx/79870/lib/node_modules/parcel/src/builtins/hmr-runtime.js","App.ts"], null)
+},{}]},{},["../../../../../../.npm/_npx/80366/lib/node_modules/parcel/src/builtins/hmr-runtime.js","App.ts"], null)
 //# sourceMappingURL=/App.7a936cda.js.map

@@ -144,7 +144,9 @@ export class TrackObject<
             this.add(highlightPointer);
             this.highlightPointers[id] = highlightPointer;
         }
-        highlightPointer.color = [0.988, 0.858, 0.435, 0.4]
+        // this is a yellow that doesn't look as good as I expected
+        // highlightPointer.color = [0.988, 0.858, 0.435, 0.4];
+        highlightPointer.color = [0.788, 0.094, 0.094, 0.6];
     
         highlightPointer.render = withinBounds;
     
