@@ -3000,7 +3000,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           e.removeEventListener("complete", n.onDependentTileComplete);
         }, n.onDependentTileComplete = function () {
           n.triggerDisplayUpdate();
-        }, n.color = [.1, .1, .1, 1], console.log("model for the track object"), console.log(t), n.highlightLocation = t.highlightLocation, n.cursorStyle = n.defaultCursor, n.addInteractionListener("pointerdown", function () {
+        }, n.color = [.1, .1, .1, 1], n.highlightLocation = t.highlightLocation, n.cursorStyle = n.defaultCursor, n.addInteractionListener("pointerdown", function () {
           return n.cursorStyle = "pointer";
         }), n.addInteractionListener("pointerup", function () {
           return n.cursorStyle = n.defaultCursor;
@@ -3037,16 +3037,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
         i.render = r, r && (i.relativeX = t), i.style !== n && i.setStyle(n);
       }, t.prototype.setHighlightPointer = function (e, t) {
-        console.log("this is where I need the highlight value");
         var n = t >= 0 && t <= 1,
             r = this.highlightPointers[e];
 
         if (void 0 === r) {
           if (!n) return;
-          (r = new v(null, [1, 1, 1, .5], [1, 1, 1, .5], "x")).z = 2, this.add(r), this.highlightPointers[e] = r;
+          (r = new v(null, [.2, .2, .2, .5], [.2, .2, .2, .5], "x")).z = 2, this.add(r), this.highlightPointers[e] = r;
         }
 
-        r.render = n, n && (r.relativeX = (this.highlightLocation - this.x0) / (this.x1 - this.x0));
+        r.color = [.988, .858, .435, .4], r.render = n, n && (r.relativeX = (this.highlightLocation - this.x0 - .5) / (this.x1 - this.x0));
       }, t.prototype.removeAxisPointer = function (e) {
         var t = this.axisPointers[e];
         void 0 !== t && (this.remove(t), delete this.axisPointers[e]);
@@ -3139,7 +3138,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         switch (e) {
           case h.Active:
           case h.Secondary:
-            this.color = [1, 1, 1, 0];
+            this.color = [.2, .2, .2, 0];
         }
 
         this.style = e;
@@ -7317,7 +7316,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           n.addPanelButton.relativeX = r;
         }, n.onResize = function (e) {
           n.applyOverflowLimits(), n.layoutTrackRows(!1);
-        }, n._resizingPanels = new Set(), n._resizingTracks = new Set(), n.render = !1, n.relativeW = 1, n.relativeH = 1, n.grid = new p.default(0, 0, [.9, .9, .9, 1]), n.grid.render = !1, n.add(n.grid), n.initializeDragPanning(), n.initializeGridResizing(), console.log("we are making a panel"), console.log(n), n.addPanelButton = new y.default(a.createElement(t.AddPanelButton, {
+        }, n._resizingPanels = new Set(), n._resizingTracks = new Set(), n.render = !1, n.relativeW = 1, n.relativeH = 1, n.grid = new p.default(0, 0, [.9, .9, .9, 1]), n.grid.render = !1, n.add(n.grid), n.initializeDragPanning(), n.initializeGridResizing(), n.addPanelButton = new y.default(a.createElement(t.AddPanelButton, {
           onClick: function onClick() {
             n.addPanel({
               contig: "chr1",
@@ -7357,7 +7356,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             u,
             c = e.panels || [],
             f = null != e.clampToTracks && e.clampToTracks;
-        this.allowNewPanels = null != e.allowNewPanels && e.allowNewPanels, this.setRemovableTracks(null == e.removableTracks || e.removableTracks), this.grid.toggleChild(this.addPanelButton, this.allowNewPanels), console.log("state is"), console.log(e);
+        this.allowNewPanels = null != e.allowNewPanels && e.allowNewPanels, this.setRemovableTracks(null == e.removableTracks || e.removableTracks), this.grid.toggleChild(this.addPanelButton, this.allowNewPanels);
         var d = new Set(this.panels);
 
         try {
@@ -7537,7 +7536,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             a = this;
         void 0 === t && (t = !0);
         var s = g.default.getTrackType(e.type);
-        console.log("this is the add track function"), console.log(e), console.log(t), console.log(n), e.highlightLocation = n, s.tileLoaderClass.getAvailableContigs(e).then(function (e) {
+        e.highlightLocation = n, s.tileLoaderClass.getAvailableContigs(e).then(function (e) {
           var t, n;
 
           try {
@@ -7602,7 +7601,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           e.isPrimary && 1 === e.buttonState && (e.preventDefault(), a.startResizingTrack(f));
         }), d.resizeHandle.addInteractionListener("dragend", function (e) {
           e.isPrimary && (e.preventDefault(), a.endResizingTrack(f));
-        }), d.setResizable(!0), this.grid.add(d.header), this.grid.add(d.resizeHandle), this._removableTracks && this.grid.add(d.closeButton), this.layoutTrackRows(!1, d), d.h = 0, this.layoutTrackRows(t), console.log("here we return the track"), console.log(f), f;
+        }), d.setResizable(!0), this.grid.add(d.header), this.grid.add(d.resizeHandle), this._removableTracks && this.grid.add(d.closeButton), this.layoutTrackRows(!1, d), d.h = 0, this.layoutTrackRows(t), f;
       }, t.prototype.closeTrack = function (e, t, n) {
         var r = this;
 
@@ -7780,7 +7779,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }, t.prototype.createTrackObject = function (e, t, n) {
         var r = this,
             i = new (0, g.default.getTrackType(e.type).trackObjectClass)(e);
-        console.log("model for creating a track object"), console.log(e), t.addTrackView(i), n.addTrackView(i), console.log(i), i.addEventListener("track-event", function (e) {
+        t.addTrackView(i), n.addTrackView(i), i.addEventListener("track-event", function (e) {
           r.emit("track-event", e), r.emit(e.type, e);
         });
       }, t.prototype.setTrackStyleNode = function (e, t) {
@@ -10529,7 +10528,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           fontSizePx: 10,
           tickSpacingPx: 15,
           color: [1, 1, 1, 1]
-        }), n.yAxis.x = 5, n.yAxis.w = 25, n.yAxis.h = 0, n.yAxis.relativeH = 1, n.yAxis.z = 2, n.yAxis.mask = n, n.add(n.yAxis), n.signalReading = new d.Text(h.OpenSansRegular, "", 13, [1, 1, 1, 1]), n.signalReading.render = !1, n.signalReading.x = -20, n.signalReading.y = -5, n.signalReading.originX = -1, n.signalReading.originY = -1, n.signalReading.relativeX = 1, n.signalReading.z = 3, n.signalReading.opacity = .6, n.signalReading.mask = n, n.signalReadingSnapX && (n.signalReading.originX = 0, n.signalReading.x = 10), n.add(n.signalReading), n.yAxisPointer = new f.AxisPointer(f.AxisPointerStyle.Secondary, n.activeAxisPointerColor, n.secondaryAxisPointerColor, "y"), n.yAxisPointer.render = !1, n.yAxisPointer.x = 0, n.yAxisPointer.y = 0, n.yAxisPointer.z = 2, n.yAxisPointer.mask = n, n.add(n.yAxisPointer), n.highlightPointer = new f.HighlightPointer(f.HighlightStyle.Secondary, [1, 1, 1, 0], [1, 1, 1, 0], "x"), n.highlightPointer.render = !0, n.highlightPointer.x = .5, n.highlightPointer.y = 0, n.highlightPointer.z = 2, n.highlightPointer.mask = n, n.add(n.highlightPointer), n.frameLoop(), window.scaleToFit = function () {
+        }), n.yAxis.x = 5, n.yAxis.w = 25, n.yAxis.h = 0, n.yAxis.relativeH = 1, n.yAxis.z = 2, n.yAxis.mask = n, n.add(n.yAxis), n.signalReading = new d.Text(h.OpenSansRegular, "", 13, [1, 1, 1, 1]), n.signalReading.render = !1, n.signalReading.x = -20, n.signalReading.y = -5, n.signalReading.originX = -1, n.signalReading.originY = -1, n.signalReading.relativeX = 1, n.signalReading.z = 3, n.signalReading.opacity = .6, n.signalReading.mask = n, n.signalReadingSnapX && (n.signalReading.originX = 0, n.signalReading.x = 10), n.add(n.signalReading), n.yAxisPointer = new f.AxisPointer(f.AxisPointerStyle.Secondary, n.activeAxisPointerColor, n.secondaryAxisPointerColor, "y"), n.yAxisPointer.render = !1, n.yAxisPointer.x = 0, n.yAxisPointer.y = 0, n.yAxisPointer.z = 2, n.yAxisPointer.mask = n, n.add(n.yAxisPointer), n.highlightPointer = new f.HighlightPointer(f.HighlightStyle.Secondary, [.2, .2, .2, 0], [.2, .2, .2, 0], "x"), n.highlightPointer.render = !0, n.highlightPointer.x = .5, n.highlightPointer.y = 0, n.highlightPointer.z = 2, n.highlightPointer.mask = n, n.add(n.highlightPointer), n.frameLoop(), window.scaleToFit = function () {
           n.scaleToFit();
         }, window.setDisplayScale = function (e) {
           n.setDisplayScale(e);
@@ -10546,7 +10545,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         enumerable: !0,
         configurable: !0
       }), t.prototype.applyStyle = function (t) {
-        e.prototype.applyStyle.call(this, t), this.yAxis.color = t.getColor("color") || this.yAxis.color, this.signalReading.color = t.getColor("color") || this.signalReading.color, this.sharedState.signalColor = this.model.color || t.getColor("--signal-color") || this.sharedState.signalColor, this.yAxisPointer.activeColor = this.activeAxisPointerColor, this.yAxisPointer.secondaryColor = this.secondaryAxisPointerColor, this.yAxisPointer.setStyle(this.yAxisPointer.style), this.highlightPointer.activeColor = [1, 1, 1, .5], this.highlightPointer.secondaryColor = [1, 1, 1, .5], this.highlightPointer.setStyle(this.highlightPointer.style);
+        e.prototype.applyStyle.call(this, t), this.yAxis.color = t.getColor("color") || this.yAxis.color, this.signalReading.color = t.getColor("color") || this.signalReading.color, this.sharedState.signalColor = this.model.color || t.getColor("--signal-color") || this.sharedState.signalColor, this.yAxisPointer.activeColor = this.activeAxisPointerColor, this.yAxisPointer.secondaryColor = this.secondaryAxisPointerColor, this.yAxisPointer.setStyle(this.yAxisPointer.style), this.highlightPointer.activeColor = [.2, .2, .2, .5], this.highlightPointer.secondaryColor = [.2, .2, .2, .5], this.highlightPointer.setStyle(this.highlightPointer.style);
       }, t.prototype.setAxisPointer = function (t, n, r) {
         e.prototype.setAxisPointer.call(this, t, n, r), this.updateAxisPointerSample();
       }, t.prototype.setHighlightPointer = function (t, n) {
@@ -10651,7 +10650,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           } else this.setSignalReading(null);
         } else this.setSignalReading(null);
       }, t.prototype.setHighlightValue = function (e) {
-        console.log("we are setting a highlight value!"), this.highlightPointer.render = !0, this.highlightPointer.transparent = !1, this.highlightPointer.relativeX = e;
+        this.highlightPointer.render = !0, this.highlightPointer.transparent = !1, this.highlightPointer.relativeX = e;
       }, t.prototype.setSignalReading = function (e) {
         if (null === e) return this.yAxisPointer.render = !1, void (this.signalReading.render = !1);
         this.signalReading.string = null != e ? e.toFixed(3) : "error";
@@ -11806,93 +11805,78 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         var a = this,
             s = this.getTileLoader(),
             l = 1 << s.macroLod;
-        s.forEachTile(e, t, l, !0, function (r) {
+        s.forEachTile(e, t, l, !0, function (t) {
           if (a.debugOptions.showTileBoundaries) {
-            var s = r.key + ":boundary";
-            a._onStageAnnotations.get(s, function () {
+            var r = t.key + ":boundary";
+            a._onStageAnnotations.get(r, function () {
               var e = new f.Rect(2, 0, [0, 1, 0, 1]);
               return e.relativeH = 1, a.add(e), e;
-            }).relativeX = (r.x - e) / n;
+            }).relativeX = (t.x - e) / n;
           }
 
-          if (r.state === g.TileState.Complete) {
-            var l = r.payload[0];
-            l.startIndex = (t - e) / 2 - 10, l.length = 20, l.score = 1, r.payload.push(l);
-
-            var u = a._macroTileCache.get(a.contig + ":" + r.key, function () {
-              var n,
-                  i,
-                  s = new Array();
+          if (t.state === g.TileState.Complete) {
+            var s = a._macroTileCache.get(a.contig + ":" + t.key, function () {
+              var e,
+                  n,
+                  r = new Array();
 
               try {
-                for (var l = o(r.payload), u = l.next(); !u.done; u = l.next()) {
-                  var c = u.value;
+                for (var i = o(t.payload), s = i.next(); !s.done; s = i.next()) {
+                  var l = s.value;
 
-                  if (null == a.model.strand || c.strand === a.model.strand) {
-                    var f = c.class === m.GeneClass.NonProteinCoding ? a.colors["--non-coding"] : a.colors["--coding"];
-                    if (null != c.score && c.score > 0) f = x(f, c.class === m.GeneClass.NonProteinCoding ? a.colors["--non-coding-max-score"] : a.colors["--coding-max-score"], Math.max(0, Math.min(1, c.score / 1e3)));
-                    var d = f.slice();
-                    if (d[3] *= .689655172, a.compact) s.push({
+                  if (null == a.model.strand || l.strand === a.model.strand) {
+                    var u = l.class === m.GeneClass.NonProteinCoding ? a.colors["--non-coding"] : a.colors["--coding"];
+                    if (null != l.score && l.score > 0) u = x(u, l.class === m.GeneClass.NonProteinCoding ? a.colors["--non-coding-max-score"] : a.colors["--coding-max-score"], Math.max(0, Math.min(1, l.score / 1e3)));
+                    var c = u.slice();
+                    if (c[3] *= .689655172, a.compact) r.push({
                       x: 0,
-                      y: a.annotationY[c.strand] - .5 * A,
+                      y: a.annotationY[l.strand] - .5 * A,
                       z: 0,
                       w: 1,
                       h: A,
-                      relativeX: (c.startIndex - r.x) / r.span,
+                      relativeX: (l.startIndex - t.x) / t.span,
                       relativeY: .5,
-                      relativeW: c.length / r.span,
+                      relativeW: l.length / t.span,
                       relativeH: 0,
-                      color: d
+                      color: c
                     });else {
-                      var h = 20 * c.transcriptCount + 10 * (c.transcriptCount - 1) + 60;
-                      s.push({
+                      var f = 20 * l.transcriptCount + 10 * (l.transcriptCount - 1) + 60;
+                      r.push({
                         x: 0,
                         y: 0,
                         z: 0,
                         w: 1,
-                        h: h,
-                        relativeX: (c.startIndex - r.x) / r.span,
+                        h: f,
+                        relativeX: (l.startIndex - t.x) / t.span,
                         relativeY: 0,
-                        relativeW: c.length / r.span,
+                        relativeW: l.length / t.span,
                         relativeH: 0,
-                        color: d
+                        color: c
                       });
                     }
                   }
                 }
-              } catch (e) {
-                n = {
-                  error: e
+              } catch (t) {
+                e = {
+                  error: t
                 };
               } finally {
                 try {
-                  u && !u.done && (i = l.return) && i.call(l);
+                  s && !s.done && (n = i.return) && n.call(i);
                 } finally {
-                  if (n) throw n.error;
+                  if (e) throw e.error;
                 }
               }
 
-              s.push({
-                x: 0,
-                y: 0,
-                z: 0,
-                w: 1,
-                h: 5.5 * A,
-                relativeX: ((t - e) / 2 - 10 - r.x) / r.span,
-                relativeY: 0,
-                relativeW: 20 / r.span,
-                relativeH: 10,
-                color: [1, 0, 0, 0]
-              });
-              var p = new v.default(s);
-              return p.y = 0, p.z = .75, p.relativeH = 1, p.mask = a, p;
+              var d = new v.default(r);
+              return d.y = 0, d.z = .75, d.relativeH = 1, d.mask = a, d;
             });
 
-            u.relativeX = (r.x - e) / n, u.relativeW = r.span / n, u.opacity = i, a._onStageAnnotations.get("macro-gene-tile:" + a.contig + ":" + r.key, function () {
-              return a.addAnnotation(u), u;
+            s.relativeX = (t.x - e) / n, s.relativeW = t.span / n, s.opacity = i, a._onStageAnnotations.get("macro-gene-tile:" + a.contig + ":" + t.key, function () {
+              return a.addAnnotation(s), s;
             });
-          } else a._loadingTiles.get(a.contig + ":" + r.key, function () {
-            return a.createTileLoadingDependency(r);
+          } else a._loadingTiles.get(a.contig + ":" + t.key, function () {
+            return a.createTileLoadingDependency(t);
           });
         });
       }, t;
@@ -21320,7 +21304,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         }, h = this, p = 0; p < c; p++) {
           d(p);
         }
-        return console.log("are we displaying an interval track? if so, add here"), s;
+        return s;
       }, t.prototype.intervalLabelKey = function (e, t, n, r) {
         return n + ":" + r;
       }, t.prototype.createTileNode = function (e) {
@@ -31061,7 +31045,7 @@ var GV = require('../../dist/valis-hpgv.js'); // pass a list of files to visuali
 
 var config = {
   allowNewPanels: true,
-  highlightLocation: 194780544,
+  highlightLocation: 94780544,
   tracks: [{
     name: 'GRCh37',
     type: 'sequence',
@@ -31078,6 +31062,10 @@ var config = {
     name: 'bigWig',
     type: 'signal',
     path: 'https://www.encodeproject.org/files/ENCFF833POA/@@download/ENCFF833POA.bigWig'
+  }, {
+    name: 'bigWig',
+    type: 'signal',
+    path: 'https://www.encodeproject.org/files/ENCFF985ZQU/@@download/ENCFF985ZQU.bigWig'
   }]
 };
 var hpgv = new GV.GenomeVisualizer(config);
@@ -31085,7 +31073,7 @@ hpgv.render({
   width: 800,
   height: 600
 }, document.getElementById('container'));
-},{"../../dist/valis-hpgv.js":"../../dist/valis-hpgv.js"}],"../../../../../../.npm/_npx/70916/lib/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"../../dist/valis-hpgv.js":"../../dist/valis-hpgv.js"}],"../../../../../../.npm/_npx/79870/lib/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -31113,7 +31101,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58887" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50899" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -31289,5 +31277,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../../.npm/_npx/70916/lib/node_modules/parcel/src/builtins/hmr-runtime.js","App.ts"], null)
+},{}]},{},["../../../../../../.npm/_npx/79870/lib/node_modules/parcel/src/builtins/hmr-runtime.js","App.ts"], null)
 //# sourceMappingURL=/App.7a936cda.js.map

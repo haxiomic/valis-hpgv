@@ -83,10 +83,6 @@ export class TrackViewer extends Object2D {
 
         this.initializeDragPanning();
         this.initializeGridResizing();
-        
-        console.log('we are making a panel');
-        // console.log(this.highlightLocation);
-        console.log(this);
 
         this.addPanelButton = new ReactObject(
             <TrackViewer.AddPanelButton onClick={() => {
@@ -146,9 +142,6 @@ export class TrackViewer extends Object2D {
         this.allowNewPanels = state.allowNewPanels == null ? false : state.allowNewPanels;
         this.setRemovableTracks(state.removableTracks == null ? true : state.removableTracks);
         this.grid.toggleChild(this.addPanelButton, this.allowNewPanels);
-        
-        console.log('state is');
-        console.log(state);
 
         // Panels
         // clear current panels
@@ -260,11 +253,6 @@ export class TrackViewer extends Object2D {
     addTrack(model: TrackModel, animate: boolean = true, highlightLocation: number): Track {
         let trackClasses = GenomeVisualizer.getTrackType(model.type);
         
-        console.log('this is the add track function');
-        console.log(model);
-        console.log(animate);
-        console.log(highlightLocation);
-        
         model.highlightLocation = highlightLocation;
 
         trackClasses.tileLoaderClass.getAvailableContigs(model).then(contigs => {
@@ -363,9 +351,6 @@ export class TrackViewer extends Object2D {
 
         // then animate all the tracks to the new layout
         this.layoutTrackRows(animate);
-        
-        console.log('here we return the track');
-        console.log(track);
 
         return track;
     }
@@ -571,11 +556,8 @@ export class TrackViewer extends Object2D {
     protected createTrackObject(model: TrackModel, panel: Panel, rowObject: RowObject) {
         const trackObjectClass = GenomeVisualizer.getTrackType(model.type).trackObjectClass;
         let trackObject = new trackObjectClass(model);
-        console.log('model for creating a track object');
-        console.log(model);
         panel.addTrackView(trackObject);
         rowObject.addTrackView(trackObject);
-        console.log(trackObject);
         
         // unwrap and forward track events, so you can do, trackViewer.addEventListener(<track-event>, ...)
         trackObject.addEventListener('track-event', (eventData: TrackEvent) => {
