@@ -146,7 +146,7 @@ export class TrackObject<
         }
         // this is a yellow that doesn't look as good as I expected
         // highlightPointer.color = [0.988, 0.858, 0.435, 0.4];
-        highlightPointer.color = [0.788, 0.094, 0.094, 0.6];
+        highlightPointer.color = [0.949, 0.863, 0.365, 1];
     
         highlightPointer.render = withinBounds;
     
@@ -365,7 +365,7 @@ export class HighlightPointer extends Rect {
         this.relativeH = 1;
         // this is the width, in pixels, of the highlight region
         // the highlight width should really scale on zoom
-        this.w = 20;
+        this.w = 3;
 
         this.transparent = true;
 
