@@ -147,6 +147,10 @@ export class TrackObject<
         highlightPointer.color = [0.957, 0.886, 0.478, 1]; // hex: 
     
         highlightPointer.render = withinBounds;
+        
+        if (!(this.highlightLocation)) {
+            highlightPointer.render = false;
+        }
     
         if (withinBounds && this.highlightLocation) {
             const highlightChr = this.highlightLocation.split(':')[0];
