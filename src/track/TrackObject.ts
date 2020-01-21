@@ -148,7 +148,7 @@ export class TrackObject<
     
         highlightPointer.render = withinBounds;
     
-        if (withinBounds) {
+        if (withinBounds && this.highlightLocation) {
             const highlightChr = this.highlightLocation.split(':')[0];
             const contigPosition = contig ? contig : this.contig;
             let highlightPosition;

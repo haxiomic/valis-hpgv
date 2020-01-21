@@ -3,7 +3,7 @@ const GV = require('../../dist/valis-hpgv.js');
 // pass a list of files to visualize in an array, the viewer will determine the best visualization to use
 let config = {
     allowNewPanels: true,
-    highlightLocation: 'chr1:54877700',
+    // highlightLocation: 'chr1:54877700',
     tracks: [
         {
             name: 'GRCh37',
