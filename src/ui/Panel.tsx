@@ -222,6 +222,8 @@ export class Panel extends Object2D {
 
         x0 = Math.min(x0, x1);
         x1 = Math.max(x0, x1);
+        console.log('setting range');
+        console.log(`range starts at ${x0} and goes to ${x1}`);
 
 
         // if range is below allowed minimum, override without changing center
