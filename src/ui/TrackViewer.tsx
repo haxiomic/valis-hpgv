@@ -1050,14 +1050,7 @@ export class TrackViewer extends Object2D {
 
         const ArrowElem = props.isExpanded ? ExpandLessIcon : ExpandMoreIcon;
 
-        const expandArrow = (<ArrowElem
-            style={{
-                marginTop: 8,
-                marginLeft: margin,
-                color: 'inherit',
-            }}
-            viewBox={`0 0 ${iconSize} ${iconSize}`}
-        />);
+        const expandArrow = (<ArrowElem viewBox={`0 0 ${iconSize} ${iconSize}`} />);
         return <div
             className="hpgv_ui-block hpgv_track-header"
             style={{
