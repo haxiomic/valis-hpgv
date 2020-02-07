@@ -265,7 +265,7 @@ export class TrackViewer extends Object2D {
     // track-viewer state deltas
     addTrack(model: TrackModel, animate: boolean = true, highlightLocation: string): Track {
         let trackClasses = GenomeVisualizer.getTrackType(model.type);
-        
+
         model.highlightLocation = highlightLocation;
 
         trackClasses.tileLoaderClass.getAvailableContigs(model).then(contigs => {
@@ -1086,11 +1086,8 @@ export class TrackViewer extends Object2D {
                     </div>
                 ) : null
             }
-            <div style={{
-                flexGrow: 1,
-                marginRight: margin,
-            }}>
-                {props.model.name}
+            <div>
+                {props.isExpanded && props.model.longname ? props.model.longname : props.model.name}
             </div>
         </div>
     }
