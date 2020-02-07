@@ -32,13 +32,13 @@ import { TrackEvent } from "../track/TrackEvent";
 
 // Icons to collapse and expand track header.
 const ExpandLessIcon = () => (
-    <svg className="jss1" version="1.1" focusable="false"  x="0px" y="0px" viewBox="0 0 12 7.4">
+    <svg version="1.1" focusable="false" viewBox="0 0 12 7.4">
         <path d="M6,0L0,6l1.4,1.4L6,2.8l4.6,4.6L12,6L6,0z"/>
     </svg>
 );
 
 const ExpandMoreIcon = () => (
-    <svg className="jss1" version="1.1" focusable="false" x="0px" y="0px" viewBox="0 0 12 7.4">
+    <svg version="1.1" focusable="false" viewBox="0 0 12 7.4">
         <path d="M10.6,0L6,4.6L1.4,0L0,1.4l6,6l6-6L10.6,0z"/>
     </svg>
 );
@@ -1058,7 +1058,7 @@ export class TrackViewer extends Object2D {
         isExpanded: boolean,
         style?: React.CSSProperties
     }) {
-        const iconSize = 32;
+        const iconSize = 16;
         const margin = 8;
 
         const ArrowElem = props.isExpanded ? ExpandLessIcon : ExpandMoreIcon;
@@ -1073,34 +1073,18 @@ export class TrackViewer extends Object2D {
                 overflow: 'hidden',
                 ...props.style,
             }}
-        >   
+        >
             {
                 props.expandable ? (
                     <div
                         onClick={() => {
                             props.setExpanded(!props.isExpanded);
                         }}
-                        style={{
-                            cursor: 'pointer',
-                            userSelect: 'none',
-                            width: iconSize,
-                            height: iconSize,
-                            // minWidth: iconSize,
-                            marginRight: margin,
-                        }}
+                        className="hpgv_track-expander"
                     >
                         {expandArrow}
                     </div>
-                ) : (
-                    <div
-                        style={{
-                            width: iconSize,
-                            height: iconSize,
-                            // minWidth: iconSize,
-                            marginRight: margin,
-                        }}
-                    ></div>
-                )
+                ) : null
             }
             <div style={{
                 flexGrow: 1,
