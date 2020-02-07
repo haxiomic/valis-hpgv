@@ -1046,7 +1046,7 @@ export class TrackViewer extends Object2D {
         style?: React.CSSProperties
     }) {
         const iconSize = 32;
-        const margin = 16;
+        const margin =8;
 
         const ArrowElem = props.isExpanded ? ExpandLessIcon : ExpandMoreIcon;
 
@@ -1082,7 +1082,7 @@ export class TrackViewer extends Object2D {
                             width: iconSize,
                             height: iconSize,
                             // minWidth: iconSize,
-                            marginRight: margin,
+                            // marginRight: margin,
                         }}
                     >
                         {expandArrow}
