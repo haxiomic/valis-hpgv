@@ -22,6 +22,7 @@
     font-size: 15px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+    box-shadow: 0 0 8px inset rgba(0,0,0,0.1);
 }
 
 .hpgv_track-close-button {
@@ -35,15 +36,20 @@
 }
 
 .hpgv_track-expander {
-    cursor: pointer;
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
     width: 16px;
     height: 16px;
     padding: 4px;
+    cursor: pointer;
     line-height: 0;
+}
 
-    > svg {
-        display: block;
-    }
+.hpgv_track-expander > svg {
+    display: block;
 }
 
 /* The following are draw via WebGL, so only the properties CSS used here can be changed */
