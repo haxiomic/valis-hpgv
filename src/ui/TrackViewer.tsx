@@ -1077,6 +1077,9 @@ export class TrackViewer extends Object2D {
             {
                 props.expandable ? (
                     <div
+                        role="button"
+                        tabIndex={0} 
+                        aria-expanded={props.isExpanded}
                         onClick={() => {
                             props.setExpanded(!props.isExpanded);
                         }}
