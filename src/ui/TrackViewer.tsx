@@ -1063,7 +1063,6 @@ export class TrackViewer extends Object2D {
 
         const ArrowElem = props.isExpanded ? ExpandLessIcon : ExpandMoreIcon;
 
-        const expandArrow = <ArrowElem />;
         return <div
             className="hpgv_ui-block hpgv_track-header"
             style={{
@@ -1074,6 +1073,7 @@ export class TrackViewer extends Object2D {
                 ...props.style,
             }}
         >   
+            <div>{props.isExpanded && props.model.longname ? props.model.longname : props.model.name}</div>
             {
                 props.expandable ? (
                     <div
@@ -1083,13 +1083,18 @@ export class TrackViewer extends Object2D {
                         onClick={() => {
                             props.setExpanded(!props.isExpanded);
                         }}
+                        onKeyDown={(e) => {
+                            if (e.keyCode === 13 || e.keyCode === 32) {
+                                props.setExpanded(!props.isExpanded);
+                                e.preventDefault();
+                            }
+                        }}
                         className="hpgv_track-expander"
                     >
-                        {expandArrow}
+                        <ArrowElem />
                     </div>
                 ) : null
             }
-            <div>{props.isExpanded && props.model.longname ? props.model.longname : props.model.name}</div>
         </div>
     }
 
