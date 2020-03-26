@@ -8,3 +8,4 @@ export * from './Engine';
 export * from './GenomeVisualizer';
 export * from './GenomeVisualizerConfiguration';
 export * from './Shaders';
+export * from './registerServiceWorker';

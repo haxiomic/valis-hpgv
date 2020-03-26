@@ -37,6 +37,7 @@ export declare class Panel extends Object2D {
     protected _closable: boolean;
     protected _closing: boolean;
     protected dataSource: InternalDataSource;
+    protected setLocation: Function;
     readonly contig: string;
     readonly x0: number;
     readonly x1: number;
@@ -50,10 +51,11 @@ export declare class Panel extends Object2D {
     protected tileHovering: boolean;
     protected isEditing: boolean;
     protected availableContigs: ReadonlyArray<Contig>;
+    protected onLocationChange: Function;
     constructor(onClose: (t: Panel) => void, spacing: {
         x: number;
         y: number;
-    }, panelHeaderHeight: number, xAxisHeight: number, dataSource: InternalDataSource);
+    }, panelHeaderHeight: number, xAxisHeight: number, dataSource: InternalDataSource, setLocation: Function);
     applyStyle(styleProxy: StyleProxy): void;
     setResizable(v: boolean): void;
     addTrackView(trackView: TrackObject): void;

@@ -1,7 +1,7 @@
 {
   "name": "genome-visualizer",
   "version": "1.0.3",
-  "description": "",
+  "description": "## [Live Demo](https://valis-software.github.io/valis-hpgv/examples/minimal/index.html)",
   "main": "./dist/valis-hpgv.react-peer.js",
   "types": "./@types/index.d.ts",
   "scripts": {
@@ -13,7 +13,7 @@
     "build": "npm run prod"
   },
   "bin": {
-    "hpgv": "./cli.js"
+    "hpgv": "cli.js"
   },
   "author": "George Corney (haxiomic)",
   "license": "ISC",
@@ -23,20 +23,27 @@
     "axios": "^0.18.0",
     "bigwig-reader": "^1.0.9",
     "engine": "github:VALIS-software/Engine",
-    "genomics-formats": "github:VALIS-software/Genomics-Formats",
-    "react": "16.x",
-    "react-dom": "16.x",
     "fast-deep-equal": "^2.0.1",
+    "genomics-formats": "github:VALIS-software/Genomics-Formats",
     "mkdirp": "^0.5.1",
-    "string-split-by": "^1.0.0"
+    "react": "16.x",
+    "react-beautiful-dnd": "^10.0.0",
+    "react-dnd": "^10.0.2",
+    "react-dnd-html5-backend": "^10.0.2",
+    "react-dom": "16.x",
+    "string-split-by": "^1.0.0",
+    "underscore": "^1.10.2"
   },
   "devDependencies": {
     "@babel/polyfill": "^7.6.0",
     "@types/node": "10.11.7",
     "@types/react": "16.x",
+    "@types/react-beautiful-dnd": "^12.1.2",
     "@types/react-dom": "16.x",
+    "@types/underscore": "^1.10.0",
     "create-ts-index": "1.0.x",
     "file-loader": "2.0.x",
+    "parcel": "^1.12.4",
     "rimraf": "^2.6.2",
     "text-loader": "0.0.1",
     "ts-loader": "4.2.x",
@@ -50,5 +57,17 @@
   "peerDependencies": {
     "react": "16.x",
     "react-dom": "16.x"
-  }
+  },
+  "directories": {
+    "example": "examples"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ENCODE-DCC/valis-hpgv.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/ENCODE-DCC/valis-hpgv/issues"
+  },
+  "homepage": "https://github.com/ENCODE-DCC/valis-hpgv#readme"
 }

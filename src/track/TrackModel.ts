@@ -11,7 +11,7 @@ export type TrackModel = {
     longname?: string,
     heightPx?: number,
     expandedHeightPx?: number,
-    
+
     highlightLocation?: string,
 
     expandable?: boolean,
@@ -20,6 +20,8 @@ export type TrackModel = {
 
     // @! not yet implemented
     styleSelector?: string,
+
+    setLocation?: Function,
 
     [field: string]: any,
 };

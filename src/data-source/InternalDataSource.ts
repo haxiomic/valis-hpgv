@@ -1,4 +1,4 @@
-import { GenomeVisualizer } from '../GenomeVisualizer';
+import { GenomeTrack } from '../GenomeVisualizer';
 import TileLoader from '../track/TileLoader';
 import TrackModel from '../track/TrackModel';
 import { IDataSource } from './IDataSource';
@@ -67,14 +67,14 @@ export class InternalDataSource {
     getTileLoader(model: TrackModel, contig: string): TileLoader<any, any> {
         let type = model.type;
         let key = contig;
-        let trackTypeDescriptor = GenomeVisualizer.getTrackType(type);
+        let trackTypeDescriptor = GenomeTrack.getTrackType(type);
 
         let differentiatingKey = trackTypeDescriptor.tileLoaderClass.cacheKey(model);
 
         if (differentiatingKey != null) {
             key += '\x1f' + differentiatingKey;
         }
-        
+
         let tileCaches = this.tileCaches[type];
         if (tileCaches === undefined) {
             this.tileCaches[type] = tileCaches = {};

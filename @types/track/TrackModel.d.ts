@@ -13,6 +13,7 @@ export declare type TrackModel = {
     expandable?: boolean;
     color?: Array<number>;
     styleSelector?: string;
+    setLocation?: Function;
     [field: string]: any;
 };
 export default TrackModel;

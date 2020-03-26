@@ -4,7 +4,7 @@
     - Manages frame loop
     - Manages root scene node and coordinate system
     - All coordinates are set in DOM pixel units relative to the canvas (unless marked as otherwise)
-    
+
     - Should split up and move core parts to engine
 */
 
@@ -27,6 +27,7 @@ interface Props {
     style?: React.CSSProperties;
     canvasStyle?: React.CSSProperties;
     onWillUnmount?: () => void,
+    onAppLocationChange? : Function,
 }
 
 interface State {
@@ -85,10 +86,10 @@ export class AppCanvas extends React.Component<Props, State> {
 
         this.addInputListeners();
 
-        console.log(`AppCanvas created with device %c"${this.device.name}"`, 'font-weight: bold');
+        // console.log(`AppCanvas created with device %c"${this.device.name}"`, 'font-weight: bold');
 
         function printExtensionSupport(name: string, enabled: boolean) {
-            console.log(`\t${name}: %c${enabled ? 'enabled' : 'disabled'}`, `font-weight: bold; color: ${enabled ? 'green' : 'red'}`);
+            // console.log(`\t${name}: %c${enabled ? 'enabled' : 'disabled'}`, `font-weight: bold; color: ${enabled ? 'green' : 'red'}`);
         }
 
         printExtensionSupport('Vertex Array Objects', this.device.capabilities.vertexArrayObjects);
@@ -142,7 +143,7 @@ export class AppCanvas extends React.Component<Props, State> {
         const canvasWidth = this.props.width * pixelRatio + 'px';
         const canvasHeight = this.props.height * pixelRatio + 'px';
         const style : React.CSSProperties = {
-            position: 'relative', 
+            position: 'relative',
             overflow: 'hidden',
             width: this.props.width + 'px',
             height: this.props.height + 'px',
@@ -167,7 +168,13 @@ export class AppCanvas extends React.Component<Props, State> {
                 />
                 {
                     this.state.reactObjects.map(
-                        (ro) => <ReactObjectContainer key={ro.reactUid} reactObject={ro} scene={this.scene} />
+                        (ro, roIndex) => {
+                            if (roIndex === 0) {
+                                return null;
+                            } else {
+                                return <ReactObjectContainer key={ro.reactUid} reactObject={ro} scene={this.scene} />
+                            }
+                        }
                     )
                 }
                 {this.props.children}
@@ -384,7 +391,7 @@ export class AppCanvas extends React.Component<Props, State> {
         for (let pointerId in this._lastActivePointers) {
             let inactivePointer = this._lastActivePointers[pointerId];
             if (this.activePointers[pointerId] === undefined) {
-                // pointer became inactive, fire 'pointerleave' on all nodes it was hitting 
+                // pointer became inactive, fire 'pointerleave' on all nodes it was hitting
                 this.executePointerInteraction(inactivePointer.lastHitNodes, 'pointerleave', inactivePointer.interactionData, (init) => new InteractionEvent(init, inactivePointer.sourceEvent));
             }
         }
@@ -435,7 +442,6 @@ export class AppCanvas extends React.Component<Props, State> {
 
             // early exit
             if (totalNodeChange === 0) continue;
-
             this.executePointerInteraction(addedNodes, 'pointerenter', interactionData, (init) => new InteractionEvent(init, sourceEvent));
             this.executePointerInteraction(removedNodes, 'pointerleave', interactionData, (init) => new InteractionEvent(init, sourceEvent));
         }
@@ -505,7 +511,7 @@ export class AppCanvas extends React.Component<Props, State> {
                 this.executePointerInteraction(hitNodes, eventName, interactionData, (init) => {
                     return new InteractionEvent(init, e);
                 });
-            } 
+            }
         }
 
         this.applyCursor();
@@ -579,7 +585,7 @@ export class AppCanvas extends React.Component<Props, State> {
     }
 
     protected onDoubleClick = (e: MouseEvent) => {
-        if (e.target === this.canvas) {    
+        if (e.target === this.canvas) {
             let eventName: keyof InteractionEventMap = 'dblclick';
             let interactionData = this.interactionDataFromEvent(e);
             let hitNodes = this.hitTestNodesForInteraction([eventName], interactionData.worldX, interactionData.worldY);

@@ -14,6 +14,7 @@ interface Props {
     style?: React.CSSProperties;
     canvasStyle?: React.CSSProperties;
     onWillUnmount?: () => void;
+    onAppLocationChange?: Function;
 }
 interface State {
     reactObjects: Array<ReactObject>;

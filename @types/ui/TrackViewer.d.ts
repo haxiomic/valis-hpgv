@@ -39,13 +39,15 @@ export declare class TrackViewer extends Object2D {
         [trackType: string]: StyleProxy;
     };
     protected highlightLocation: string;
+    setLocation: Function;
+    readonly props: any;
     constructor();
     setConfiguration(state: TrackViewerConfiguration): void;
     getConfiguration(): TrackViewerConfiguration;
     setDataSource(dataSource: InternalDataSource): void;
     addTrack(model: TrackModel, animate: boolean, highlightLocation: string): Track;
     closeTrack(track: Track, animate?: boolean, onComplete?: () => void): void;
-    addPanel(location: GenomicLocation, animate?: boolean, highlightLocation?: string): void;
+    addPanel(location: GenomicLocation, animate?: boolean, updateLocation?: Function, highlightLocation?: string): void;
     closePanel(panel: Panel, animate?: boolean, onComplete?: () => void): void;
     getTracks(): Track[];
     getPanels(): Set<Panel>;
@@ -108,6 +110,7 @@ export declare class TrackViewer extends Object2D {
         expandable: boolean;
         setExpanded?: (state: boolean) => void;
         isExpanded: boolean;
+        setLocation: Function;
         style?: React.CSSProperties;
     }): JSX.Element;
     static AddPanelButton(props: {
@@ -145,6 +148,7 @@ declare class RowObject {
     readonly closeButton: ReactObject;
     readonly resizeHandle: Rect;
     readonly trackViews: Set<TrackObject<TrackModel, import("../track/TileLoader").TileLoader<any, any>>>;
+    setLocation: Function;
     y: number;
     h: number;
     opacity: number;

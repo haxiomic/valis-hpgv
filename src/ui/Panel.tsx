@@ -55,6 +55,7 @@ export class Panel extends Object2D {
     protected _closing = false;
 
     protected dataSource: InternalDataSource;
+    protected setLocation: Function;
 
     // view-state is defined by genomic location
     // viewport is designed to weight high precision to relatively small values (~millions) and lose precision for high values (~billions+)
@@ -73,15 +74,19 @@ export class Panel extends Object2D {
 
     protected availableContigs: ReadonlyArray<Contig>;
 
+    protected onLocationChange: Function;
+
     constructor(
         protected onClose: (t: Panel) => void,
         protected readonly spacing: { x: number, y: number },
         protected readonly panelHeaderHeight: number,
         protected readonly xAxisHeight: number,
         dataSource: InternalDataSource,
+        setLocation: Function,
     ) {
         super();
-        
+        this.setLocation = setLocation;
+
         // a panel has nothing to render on its own
         this.render = false;
 
@@ -223,7 +228,6 @@ export class Panel extends Object2D {
         x0 = Math.min(x0, x1);
         x1 = Math.max(x0, x1);
 
-
         // if range is below allowed minimum, override without changing center
         let span = x1 - x0;
         if (span < this.minRange) {
@@ -240,14 +244,14 @@ export class Panel extends Object2D {
             Animator.springTo(
                 this._rangeAnimationObject,
                 { x0: x0, x1: x1 },
-                {tension: t, friction: f}, 
+                {tension: t, friction: f},
             );
         } else {
             Animator.stop(this._rangeAnimationObject);
             this._rangeAnimationObject.x0 = x0;
             this._rangeAnimationObject.x1 = x1;
         }
-        
+
         // re-center highlight on location update
         for (let trackView of this.trackViews) {
             trackView.setHighlightPointer('0', 0.5);
@@ -429,7 +433,7 @@ export class Panel extends Object2D {
         let fractionalAngleY = 2 * absAngleY / (Math.PI); // 0 = points along y, 1 = points along x
         let absAngleX = Math.acos(Math.abs(normScrollX));
         let fractionalAngleX = 2 * absAngleX / (Math.PI); // 0 = points along x, 1 = points along y
-        
+
         // use fraction angle to reduce x as angle approaches y-pointing
         // see https://www.desmos.com/calculator/butkwn0xdt for function exploration
         let edge = 0.75;
@@ -457,7 +461,7 @@ export class Panel extends Object2D {
         let x0 = this.x0;
         let x1 = this.x1;
         let span = x1 - x0;
-        
+
         // apply scale change
         let zoomCenterF = e.fractionX;
 
@@ -493,7 +497,7 @@ export class Panel extends Object2D {
     protected _dragMode: DragMode | undefined;
     protected _dragXF0: number;
     protected _dragX00: number;
-  
+
     // track total drag distance to hint whether or not we should cancel some interactions
     protected _lastDragLX: number;
     protected _dragDistLocal: number;
@@ -595,7 +599,7 @@ export class Panel extends Object2D {
 
                 // determine selected region in absolute units (base pairs)
                 let span = this.x1 - this.x0;
-            
+
                 let selectedRegionX0 = this.x0 + span * this._dragXF0;
                 let selectedRegionX1 = this.x0 + span * e.fractionX;
 
@@ -605,7 +609,7 @@ export class Panel extends Object2D {
                 // clamp to existing range (so it must be a zoom in)
                 x0 = Math.max(x0, this.x0);
                 x1 = Math.min(x1, this.x1);
-                
+
                 // zoom into region
                 this.setRange(x0, x1, true);
                 break;
@@ -690,14 +694,17 @@ export class Panel extends Object2D {
         const endBp = Math.ceil(this.x1).toFixed(0);
         let rangeSpecifier = `${this.contig}:${startBp}-${endBp}`;
 
-        this.header.content = <PanelHeader 
+        // HERE FIX NEW
+        this.setLocation(rangeSpecifier);
+
+        this.header.content = <PanelHeader
             panel={ this }
             contig={ this.getFormattedContig(this.contig) }
             rangeString={ rangeString }
             rangeSpecifier={ rangeSpecifier }
-            enableClose = { this._closable && !this.closing } 
+            enableClose = { this._closable && !this.closing }
             enableContigNavigation={this.availableContigs != null && (this.availableContigs.length > 1) }
-            onClose = { this.onClose } 
+            onClose = { this.onClose }
             isEditing = { this.isEditing }
             onEditCancel = { () => this.finishEditing() }
             onEditSave = { (rangeSpecifier: string) => this.finishEditing(rangeSpecifier) }
@@ -718,6 +725,7 @@ export class Panel extends Object2D {
                     this.setRange(this.availableContigs[idx].startIndex, this.availableContigs[idx].span);
                 }
             }}
+            setLocation={this.setLocation}
         />;
     }
 
@@ -773,27 +781,28 @@ interface PanelProps {
     onEditCancel: () => void,
     onClose: (panel: Panel) => void,
     onNextContig: (panel: Panel) => void,
-    onPreviousContig: (panel: Panel) => void
+    onPreviousContig: (panel: Panel) => void,
+    setLocation: Function,
 }
 
 class PanelHeader extends React.Component<PanelProps,{}> {
 
     render() {
         let headerContents = null;
-        
+
         const headerContainerStyle : React.CSSProperties= {
-            display: 'flex', 
-            alignItems: 'center', 
+            display: 'flex',
+            alignItems: 'center',
             justifyContent: 'center',
         };
 
         const headerStyle : React.CSSProperties = {
-            marginTop: 8, 
+            marginTop: 8,
             marginLeft: 8
         }
 
         const iconViewBoxSize = '0 0 32 32';
-        
+
         const closeIcon = this.props.enableClose ? (
             <div style={{
                 position: 'absolute',
@@ -829,47 +838,9 @@ class PanelHeader extends React.Component<PanelProps,{}> {
 
         if (this.props.isEditing) {
             let userRangeSpecifier = this.props.rangeSpecifier;
-            headerContents = (<div style={headerContainerStyle} >
-                <input
-                    autoFocus
-                    onChange={(e) => userRangeSpecifier = e.target.value}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            this.props.onEditSave(userRangeSpecifier);
-                        }
-                    }}
-                    type="text"
-                    defaultValue={this.props.rangeSpecifier}
-                    style={{
-                        maxWidth: '200px',
-                        width: '100%',
-                    }}
-                />
-                <span style={headerStyle}>
-                    <CancelIcon
-                        onClick={() => this.props.onEditCancel()} 
-                        viewBox={iconViewBoxSize}
-                    />
-                </span>
-                <span style={headerStyle}>
-                    <CheckIcon 
-                        onClick={() => this.props.onEditSave(userRangeSpecifier)} 
-                        viewBox={iconViewBoxSize}
-                    />
-                </span>
-                {closeIcon}
-            </div>);
+            headerContents = null;
         } else {
-            headerContents = (<div style={headerContainerStyle}>
-                {this.props.enableContigNavigation ? previousIcon : null}
-                <span onClick={() => this.props.onEditStart()}><b>{this.props.contig}</b> {this.props.rangeString}</span>
-                <span style={headerStyle} onClick={() => this.props.onEditStart()}>
-                    <EditIcon 
-                        viewBox={iconViewBoxSize}
-                    />
-                </span>
-                {this.props.enableContigNavigation ? nextIcon : null}
-            </div>);
+            headerContents = null;
         }
 
         return <div
@@ -877,7 +848,7 @@ class PanelHeader extends React.Component<PanelProps,{}> {
             style={{
                 position: 'relative',
                 width: '100%',
-                height: '100%',
+                height: '0',
                 overflow: 'hidden',
                 userSelect: 'none',
             }}

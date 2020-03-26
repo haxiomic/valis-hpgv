@@ -2,8 +2,12 @@ const GV = require('../../dist/valis-hpgv.js');
 
 // pass a list of files to visualize in an array, the viewer will determine the best visualization to use
 let config = {
-    allowNewPanels: true,
+    allowNewPanels: false,
     highlightLocation: 'chr1:54877700',
+    removableTracks: false,
+    panels: [{
+        location: { contig: 'chr1', x0: 100, x1: 248956422 },
+    }],
     tracks: [
         {
             name: 'GRCh37',
@@ -36,7 +40,7 @@ let config = {
 
 let hpgv = new GV.GenomeVisualizer(config);
 
-hpgv.render({ width: 800, height: 600 }, document.getElementById('container'));
+hpgv.render({ width: 800, height: 180 }, document.getElementById('root'));
 
 document.getElementById('button-to-click').addEventListener('click', () => {
     console.log('clicked!');
