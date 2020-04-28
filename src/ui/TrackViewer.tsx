@@ -43,6 +43,18 @@ const ExpandMoreIcon = () => (
     </svg>
 );
 
+// Icons to collapse and expand track header.
+const CollapseIcon = () => (
+    <svg version="1.1" focusable="false" viewBox="0 0 12 7.4">
+        <path d="M10.6,0L6,4.6L1.4,0L0,1.4l6,6l6-6L10.6,0z"/>
+    </svg>
+);
+
+const UndoCollapseIcon = () => (
+    <svg version="1.1" focusable="false" viewBox="0 0 12 7.4">
+        <path d="M6,0L0,6l1.4,1.4L6,2.8l4.6,4.6L12,6L6,0z"/>
+    </svg>
+);
 
 export class TrackViewer extends Object2D {
 
@@ -1055,13 +1067,16 @@ export class TrackViewer extends Object2D {
         model: TrackModel,
         expandable: boolean,
         setExpanded?: (state: boolean) => void,
+        setCollapsed?: (state: boolean) => void,
         isExpanded: boolean,
+        isCollapsed: boolean,
         style?: React.CSSProperties
     }) {
         const iconSize = 16;
         const margin = 8;
 
-        const ArrowElem = props.isExpanded ? ExpandLessIcon : ExpandMoreIcon;
+        const ExpandElem = props.isExpanded ? ExpandLessIcon : ExpandMoreIcon;
+        const CollapseElem = props.isCollapsed ? CollapseIcon : UndoCollapseIcon;
 
         return <div
             className="hpgv_ui-block hpgv_track-header"
@@ -1072,26 +1087,46 @@ export class TrackViewer extends Object2D {
                 overflow: 'hidden',
                 ...props.style,
             }}
-        >   
+        >
             <div>{props.isExpanded && props.model.longname ? props.model.longname : props.model.name}</div>
+            <div>{props.isCollapsed && props.model.shortname ? props.model.shortname : props.model.name}</div>
             {
                 props.expandable ? (
-                    <div
-                        role="button"
-                        tabIndex={0} 
-                        aria-expanded={props.isExpanded}
-                        onClick={() => {
-                            props.setExpanded(!props.isExpanded);
-                        }}
-                        onKeyDown={(e) => {
-                            if (e.keyCode === 13 || e.keyCode === 32) {
+                    <div className="button-container">
+                        <div
+                            role="button"
+                            tabIndex={0}
+                            aria-expanded={props.isCollapsed}
+                            onClick={() => {
+                                props.setCollapsed(!props.isCollapsed);
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.keyCode === 13 || e.keyCode === 32) {
+                                    props.setCollapsed(!props.isCollapsed);
+                                    e.preventDefault();
+                                }
+                            }}
+                            className="hpgv_track-expander"
+                        >
+                            <CollapseElem />
+                        </div>
+                        <div
+                            role="button"
+                            tabIndex={0}
+                            aria-expanded={props.isExpanded}
+                            onClick={() => {
                                 props.setExpanded(!props.isExpanded);
-                                e.preventDefault();
-                            }
-                        }}
-                        className="hpgv_track-expander"
-                    >
-                        <ArrowElem />
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.keyCode === 13 || e.keyCode === 32) {
+                                    props.setExpanded(!props.isExpanded);
+                                    e.preventDefault();
+                                }
+                            }}
+                            className="hpgv_track-expander"
+                        >
+                            <ExpandElem />
+                        </div>
                     </div>
                 ) : null
             }
@@ -1211,9 +1246,11 @@ class RowObject {
     protected _opacity: number = 1.0;
 
     protected _headerIsExpandedState: boolean | undefined = undefined;
+    protected _headerIsCollapsedState: boolean | undefined = undefined;
     protected styleProxy: StyleProxy;
     protected interactionDisabled: boolean = false;
     protected readonly expandedTrackHeightPx: number;
+    protected readonly collapsedTrackHeightPx: number;
 
     constructor(
         protected model: TrackModel,
@@ -1234,6 +1271,10 @@ class RowObject {
         this.setResizable(false);
 
         this.expandedTrackHeightPx = this.model.expandedHeightPx != null ? this.model.expandedHeightPx : (defaultHeightPx * 2);
+        this.collapsedTrackHeightPx = this.model.collapsedHeightPx != null ? this.model.collapsedHeightPx : (defaultHeightPx / 2);
+
+        console.log(this.expandedTrackHeightPx);
+        console.log(this.collapsedTrackHeightPx);
 
         this.updateHeader();
     }
@@ -1303,18 +1344,30 @@ class RowObject {
         if (this._headerIsExpandedState !== this.isExpanded()) {
             this.updateHeader();
         }
+
+        // update header if expand / collapse-toggle is out of sync with height
+        if (this._headerIsCollapsedState !== this.isCollapsed()) {
+            this.updateHeader();
+        }
     }
 
     protected updateHeader() {
         this._headerIsExpandedState = this.isExpanded();
+        this._headerIsCollapsedState = this.isCollapsed();
         this.header.content = (<TrackViewer.TrackHeader
-            model={this.model}  
+            model={this.model}
             expandable={this.model.expandable != null ? this.model.expandable : this.defaultExpandable}
             isExpanded={this._headerIsExpandedState}
+            isCollapsed={this._headerIsCollapsedState}
             setExpanded={(toggle: boolean) => {
                 if (this.interactionDisabled) return;
 
                 this.setHeight(toggle ? this.expandedTrackHeightPx : this.defaultHeightPx);
+            }}
+            setCollapsed={(toggle: boolean) => {
+                if (this.interactionDisabled) return;
+
+                this.setHeight(toggle ? this.collapsedTrackHeightPx : this.defaultHeightPx);
             }}
             style={{
                 opacity: this._opacity,
@@ -1338,6 +1391,10 @@ class RowObject {
 
     protected isExpanded = () => {
         return this.getHeight() >= this.expandedTrackHeightPx;
+    }
+
+    protected isCollapsed = () => {
+        return this.getHeight() <= this.collapsedTrackHeightPx;
     }
 
 }

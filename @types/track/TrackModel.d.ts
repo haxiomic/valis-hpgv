@@ -9,8 +9,10 @@ export declare type TrackModel = {
     longname?: string;
     heightPx?: number;
     expandedHeightPx?: number;
+    collapsedHeightPx?: number;
     highlightLocation?: string;
     expandable?: boolean;
+    collapsible?: boolean;
     color?: Array<number>;
     styleSelector?: string;
     [field: string]: any;

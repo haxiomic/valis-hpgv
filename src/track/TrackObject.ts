@@ -28,14 +28,14 @@ export class TrackObject<
     protected contig: string | undefined;
     protected x0: number;
     protected x1: number;
-    
+
     protected defaultCursor = 'crosshair';
     protected highlightLocation: string;
 
     protected axisPointers: { [id: string]: AxisPointer } = {};
     protected activeAxisPointerColor = [1, 1, 1, 0.8];
     protected secondaryAxisPointerColor = [0.2, 0.2, 0.2, 1];
-    
+
     protected highlightPointers: { [id: string]: HighlightPointer } = {};
 
     protected focusRegionRectLeft: Rect;
@@ -48,14 +48,14 @@ export class TrackObject<
 
     constructor(protected readonly model: ModelType) {
         super(0, 0);
-        
+
         // set default background color
         this.color = [0.1, 0.1, 0.1, 1];
-        
+
         this.highlightLocation = model["highlightLocation"];
 
         this.cursorStyle = this.defaultCursor;
-    
+
         this.addInteractionListener('pointerdown', () => this.cursorStyle = 'pointer');
         this.addInteractionListener('pointerup', () => this.cursorStyle = this.defaultCursor);
         this.addInteractionListener('dragend', () => this.cursorStyle = this.defaultCursor);
@@ -73,7 +73,7 @@ export class TrackObject<
         // @! depth-box, should be at top, maybe relativeZ = 1
         // - be careful to avoid conflict with cursor
         this.toggleLoadingIndicator(false, false);
-        
+
         let focusRegionColor = [.1, .1, .1, 1.0];
         let focusRegionOpacity = 0.7;
         this.focusRegionRectLeft = new Rect(0, 0, focusRegionColor);
@@ -129,12 +129,12 @@ export class TrackObject<
             axisPointer.setStyle(style);
         }
     }
-    
+
     setHighlightPointer(id: string, fractionX: number, contig?: string) {
         let withinBounds = fractionX >= 0 && fractionX <= 1;
-    
+
         let highlightPointer = this.highlightPointers[id];
-    
+
         if (highlightPointer === undefined) {
             // !withinBounds means do not draw, so we don't need to create the object
             if (!withinBounds) return;
@@ -144,14 +144,14 @@ export class TrackObject<
             this.add(highlightPointer);
             this.highlightPointers[id] = highlightPointer;
         }
-        highlightPointer.color = [0.957, 0.886, 0.478, 1]; // hex: 
-    
+        highlightPointer.color = [0.957, 0.886, 0.478, 1]; // hex:
+
         highlightPointer.render = withinBounds;
-        
+
         if (!(this.highlightLocation)) {
             highlightPointer.render = false;
         }
-    
+
         if (withinBounds && this.highlightLocation) {
             const highlightChr = this.highlightLocation.split(':')[0];
             const contigPosition = contig ? contig : this.contig;
@@ -245,7 +245,7 @@ export class TrackObject<
         let samplingDensity = this.currentSamplingDensity();
         let continuousLodLevel = Scalar.log2(Math.max(samplingDensity, 1));
         let lodLevel = Math.floor(continuousLodLevel);
-        
+
         let tileLoader = this.getTileLoader();
 
         tileLoader._lowestTouchedLod = Infinity;

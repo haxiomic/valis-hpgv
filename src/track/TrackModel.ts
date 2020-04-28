@@ -11,10 +11,13 @@ export type TrackModel = {
     longname?: string,
     heightPx?: number,
     expandedHeightPx?: number,
-    
+    collapsedHeightPx?: number,
+
     highlightLocation?: string,
 
     expandable?: boolean,
+    collapsible?: boolean,
+    // allCollapsed?: boolean,
 
     color?: Array<number>,
 

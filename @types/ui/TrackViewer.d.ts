@@ -107,7 +107,9 @@ export declare class TrackViewer extends Object2D {
         model: TrackModel;
         expandable: boolean;
         setExpanded?: (state: boolean) => void;
+        setCollapsed?: (state: boolean) => void;
         isExpanded: boolean;
+        isCollapsed: boolean;
         style?: React.CSSProperties;
     }): JSX.Element;
     static AddPanelButton(props: {
@@ -153,9 +155,11 @@ declare class RowObject {
     protected _h: number;
     protected _opacity: number;
     protected _headerIsExpandedState: boolean | undefined;
+    protected _headerIsCollapsedState: boolean | undefined;
     protected styleProxy: StyleProxy;
     protected interactionDisabled: boolean;
     protected readonly expandedTrackHeightPx: number;
+    protected readonly collapsedTrackHeightPx: number;
     constructor(model: TrackModel, defaultHeightPx: number, defaultExpandable: boolean, spacing: {
         x: number;
         y: number;
@@ -173,5 +177,6 @@ declare class RowObject {
     protected layoutY(): void;
     protected updateHeader(): void;
     protected isExpanded: () => boolean;
+    protected isCollapsed: () => boolean;
 }
 export default TrackViewer;

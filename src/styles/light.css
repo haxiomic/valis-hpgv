@@ -34,12 +34,16 @@
     border-bottom-right-radius: 0;
 }
 
-.hpgv_track-expander {
+.button-container {
     position: absolute;
     right: 0;
     left: 0;
     bottom: 0;
     margin: auto;
+}
+
+.hpgv_track-expander {
+    display: inline-block;
     width: 16px;
     height: 16px;
     padding: 4px;
@@ -96,5 +100,5 @@
 }
 
 .hpgv_track-variant {
-    
+
 }
