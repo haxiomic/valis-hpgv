@@ -32,27 +32,27 @@ import { TrackEvent } from "../track/TrackEvent";
 
 // Icons to collapse and expand track header.
 const ExpandLessIcon = () => (
-    <svg version="1.1" focusable="false" viewBox="0 0 12 7.4">
-        <path d="M6,0L0,6l1.4,1.4L6,2.8l4.6,4.6L12,6L6,0z"/>
+    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="plus-circle" className="svg-inline--fa fa-plus-circle fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z" />
     </svg>
 );
 
 const ExpandMoreIcon = () => (
-    <svg version="1.1" focusable="false" viewBox="0 0 12 7.4">
-        <path d="M10.6,0L6,4.6L1.4,0L0,1.4l6,6l6-6L10.6,0z"/>
+    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="plus-circle" className="svg-inline--fa fa-plus-circle fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z" />
     </svg>
 );
 
 // Icons to collapse and expand track header.
 const CollapseIcon = () => (
-    <svg version="1.1" focusable="false" viewBox="0 0 12 7.4">
-        <path d="M10.6,0L6,4.6L1.4,0L0,1.4l6,6l6-6L10.6,0z"/>
+    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="minus-circle" className="svg-inline--fa fa-minus-circle fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zM124 296c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h264c6.6 0 12 5.4 12 12v56c0 6.6-5.4 12-12 12H124z" />
     </svg>
 );
 
 const UndoCollapseIcon = () => (
-    <svg version="1.1" focusable="false" viewBox="0 0 12 7.4">
-        <path d="M6,0L0,6l1.4,1.4L6,2.8l4.6,4.6L12,6L6,0z"/>
+    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="minus-circle" className="svg-inline--fa fa-minus-circle fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zM124 296c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h264c6.6 0 12 5.4 12 12v56c0 6.6-5.4 12-12 12H124z" />
     </svg>
 );
 
@@ -1088,8 +1088,9 @@ export class TrackViewer extends Object2D {
                 ...props.style,
             }}
         >
-            <div>{props.isExpanded && props.model.longname ? props.model.longname : props.model.name}</div>
-            <div>{props.isCollapsed && props.model.shortname ? props.model.shortname : props.model.name}</div>
+            <div>{props.isExpanded && props.model.longname ? props.model.longname : null}</div>
+            <div>{props.isCollapsed && props.model.shortname ? props.model.shortname : null}</div>
+            <div>{!props.isExpanded && !props.isCollapsed ? props.model.name : null}</div>
             {
                 props.expandable ? (
                     <div className="button-container">
