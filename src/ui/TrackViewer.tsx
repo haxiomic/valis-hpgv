@@ -1090,7 +1090,7 @@ export class TrackViewer extends Object2D {
         >
             <div>{props.isExpanded && props.model.longname ? props.model.longname : null}</div>
             <div>{props.isCollapsed && props.model.shortname ? props.model.shortname : null}</div>
-            <div>{!props.isExpanded && !props.isCollapsed ? props.model.name : null}</div>
+            <div>{((!props.model.shortname && !props.model.longname) || (!props.isExpanded && !props.isCollapsed)) ? props.model.name : null}</div>
             {
                 props.expandable ? (
                     <div className="button-container">
