@@ -90,9 +90,9 @@ export class TrackViewer extends Object2D {
 
     protected panelStyleProxy: StyleProxy;
     protected trackStyleProxies: { [trackType: string]: StyleProxy } = {};
-    
+
     protected highlightLocation: string;
-    
+
     constructor() {
         super();
 
@@ -277,12 +277,12 @@ export class TrackViewer extends Object2D {
     // track-viewer state deltas
     addTrack(model: TrackModel, animate: boolean = true, highlightLocation: string): Track {
         let trackClasses = GenomeVisualizer.getTrackType(model.type);
-        
+
         model.highlightLocation = highlightLocation;
 
         trackClasses.tileLoaderClass.getAvailableContigs(model).then(contigs => {
             for(let contig of contigs) this.dataSource.addContig(contig);
-            
+
             // if no panels have been specified, create one from the first available contig
             if (this.panels.size === 0) {
                 this.dataSource.getContigs().then(contigs => {
@@ -308,7 +308,7 @@ export class TrackViewer extends Object2D {
             (name) => {
                 if (name === 'heightPx') {
                     this.emit('track-resize', track);
-                } 
+                }
                 this.layoutTrackRows(true);
             }
         );
@@ -343,7 +343,7 @@ export class TrackViewer extends Object2D {
         rowObject.header.x = -this.trackHeaderWidth + this.spacing.x * 0.5;
         rowObject.header.w = this.trackHeaderWidth;
 
-        // position the resize handle to span the full width of the viewer 
+        // position the resize handle to span the full width of the viewer
         rowObject.resizeHandle.relativeW = 1;
         rowObject.resizeHandle.x = -this.trackHeaderWidth;
         rowObject.resizeHandle.w = this.trackHeaderWidth;
@@ -365,7 +365,7 @@ export class TrackViewer extends Object2D {
 
         this.grid.add(rowObject.header);
         this.grid.add(rowObject.resizeHandle);
-        
+
         if (this._removableTracks) {
             this.grid.add(rowObject.closeButton);
         }
@@ -426,7 +426,7 @@ export class TrackViewer extends Object2D {
         let newWidth = newColumnIndex == 0 ? 1 : 1 / newColumnIndex;
         let newEdge = 1 + newWidth;
         edges.push(newEdge);
-    
+
 
         // create panel object and add header to the scene graph
         let panel = new Panel((p) => this.closePanel(p, true), this.spacing, this.panelHeaderHeight, this.xAxisHeight, this.dataSource);
@@ -583,7 +583,7 @@ export class TrackViewer extends Object2D {
         let trackObject = new trackObjectClass(model);
         panel.addTrackView(trackObject);
         rowObject.addTrackView(trackObject);
-        
+
         // unwrap and forward track events, so you can do, trackViewer.addEventListener(<track-event>, ...)
         trackObject.addEventListener('track-event', (eventData: TrackEvent) => {
             this.emit('track-event', eventData);
@@ -841,9 +841,9 @@ export class TrackViewer extends Object2D {
         let trackButtonsVisible = this.allowNewPanels || this._removableTracks;
 
         this.grid.x = this.trackHeaderWidth + this.spacing.x * 0.5;
-        this.grid.w = 
+        this.grid.w =
             - this.trackHeaderWidth - this.spacing.x * 0.5
-            // right-side buttons 
+            // right-side buttons
             - (trackButtonsVisible ? (this.trackButtonWidth + this.spacing.x * 0.5) : 0)
         ;
         this.grid.relativeW = 1;
@@ -869,7 +869,7 @@ export class TrackViewer extends Object2D {
         // assumes grid.h is up to date (requires calling layoutTrackRows(false))
         let trackViewerHeight = this.getComputedHeight();
         let gridViewportHeight = trackViewerHeight - this.grid.y;
-        
+
         let totoalRowHeight = this.getTotalRowHeight();
 
         const padding = this.spacing.y;
@@ -1281,7 +1281,7 @@ class RowObject {
         this.resizeHandle.cursorStyle = v ? 'row-resize' : null;
         this.resizeHandle.color = (v ? [0, 1, 0, 1] : [0.3, 0.3, 0.3, 1]);
     }
-    
+
     addTrackView(trackView: TrackObject) {
         this.trackViews.add(trackView);
         this.syncTrackView(trackView);
