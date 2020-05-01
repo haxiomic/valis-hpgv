@@ -1272,10 +1272,7 @@ class RowObject {
         this.setResizable(false);
 
         this.expandedTrackHeightPx = this.model.expandedHeightPx != null ? this.model.expandedHeightPx : (defaultHeightPx * 2);
-        this.collapsedTrackHeightPx = this.model.collapsedHeightPx != null ? this.model.collapsedHeightPx : (defaultHeightPx / 2);
-
-        console.log(this.expandedTrackHeightPx);
-        console.log(this.collapsedTrackHeightPx);
+        this.collapsedTrackHeightPx = 50;
 
         this.updateHeader();
     }
