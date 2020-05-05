@@ -28,7 +28,8 @@ let config = {
             path: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vgenes-dir',
             heightPx: 60,
             compact: true,
-        },
+            inputParameters: [2, 0.7, -1.0, 30],
+            expandable: true,
         {
             name: 'bigBed',
             longname: 'Long name',
@@ -36,6 +37,8 @@ let config = {
             type: 'annotation',
             path: 'https://www.encodeproject.org/files/ENCFF609BMS/@@download/ENCFF609BMS.bigBed',
             heightPx: 50,
+            inputParameters: [2, 0.7, -1.0, 30],
+            expandable: true,
         },
         {
             name: 'bigWig',
@@ -64,7 +67,7 @@ hpgv.render({ width: 800, height: 600 }, document.getElementById('container'));
 
 document.getElementById('button-to-click').addEventListener('click', () => {
     console.log('clicked!');
-    hpgv.setLocation({ contig: 'ch1', x0: 10000, x1: 248956422 });
+    hpgv.setLocation({ contig: 'ch1', x0: 10000, x1: 24895622 });
 });
 
 // document.getElementById('collapse-all').addEventListener('click', () => {

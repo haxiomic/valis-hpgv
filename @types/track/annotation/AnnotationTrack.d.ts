@@ -27,6 +27,7 @@ export declare class AnnotationTrack extends TrackObject<AnnotationTrackModel, A
     };
     protected macroModel: MacroAnnotationTrackModel;
     readonly compact: boolean;
+    readonly inputParameters: Array<number>;
     protected colors: {
         '--transcript-arrow': number[];
         '--transcript': number[];

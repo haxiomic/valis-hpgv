@@ -51,8 +51,6 @@ export class SequenceTrack<Model extends SequenceTrackModel = SequenceTrackModel
     constructor(model: Model) {
         super(model, SequenceTile);
         this.loadingIndicatorPadding = 0.5; // make it slower to appear then normal
-        console.log('sequence track');
-        console.log(this);
     }
 
     applyStyle(styleProxy: StyleProxy) {

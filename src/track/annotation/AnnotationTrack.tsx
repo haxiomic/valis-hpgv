@@ -50,6 +50,7 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
     protected macroModel: MacroAnnotationTrackModel;
 
     readonly compact: boolean;
+    readonly inputParameters: Array<number>;
 
     protected colors = {
         '--transcript-arrow': [138 / 0xff, 136 /0xff, 191 /0xff, 0.38],
@@ -79,10 +80,8 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
     constructor(model: AnnotationTrackModel) {
         super(model);
 
-        console.log('annotation track');
-        console.log(this);
-
         this.compact = this.model.compact !== false;
+        this.inputParameters = this.model.inputParameters;
 
         this.macroModel = {
             ...model,
@@ -170,6 +169,8 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
                 return;
             }
 
+            console.log(`this.compact is ${this.compact}`);
+
             for (let gene of tile.payload) {
                 // @! temp performance hack, only use node when visible
                 // (don't need to do this when using instancing)
@@ -186,15 +187,16 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
                     geneAnnotation.z = 1 / 4;
                     geneAnnotation.relativeH = 0;
 
+                    console.log(this.inputParameters);
+                    const yDivisor = this.inputParameters ? this.inputParameters[0] : 1;
+                    const relativeY = this.inputParameters ? this.inputParameters[1] : 0.7;
+                    const originY = this.inputParameters ? this.inputParameters[2] : -1;
+                    const yOffset = this.inputParameters ? this.inputParameters[3] : 30;
+
                     if (this.compact) {
-                        // change here
-                        geneAnnotation.y = this.annotationY[gene.strand] / 2;
-                        console.log('gene annotation y');
-                        console.log(geneAnnotation.y);
-                        // changed this
-                        geneAnnotation.relativeY = 0.7;
-                        // changed this
-                        geneAnnotation.originY = -1; //-0.2;//-1.5;//-0.5;
+                        geneAnnotation.y = this.annotationY[gene.strand] / yDivisor;
+                        geneAnnotation.relativeY = relativeY;
+                        geneAnnotation.originY = originY;
                     } else {
                         geneAnnotation.y = 40;
                     }
@@ -209,7 +211,7 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
                     name.strokeColor = this.colors['--stroke'];
                     name.strokeWidthPx = this.sharedState.style['--stroke-width'];
                     name.mask = this;
-                    name.y = geneAnnotation.y + 30;
+                    name.y = geneAnnotation.y + yOffset;
                     name.relativeY = geneAnnotation.relativeY;
                     name.z = 5.0;
 
@@ -256,7 +258,7 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
         annotations.sort((a, b) => {
             return a.gene.relativeX - b.gene.relativeX;
         });
-    
+
         let trackWidth = this.getComputedWidth();
 
         let cursorPositiveX = 0;
@@ -458,10 +460,7 @@ class GeneAnnotation extends Object2D {
 
         const transcriptOffset = 5;
         const transcriptSpacing = 5;
-        console.log(`transpcriptSpacing is ${transcriptSpacing} but I'm not sure it helps.`);
         this.h = compact ? TRANSCRIPT_HEIGHT : 0;
-        console.log(`transcript height is ${TRANSCRIPT_HEIGHT}`);
-        console.log(`this.h is ${this.h}`);
 
         if (gene.transcripts.length > 0) {
             for (let i = 0; i < gene.transcripts.length; i++) {
@@ -522,9 +521,6 @@ class TranscriptAnnotation extends Object2D {
     ) {
         super();
 
-        console.log('annotation track');
-        console.log(this);
-
         let backgroundColor = sharedState.colors['--transcript'].slice();
         let passiveOpacity = backgroundColor[3];
         let hoverOpacity = passiveOpacity * 3;
@@ -539,9 +535,6 @@ class TranscriptAnnotation extends Object2D {
         background.originY = -0.5;
 
         this.add(background);
-
-        console.log('background is');
-        console.log(background);
 
         // highlight on mouse-over
         const springStrength = 300;

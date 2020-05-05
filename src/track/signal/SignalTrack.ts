@@ -381,8 +381,6 @@ export class SignalTile extends ShaderTile<SignalTilePayload> {
 
     constructor(protected readonly sharedState: SignalTrack['sharedState']) {
         super();
-        console.log('signal track');
-        console.log(this);
     }
 
     setTile(tile: Tile<SignalTilePayload>) {

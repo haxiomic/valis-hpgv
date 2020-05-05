@@ -10,5 +10,6 @@ export declare type MacroAnnotationTrackModel = TrackModel & {
     readonly type: 'macro-annotation';
     readonly strand?: Strand;
     readonly compact?: boolean;
+    readonly inputParameters?: Array<number>;
     readonly path?: string;
 };

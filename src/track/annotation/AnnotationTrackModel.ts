@@ -15,6 +15,7 @@ export type MacroAnnotationTrackModel = TrackModel & {
 
     readonly strand?: Strand,
     readonly compact?: boolean,
+    readonly inputParameters?: Array<number>,
 
     readonly path?: string,
 }

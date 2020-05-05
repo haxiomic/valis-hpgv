@@ -323,6 +323,9 @@ export class TrackViewer extends Object2D {
             (): number => track.heightPx
         );
 
+        console.log(track);
+        console.log(rowObject);
+
         (track as any as TrackInternal).rowObject = rowObject;
 
         // add track tile to all panels
