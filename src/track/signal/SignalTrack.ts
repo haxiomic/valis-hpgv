@@ -95,7 +95,7 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
         // this.yAxisPointer.opacity = 0.3;
         this.yAxisPointer.mask = this;
         this.add(this.yAxisPointer);
-        
+
         this.highlightPointer = new HighlightPointer(HighlightStyle.Secondary, [0.2, 0.2, 0.2, 0], [0.2, 0.2, 0.2, 0], 'x');
         this.highlightPointer.render = true;
         this.highlightPointer.x = 0.5;
@@ -103,7 +103,7 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
         this.highlightPointer.z = 2;
         this.highlightPointer.mask = this;
         this.add(this.highlightPointer);
-        
+
 
         if (model.color != null) {
             this.sharedState.signalColor = model.color;
@@ -140,7 +140,7 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
         this.yAxisPointer.activeColor = this.activeAxisPointerColor;
         this.yAxisPointer.secondaryColor = this.secondaryAxisPointerColor;
         this.yAxisPointer.setStyle(this.yAxisPointer.style);
-        
+
         this.highlightPointer.activeColor = [0.2, 0.2, 0.2, 0.5];
         this.highlightPointer.secondaryColor = [0.2, 0.2, 0.2, 0.5];
         this.highlightPointer.setStyle(this.highlightPointer.style);
@@ -150,7 +150,7 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
         super.setAxisPointer(id, fractionX, style);
         this.updateAxisPointerSample();
     }
-    
+
     setHighlightPointer(id: string, fractionX: number, contig?: string) {
         super.setHighlightPointer(id, fractionX);
     }
@@ -264,14 +264,14 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
             }
         }
 
-        // if primary is set and visible then 
+        // if primary is set and visible then
         if (primary != null && primary.render) {
             let pointerTrackRelativeX = primary.relativeX;
 
             let currentReadingLod: number = Infinity;
             // find the signal tile with the lowest LOD
             let tileNode: SignalTile = null;
-            
+
             for (let node of this.tileNodes) {
                 // hit-test node
                 if (pointerTrackRelativeX >= node.relativeX && pointerTrackRelativeX < (node.relativeX + node.relativeW)) {
@@ -288,12 +288,12 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
 
             if (tileNode != null) {
                 let tile = tileNode.getTile();
-                
+
                 let tileRelativeX = (pointerTrackRelativeX - tileNode.relativeX) / tileNode.relativeW;
                 this.setSignalReading(tile.payload.getReading(tileRelativeX, 0));
-                
+
                 let highlightRelativeX = (pointerTrackRelativeX + tileNode.relativeX) / tileNode.relativeW;
-                
+
                 if (this.signalReadingSnapX) {
                     let signalReadingRelativeWidth = (this.signalReading.getComputedWidth() + Math.abs(this.signalReading.x) * 2) / this.getComputedWidth();
                     this.signalReading.relativeX = Math.min(pointerTrackRelativeX, 1 - signalReadingRelativeWidth);
@@ -305,7 +305,7 @@ export class SignalTrack<Model extends TrackModel = SignalTrackModel> extends Sh
             this.setSignalReading(null);
         }
     }
-    
+
     protected setHighlightValue(value: number) {
         this.highlightPointer.render = true;
         this.highlightPointer.transparent = false;
@@ -381,6 +381,8 @@ export class SignalTile extends ShaderTile<SignalTilePayload> {
 
     constructor(protected readonly sharedState: SignalTrack['sharedState']) {
         super();
+        console.log('signal track');
+        console.log(this);
     }
 
     setTile(tile: Tile<SignalTilePayload>) {
@@ -433,7 +435,7 @@ export class SignalTile extends ShaderTile<SignalTilePayload> {
                 }
 
                 ${this.signalShaderFunction}
-                
+
                 void main() {
                     vec4 textureSample = texture2D(memoryBlock, texCoord) * scaleFactor;
 

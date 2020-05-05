@@ -27,7 +27,7 @@ export class SequenceTrack<Model extends SequenceTrackModel = SequenceTrackModel
             t: [0.200, 0.200, 0.404, 1.0],
             c: [0.043, 0.561, 0.608, 1.0],
             g: [0.071, 0.725, 0.541, 1.0],
-            
+
             gcBandingLow: [0.286, 0, 0.502, 1],
             gcBandingHigh: [0.106, 1, 0.627, 1],
 
@@ -47,10 +47,12 @@ export class SequenceTrack<Model extends SequenceTrackModel = SequenceTrackModel
 
         backgroundColor: this.color,
     }
- 
+
     constructor(model: Model) {
         super(model, SequenceTile);
         this.loadingIndicatorPadding = 0.5; // make it slower to appear then normal
+        console.log('sequence track');
+        console.log(this);
     }
 
     applyStyle(styleProxy: StyleProxy) {
@@ -62,7 +64,7 @@ export class SequenceTrack<Model extends SequenceTrackModel = SequenceTrackModel
         this.sharedState.colors.t = styleProxy.getColor('--nucleobase-t') || this.sharedState.colors.t;
         this.sharedState.colors.c = styleProxy.getColor('--nucleobase-c') || this.sharedState.colors.c;
         this.sharedState.colors.g = styleProxy.getColor('--nucleobase-g') || this.sharedState.colors.g;
-        
+
         this.sharedState.colors.gcBandingLow = styleProxy.getColor('--gc-banding-low') || this.sharedState.colors.gcBandingLow;
         this.sharedState.colors.gcBandingHigh = styleProxy.getColor('--gc-banding-high') || this.sharedState.colors.gcBandingHigh;
 
@@ -167,14 +169,14 @@ class SequenceTile extends ShaderTile<SequenceTilePayload> {
             if (tile.lodLevel === 0 && tile.state === TileState.Complete) {
                 let data = tile.payload.array;
 
-                let baseWidth = 1 / tile.lodSpan;            
+                let baseWidth = 1 / tile.lodSpan;
                 let baseDisplayWidth = this.computedWidth * baseWidth;
 
                 const maxTextSize = 16;
                 const minTextSize = 5;
                 const padding = 3;
                 const maxOpacity = 1.0;
-                
+
                 let textSizePx = Math.min(baseDisplayWidth - padding, maxTextSize);
                 let textOpacity = Math.min(Math.max((textSizePx - minTextSize) / (maxTextSize - minTextSize), 0.0), 1.0) * maxOpacity;
                 textOpacity = textOpacity * textOpacity;
@@ -194,13 +196,13 @@ class SequenceTile extends ShaderTile<SequenceTilePayload> {
                     let lastVisibleBase = Scalar.clamp(Math.floor(visibleX1 / baseWidth), 0, nBases - 1);
 
                     const proportionThreshold = 0.5;
-                    
+
                     for (let i = firstVisibleBase; i <= lastVisibleBase; i++) {
                         let a = data[i * 4 + 0] / 0xFF;
                         let c = data[i * 4 + 1] / 0xFF;
                         let g = data[i * 4 + 2] / 0xFF;
                         let t = data[i * 4 + 3] / 0xFF;
-                        
+
                         // determine a nucleobase character to display
                         let baseChar: string;
 
@@ -221,14 +223,14 @@ class SequenceTile extends ShaderTile<SequenceTilePayload> {
                         label.text.opacity = textOpacity;
                     }
                 }
-                
+
             }
         }
 
         this._labelCache.removeUnused();
     }
 
-    protected createLabel = (baseCharacter: string) => {        
+    protected createLabel = (baseCharacter: string) => {
         let textClone = new TextClone(this.sharedState.baseTextInstances[baseCharacter], this.sharedState.colors.color);
         textClone.additiveBlending = this.sharedState.colors.textAdditiveBlendFactor;
 
@@ -289,7 +291,7 @@ class SequenceTile extends ShaderTile<SequenceTilePayload> {
             varying vec2 vUv;
 
             ${Shaders.functions.palettes.viridis}
-            
+
             void main() {
                 // %a,%c,%g,%t
                 vec4 texRaw = texture2D(memoryBlock, texCoord);
@@ -325,7 +327,7 @@ class SequenceTile extends ShaderTile<SequenceTilePayload> {
                 vec4 acgtScaled = (acgt - expectedAvg) / expectedSpan + 0.5;
 
                 float gc = (acgtScaled[1] + acgtScaled[2]) * 0.5;
-                
+
                 vec3 colMacro = (
                     mix(gcBandingLow, gcBandingHigh, gc)
                     // tend to white at gc highest-density
@@ -337,7 +339,7 @@ class SequenceTile extends ShaderTile<SequenceTilePayload> {
                 float microMacroMix = clamp((displayLodLevel - microScaleEndLod) / microScaleEndLod, 0., 1.0);
 
                 gl_FragColor = vec4(mix(colMicro, colMacro, microMacroMix), 1.0) * opacity * dataAvailable;
-                
+
                 // display nothing (background color) if there's no data
                 // we use the background color rather than just opacity 0 because the tile may have opaque blending
                 gl_FragColor = mix(vec4(backgroundColor, 1.0), gl_FragColor, dataAvailable);

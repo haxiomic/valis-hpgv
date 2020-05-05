@@ -18,6 +18,7 @@ let config = {
             shortname: 'Short name',
             type: 'sequence',
             path: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vdna-dir',
+            heightPx: 50,
         },
         {
             name: 'Valis Genes',
@@ -25,6 +26,8 @@ let config = {
             shortname: 'Short name',
             type: 'annotation',
             path: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vgenes-dir',
+            heightPx: 60,
+            compact: true,
         },
         {
             name: 'bigBed',
@@ -32,6 +35,7 @@ let config = {
             shortname: 'Short name',
             type: 'annotation',
             path: 'https://www.encodeproject.org/files/ENCFF609BMS/@@download/ENCFF609BMS.bigBed',
+            heightPx: 50,
         },
         {
             name: 'bigWig',
@@ -39,6 +43,7 @@ let config = {
             shortname: 'Short name',
             type: 'signal',
             path: 'https://www.encodeproject.org/files/ENCFF833POA/@@download/ENCFF833POA.bigWig',
+            heightPx: 50,
         },
         {
             name: 'bigWig',
@@ -46,6 +51,7 @@ let config = {
             shortname: 'Short name',
             type: 'signal',
             path: 'https://www.encodeproject.org/files/ENCFF985ZQU/@@download/ENCFF985ZQU.bigWig',
+            heightPx: 50,
         }
     ],
 };

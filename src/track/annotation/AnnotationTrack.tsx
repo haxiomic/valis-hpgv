@@ -18,7 +18,7 @@ import { AnnotationTrackModel, MacroAnnotationTrackModel } from './AnnotationTra
 import { GeneClass, GenomeFeature, TranscriptClass, GenomeFeatureType, TranscriptComponentInfo } from "./AnnotationTypes";
 import { StyleProxy } from "../../ui/util/StyleProxy";
 
-const TRANSCRIPT_HEIGHT = 20;
+const TRANSCRIPT_HEIGHT = 15;
 
 export class AnnotationTrack extends TrackObject<AnnotationTrackModel, AnnotationTileLoader> {
 
@@ -29,7 +29,7 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
     static getExpandable(model: AnnotationTrackModel) {
         let defaultCompact = true;
         let compact = model.compact != null ? model.compact : defaultCompact;
-        return compact ? false : true;        
+        return compact ? false : true;
     }
 
     protected readonly macroLodBlendRange = 2;
@@ -78,6 +78,9 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
 
     constructor(model: AnnotationTrackModel) {
         super(model);
+
+        console.log('annotation track');
+        console.log(this);
 
         this.compact = this.model.compact !== false;
 
@@ -184,9 +187,14 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
                     geneAnnotation.relativeH = 0;
 
                     if (this.compact) {
-                        geneAnnotation.y = this.annotationY[gene.strand];
-                        geneAnnotation.relativeY = 0.5;
-                        geneAnnotation.originY = -0.5;
+                        // change here
+                        geneAnnotation.y = this.annotationY[gene.strand] / 2;
+                        console.log('gene annotation y');
+                        console.log(geneAnnotation.y);
+                        // changed this
+                        geneAnnotation.relativeY = 0.7;
+                        // changed this
+                        geneAnnotation.originY = -1; //-0.2;//-1.5;//-0.5;
                     } else {
                         geneAnnotation.y = 40;
                     }
@@ -201,7 +209,7 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
                     name.strokeColor = this.colors['--stroke'];
                     name.strokeWidthPx = this.sharedState.style['--stroke-width'];
                     name.mask = this;
-                    name.y = geneAnnotation.y;
+                    name.y = geneAnnotation.y + 30;
                     name.relativeY = geneAnnotation.relativeY;
                     name.z = 5.0;
 
@@ -449,8 +457,11 @@ class GeneAnnotation extends Object2D {
         super();
 
         const transcriptOffset = 5;
-        const transcriptSpacing = 10;
+        const transcriptSpacing = 5;
+        console.log(`transpcriptSpacing is ${transcriptSpacing} but I'm not sure it helps.`);
         this.h = compact ? TRANSCRIPT_HEIGHT : 0;
+        console.log(`transcript height is ${TRANSCRIPT_HEIGHT}`);
+        console.log(`this.h is ${this.h}`);
 
         if (gene.transcripts.length > 0) {
             for (let i = 0; i < gene.transcripts.length; i++) {
@@ -483,7 +494,7 @@ class GeneAnnotation extends Object2D {
             transcriptAnnotation.h = TRANSCRIPT_HEIGHT;
             transcriptAnnotation.y = 0;
             transcriptAnnotation.relativeW = 1;
-            this.add(transcriptAnnotation);        
+            this.add(transcriptAnnotation);
         }
     }
 
@@ -511,6 +522,9 @@ class TranscriptAnnotation extends Object2D {
     ) {
         super();
 
+        console.log('annotation track');
+        console.log(this);
+
         let backgroundColor = sharedState.colors['--transcript'].slice();
         let passiveOpacity = backgroundColor[3];
         let hoverOpacity = passiveOpacity * 3;
@@ -525,6 +539,9 @@ class TranscriptAnnotation extends Object2D {
         background.originY = -0.5;
 
         this.add(background);
+
+        console.log('background is');
+        console.log(background);
 
         // highlight on mouse-over
         const springStrength = 300;
@@ -945,7 +962,7 @@ class TranscriptSpan extends Rect {
                         1.0,
                         step(direction, 0.75) * step(0.25, direction)
                     ) *
-                    
+
                     // middle line
                     lineSegment(x, vec2(0), vec2(1.0, 0.), 0.1, pixelSize)
                 );

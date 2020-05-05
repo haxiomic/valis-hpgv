@@ -119,7 +119,7 @@ export class IntervalTrack<Model extends IntervalTrackModel = IntervalTrackModel
     protected intervalLabelKey(tile: Tile<IntervalTilePayload>, index: number, startIndex: number, endIndex: number) {
         return startIndex + ':' + endIndex;
     }
-    
+
     protected createTileNode(tile: Tile<IntervalTilePayload>) {
         let nIntervals = tile.payload.intervals.length * 0.5;
 
@@ -215,6 +215,8 @@ export class IntervalTrackLabel extends Rect {
         this.textContainer.add(this.text);
 
         this.add(this.textContainer);
+        console.log('interval track');
+        console.log(this);
     }
 
     setMask(mask: Renderable<any>) {

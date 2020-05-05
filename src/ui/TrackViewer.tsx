@@ -868,12 +868,14 @@ export class TrackViewer extends Object2D {
         // determine minOffset from grid overflow
         // assumes grid.h is up to date (requires calling layoutTrackRows(false))
         let trackViewerHeight = this.getComputedHeight();
+        console.log(trackViewerHeight);
         let gridViewportHeight = trackViewerHeight - this.grid.y;
 
-        let totoalRowHeight = this.getTotalRowHeight();
+        let totalRowHeight = this.getTotalRowHeight();
+        console.log(totalRowHeight);
 
         const padding = this.spacing.y;
-        let overflow = totoalRowHeight - gridViewportHeight + padding;
+        let overflow = totalRowHeight - gridViewportHeight + padding;
         let minOffset = -overflow;
 
         this.rowOffsetY = Math.min(Math.max(this.rowOffsetY, minOffset), maxOffset);
