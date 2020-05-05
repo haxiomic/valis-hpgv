@@ -86,9 +86,10 @@ export declare class AnnotationTrack extends TrackObject<AnnotationTrackModel, A
 }
 declare class GeneAnnotation extends Object2D {
     readonly compact: boolean;
+    readonly inputParameters: Array<number>;
     readonly gene: Gene;
     opacity: number;
     protected _opacity: number;
-    constructor(compact: boolean, gene: Gene, sharedState: AnnotationTrack['sharedState'], onAnnotationClicked: (e: InteractionEvent, feature: GenomeFeature, gene: Gene) => void);
+    constructor(compact: boolean, inputParameters: Array<number>, gene: Gene, sharedState: AnnotationTrack['sharedState'], onAnnotationClicked: (e: InteractionEvent, feature: GenomeFeature, gene: Gene) => void);
 }
 export default AnnotationTrack;

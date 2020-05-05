@@ -183,7 +183,7 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
 
                 let annotation = this._annotationCache.get(annotationKey, () => {
                     // create gene object
-                    let geneAnnotation = new GeneAnnotation(this.compact, gene, this.sharedState, this.onAnnotationClicked);
+                    let geneAnnotation = new GeneAnnotation(this.compact, this.inputParameters, gene, this.sharedState, this.onAnnotationClicked);
                     geneAnnotation.z = 1 / 4;
                     geneAnnotation.relativeH = 0;
 
@@ -192,6 +192,8 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
                     const relativeY = this.inputParameters ? this.inputParameters[1] : 0.7;
                     const originY = this.inputParameters ? this.inputParameters[2] : -1;
                     const yOffset = this.inputParameters ? this.inputParameters[3] : 30;
+
+                    console.log(`relative Y for micro is ${relativeY}`);
 
                     if (this.compact) {
                         geneAnnotation.y = this.annotationY[gene.strand] / yDivisor;
@@ -331,16 +333,25 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
                     let colorLowerAlpha = color.slice();
                     colorLowerAlpha[3] *= .689655172;
 
+                    console.log(this.inputParameters);
+                    const yDivisor = this.inputParameters ? this.inputParameters[0] : 1;
+                    const relativeY = this.inputParameters ? this.inputParameters[4] : 0.4;
+                    const originY = this.inputParameters ? this.inputParameters[2] : -1;
+                    const yOffset = this.inputParameters ? this.inputParameters[3] : 30;
+                    const updatedTranscriptHeight = this.inputParameters ? this.inputParameters[5] : TRANSCRIPT_HEIGHT;
+
+                    console.log(`relative Y for macro is ${relativeY}`);
+
                     if (this.compact) {
                         instanceData.push({
                             x: 0,
-                            y: (this.annotationY[gene.strand]) - TRANSCRIPT_HEIGHT * 0.5,
+                            y: (this.annotationY[gene.strand]) / yDivisor,// - TRANSCRIPT_HEIGHT * 0.5,
                             z: 0,
                             w: 1,
-                            h: TRANSCRIPT_HEIGHT,
+                            h: updatedTranscriptHeight,
 
                             relativeX: (gene.startIndex - tile.x) / tile.span,
-                            relativeY: 0.5,
+                            relativeY: relativeY,
 
                             relativeW: gene.length / tile.span,
                             relativeH: 0.0,
@@ -452,6 +463,7 @@ class GeneAnnotation extends Object2D {
 
     constructor(
         readonly compact: boolean,
+        readonly inputParameters: Array<number>,
         readonly gene: Gene,
         sharedState: AnnotationTrack['sharedState'],
         onAnnotationClicked: (e: InteractionEvent, feature: GenomeFeature, gene: Gene) => void
@@ -460,16 +472,17 @@ class GeneAnnotation extends Object2D {
 
         const transcriptOffset = 5;
         const transcriptSpacing = 5;
-        this.h = compact ? TRANSCRIPT_HEIGHT : 0;
+        const updatedTranscriptHeight = this.inputParameters ? this.inputParameters[5] : TRANSCRIPT_HEIGHT;
+        this.h = compact ? updatedTranscriptHeight : 0;
 
         if (gene.transcripts.length > 0) {
             for (let i = 0; i < gene.transcripts.length; i++) {
                 let transcript = gene.transcripts[i];
 
                 let transcriptAnnotation = new TranscriptAnnotation(sharedState, transcript, gene.strand, (e, f) => onAnnotationClicked(e, f, gene));
-                transcriptAnnotation.h = TRANSCRIPT_HEIGHT;
+                transcriptAnnotation.h = updatedTranscriptHeight;
 
-                transcriptAnnotation.y = compact ? 0 : i * (TRANSCRIPT_HEIGHT + transcriptSpacing) + transcriptOffset;
+                transcriptAnnotation.y = compact ? 0 : i * (updatedTranscriptHeight + transcriptSpacing) + transcriptOffset;
 
                 transcriptAnnotation.relativeX = (transcript.startIndex - gene.startIndex) / gene.length;
                 transcriptAnnotation.relativeW = transcript.length / gene.length;
@@ -490,7 +503,7 @@ class GeneAnnotation extends Object2D {
                 other: [],
             };
             let transcriptAnnotation = new TranscriptAnnotation(sharedState, emptyTranscript, gene.strand, (e, f) => onAnnotationClicked(e, f, gene));
-            transcriptAnnotation.h = TRANSCRIPT_HEIGHT;
+            transcriptAnnotation.h = updatedTranscriptHeight;
             transcriptAnnotation.y = 0;
             transcriptAnnotation.relativeW = 1;
             this.add(transcriptAnnotation);
