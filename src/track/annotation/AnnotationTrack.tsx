@@ -169,8 +169,6 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
                 return;
             }
 
-            console.log(`this.compact is ${this.compact}`);
-
             for (let gene of tile.payload) {
                 // @! temp performance hack, only use node when visible
                 // (don't need to do this when using instancing)
@@ -187,13 +185,10 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
                     geneAnnotation.z = 1 / 4;
                     geneAnnotation.relativeH = 0;
 
-                    console.log(this.inputParameters);
                     const yDivisor = this.inputParameters ? this.inputParameters[0] : 1;
                     const relativeY = this.inputParameters ? this.inputParameters[1] : 0.7;
                     const originY = this.inputParameters ? this.inputParameters[2] : -1;
                     const yOffset = this.inputParameters ? this.inputParameters[3] : 30;
-
-                    console.log(`relative Y for micro is ${relativeY}`);
 
                     if (this.compact) {
                         geneAnnotation.y = this.annotationY[gene.strand] / yDivisor;
@@ -333,14 +328,11 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
                     let colorLowerAlpha = color.slice();
                     colorLowerAlpha[3] *= .689655172;
 
-                    console.log(this.inputParameters);
                     const yDivisor = this.inputParameters ? this.inputParameters[0] : 1;
                     const relativeY = this.inputParameters ? this.inputParameters[4] : 0.4;
                     const originY = this.inputParameters ? this.inputParameters[2] : -1;
                     const yOffset = this.inputParameters ? this.inputParameters[3] : 30;
                     const updatedTranscriptHeight = this.inputParameters ? this.inputParameters[5] : TRANSCRIPT_HEIGHT;
-
-                    console.log(`relative Y for macro is ${relativeY}`);
 
                     if (this.compact) {
                         instanceData.push({
