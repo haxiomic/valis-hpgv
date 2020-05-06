@@ -150,6 +150,10 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
 
         let namesOpacity = 1.0 - Scalar.linstep(this.namesLodThresholdLow, this.namesLodThresholdHigh, continuousLodLevel);
 
+        if (this.computedHeight < 50) {
+            namesOpacity = 0;
+        }
+
         let microSamplingDensity = 1;
 
         this.getTileLoader().forEachTile(x0, x1, microSamplingDensity, true, (tile) => {

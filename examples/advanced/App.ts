@@ -27,7 +27,8 @@ let config = {
             type: 'annotation',
             path: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vgenes-dir',
             heightPx: 60,
-            compact: true,
+            collapsedHeightPx: 40,
+            // compact: true,
             inputParameters: [2, 0.7, -1.0, 0, 0.43, 15],
             expandable: true,
         {

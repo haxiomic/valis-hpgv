@@ -300,6 +300,8 @@ export class TrackViewer extends Object2D {
         let defaultTrackHeight = trackClasses.trackObjectClass.getDefaultHeightPx != null ? trackClasses.trackObjectClass.getDefaultHeightPx(model) : 100;
         let expandable = trackClasses.trackObjectClass.getExpandable != null ? trackClasses.trackObjectClass.getExpandable(model) : true;
         let heightPx = model.heightPx != null ? model.heightPx : defaultTrackHeight;
+        let expandedTrackHeightPx = model.expandedHeightPx != null ? model.expandedHeightPx : (defaultTrackHeight * 2);
+        let collapsedTrackHeightPx = model.collapsedTrackHeightPx != null ? model.collapsedTrackHeightPx : 32;
 
         // create a track and add the header element to the grid
         let track: Track = new Track(
@@ -322,9 +324,6 @@ export class TrackViewer extends Object2D {
             (h: number) => track.heightPx = h,
             (): number => track.heightPx
         );
-
-        console.log(track);
-        console.log(rowObject);
 
         (track as any as TrackInternal).rowObject = rowObject;
 
@@ -871,11 +870,9 @@ export class TrackViewer extends Object2D {
         // determine minOffset from grid overflow
         // assumes grid.h is up to date (requires calling layoutTrackRows(false))
         let trackViewerHeight = this.getComputedHeight();
-        console.log(trackViewerHeight);
         let gridViewportHeight = trackViewerHeight - this.grid.y;
 
         let totalRowHeight = this.getTotalRowHeight();
-        console.log(totalRowHeight);
 
         const padding = this.spacing.y;
         let overflow = totalRowHeight - gridViewportHeight + padding;
@@ -1276,8 +1273,9 @@ class RowObject {
         this.resizeHandle.render = false;
         this.setResizable(false);
 
-        this.expandedTrackHeightPx = this.model.expandedHeightPx != null ? this.model.expandedHeightPx : (defaultHeightPx * 2);
-        this.collapsedTrackHeightPx = 32;
+        // fix here!
+        this.expandedTrackHeightPx = model.expandedHeightPx != null ? model.expandedHeightPx : (defaultHeightPx * 2);
+        this.collapsedTrackHeightPx = model.collapsedHeightPx != null ? model.collapsedHeightPx : 32;
 
         this.updateHeader();
     }
