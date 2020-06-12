@@ -133,7 +133,9 @@ export declare class Track {
 declare class RowObject {
     protected model: TrackModel;
     protected readonly defaultHeightPx: number;
+    protected readonly defaultExpandedHeightPx: number;
     protected readonly defaultExpandable: boolean;
+    protected readonly defaultExpanded: boolean;
     protected readonly spacing: {
         x: number;
         y: number;
@@ -156,7 +158,7 @@ declare class RowObject {
     protected styleProxy: StyleProxy;
     protected interactionDisabled: boolean;
     protected readonly expandedTrackHeightPx: number;
-    constructor(model: TrackModel, defaultHeightPx: number, defaultExpandable: boolean, spacing: {
+    constructor(model: TrackModel, defaultHeightPx: number, defaultExpandedHeightPx: number, defaultExpandable: boolean, defaultExpanded: boolean, spacing: {
         x: number;
         y: number;
     }, onClose: (t: RowObject) => void, setHeight: (h: number) => void, getHeight: () => number);

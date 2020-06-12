@@ -11,10 +11,12 @@ export type TrackModel = {
     longname?: string,
     heightPx?: number,
     expandedHeightPx?: number,
-    
+
     highlightLocation?: string,
 
     expandable?: boolean,
+
+    expanded?: boolean,
 
     color?: Array<number>,
 

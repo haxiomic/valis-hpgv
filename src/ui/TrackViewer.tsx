@@ -78,9 +78,9 @@ export class TrackViewer extends Object2D {
 
     protected panelStyleProxy: StyleProxy;
     protected trackStyleProxies: { [trackType: string]: StyleProxy } = {};
-    
+
     protected highlightLocation: string;
-    
+
     constructor() {
         super();
 
@@ -240,9 +240,10 @@ export class TrackViewer extends Object2D {
 
         let tracks: TrackViewerConfiguration['tracks'] = new Array();
         for (let track of this.tracks) {
+            const heightPxConfig: number = track.model.expanded && track.model.expandedHeightPx ? track.model.expandedHeightPx : track.model.heightPx;
             tracks.push({
                 ...track.model,
-                heightPx: track.heightPx,
+                heightPx: heightPxConfig,
             });
         }
 
@@ -265,12 +266,12 @@ export class TrackViewer extends Object2D {
     // track-viewer state deltas
     addTrack(model: TrackModel, animate: boolean = true, highlightLocation: string): Track {
         let trackClasses = GenomeVisualizer.getTrackType(model.type);
-        
+
         model.highlightLocation = highlightLocation;
 
         trackClasses.tileLoaderClass.getAvailableContigs(model).then(contigs => {
             for(let contig of contigs) this.dataSource.addContig(contig);
-            
+
             // if no panels have been specified, create one from the first available contig
             if (this.panels.size === 0) {
                 this.dataSource.getContigs().then(contigs => {
@@ -283,11 +284,16 @@ export class TrackViewer extends Object2D {
                     }
                 });
             }
-        })
+        });
 
-        let defaultTrackHeight = trackClasses.trackObjectClass.getDefaultHeightPx != null ? trackClasses.trackObjectClass.getDefaultHeightPx(model) : 100;
+        let defaultTrackHeight = model.heightPx;
         let expandable = trackClasses.trackObjectClass.getExpandable != null ? trackClasses.trackObjectClass.getExpandable(model) : true;
+        let expanded = model.expanded;
         let heightPx = model.heightPx != null ? model.heightPx : defaultTrackHeight;
+        if (model.expanded && model.expandedTrackHeightPx) {
+            heightPx = model.expandedTrackHeightPx;
+        }
+        let expandedHeightPx = model.expandedTrackHeightPx;
 
         // create a track and add the header element to the grid
         let track: Track = new Track(
@@ -296,7 +302,7 @@ export class TrackViewer extends Object2D {
             (name) => {
                 if (name === 'heightPx') {
                     this.emit('track-resize', track);
-                } 
+                }
                 this.layoutTrackRows(true);
             }
         );
@@ -304,7 +310,9 @@ export class TrackViewer extends Object2D {
         let rowObject = new RowObject(
             model,
             heightPx,
+            expandedHeightPx,
             expandable,
+            expanded,
             this.spacing,
             () => this.closeTrack(track),
             (h: number) => track.heightPx = h,
@@ -331,7 +339,7 @@ export class TrackViewer extends Object2D {
         rowObject.header.x = -this.trackHeaderWidth + this.spacing.x * 0.5;
         rowObject.header.w = this.trackHeaderWidth;
 
-        // position the resize handle to span the full width of the viewer 
+        // position the resize handle to span the full width of the viewer
         rowObject.resizeHandle.relativeW = 1;
         rowObject.resizeHandle.x = -this.trackHeaderWidth;
         rowObject.resizeHandle.w = this.trackHeaderWidth;
@@ -353,7 +361,7 @@ export class TrackViewer extends Object2D {
 
         this.grid.add(rowObject.header);
         this.grid.add(rowObject.resizeHandle);
-        
+
         if (this._removableTracks) {
             this.grid.add(rowObject.closeButton);
         }
@@ -414,7 +422,7 @@ export class TrackViewer extends Object2D {
         let newWidth = newColumnIndex == 0 ? 1 : 1 / newColumnIndex;
         let newEdge = 1 + newWidth;
         edges.push(newEdge);
-    
+
 
         // create panel object and add header to the scene graph
         let panel = new Panel((p) => this.closePanel(p, true), this.spacing, this.panelHeaderHeight, this.xAxisHeight, this.dataSource);
@@ -571,7 +579,7 @@ export class TrackViewer extends Object2D {
         let trackObject = new trackObjectClass(model);
         panel.addTrackView(trackObject);
         rowObject.addTrackView(trackObject);
-        
+
         // unwrap and forward track events, so you can do, trackViewer.addEventListener(<track-event>, ...)
         trackObject.addEventListener('track-event', (eventData: TrackEvent) => {
             this.emit('track-event', eventData);
@@ -829,9 +837,9 @@ export class TrackViewer extends Object2D {
         let trackButtonsVisible = this.allowNewPanels || this._removableTracks;
 
         this.grid.x = this.trackHeaderWidth + this.spacing.x * 0.5;
-        this.grid.w = 
+        this.grid.w =
             - this.trackHeaderWidth - this.spacing.x * 0.5
-            // right-side buttons 
+            // right-side buttons
             - (trackButtonsVisible ? (this.trackButtonWidth + this.spacing.x * 0.5) : 0)
         ;
         this.grid.relativeW = 1;
@@ -857,7 +865,7 @@ export class TrackViewer extends Object2D {
         // assumes grid.h is up to date (requires calling layoutTrackRows(false))
         let trackViewerHeight = this.getComputedHeight();
         let gridViewportHeight = trackViewerHeight - this.grid.y;
-        
+
         let totoalRowHeight = this.getTotalRowHeight();
 
         const padding = this.spacing.y;
@@ -1072,13 +1080,13 @@ export class TrackViewer extends Object2D {
                 overflow: 'hidden',
                 ...props.style,
             }}
-        >   
+        >
             <div>{props.isExpanded && props.model.longname ? props.model.longname : props.model.name}</div>
             {
                 props.expandable ? (
                     <div
                         role="button"
-                        tabIndex={0} 
+                        tabIndex={0}
                         aria-expanded={props.isExpanded}
                         onClick={() => {
                             props.setExpanded(!props.isExpanded);
@@ -1218,7 +1226,9 @@ class RowObject {
     constructor(
         protected model: TrackModel,
         protected readonly defaultHeightPx: number,
+        protected readonly defaultExpandedHeightPx: number,
         protected readonly defaultExpandable: boolean,
+        protected readonly defaultExpanded: boolean,
         protected readonly spacing: { x: number, y: number },
         protected onClose: (t: RowObject) => void,
         protected readonly setHeight: (h: number) => void,
@@ -1233,8 +1243,7 @@ class RowObject {
         this.resizeHandle.render = false;
         this.setResizable(false);
 
-        this.expandedTrackHeightPx = this.model.expandedHeightPx != null ? this.model.expandedHeightPx : (defaultHeightPx * 2);
-
+        this.expandedTrackHeightPx = this.model.expandedTrackHeightPx != null ? this.model.expandedTrackHeightPx : (defaultHeightPx * 3);
         this.updateHeader();
     }
 
@@ -1242,7 +1251,7 @@ class RowObject {
         this.resizeHandle.cursorStyle = v ? 'row-resize' : null;
         this.resizeHandle.color = (v ? [0, 1, 0, 1] : [0.3, 0.3, 0.3, 1]);
     }
-    
+
     addTrackView(trackView: TrackObject) {
         this.trackViews.add(trackView);
         this.syncTrackView(trackView);
@@ -1307,14 +1316,14 @@ class RowObject {
 
     protected updateHeader() {
         this._headerIsExpandedState = this.isExpanded();
+
         this.header.content = (<TrackViewer.TrackHeader
-            model={this.model}  
+            model={this.model}
             expandable={this.model.expandable != null ? this.model.expandable : this.defaultExpandable}
             isExpanded={this._headerIsExpandedState}
             setExpanded={(toggle: boolean) => {
                 if (this.interactionDisabled) return;
-
-                this.setHeight(toggle ? this.expandedTrackHeightPx : this.defaultHeightPx);
+                this.setHeight(toggle ? this.expandedTrackHeightPx : this.model.heightPx);
             }}
             style={{
                 opacity: this._opacity,
