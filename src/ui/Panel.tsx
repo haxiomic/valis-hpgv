@@ -139,11 +139,25 @@ export class Panel extends Object2D {
         this.setResizable(false);
 
         this.setDataSource(dataSource);
+        Panel.showRangeError(false);
     }
 
     applyStyle(styleProxy: StyleProxy) {
         this.xAxis.color = styleProxy.getColor('color') || this.xAxis.color;
         this.xAxis.fontSizePx = styleProxy.getNumber('font-size') || this.xAxis.fontSizePx;
+    }
+
+    readMaxX() {
+        let allMaxX = -Infinity;
+
+        for (let trackView of this.trackViews) {
+            let maxX = trackView.getTileLoader().maximumX;
+            if (isFinite(maxX)) {
+                allMaxX = Math.max(maxX, allMaxX);
+            }
+        }
+
+        return allMaxX;
     }
 
     setResizable(v: boolean) {
@@ -171,6 +185,7 @@ export class Panel extends Object2D {
         this.add(trackView);
 
         this.trackViews.add(trackView);
+        Panel.showRangeError(false);
     }
 
     removeTrackView(trackView: TrackObject) {
@@ -185,6 +200,7 @@ export class Panel extends Object2D {
         this.remove(trackView);
 
         this.trackViews.delete(trackView);
+        Panel.showRangeError(false);
     }
 
     private _dataSourceId = 0;
@@ -222,7 +238,6 @@ export class Panel extends Object2D {
 
         x0 = Math.min(x0, x1);
         x1 = Math.max(x0, x1);
-
 
         // if range is below allowed minimum, override without changing center
         let span = x1 - x0;
@@ -356,13 +371,7 @@ export class Panel extends Object2D {
             x0 = Math.max(0, x0);
             x1 = Math.max(0, x1);
 
-            let allMaxX = -Infinity;
-            for (let trackView of this.trackViews) {
-                let maxX = trackView.getTileLoader() .maximumX;
-                if (isFinite(maxX)) {
-                    allMaxX = Math.max(maxX, allMaxX);
-                }
-            }
+            let allMaxX = this.readMaxX();
 
             if (allMaxX > 0) {
                 x0 = Math.min(allMaxX, x0);
@@ -664,6 +673,17 @@ export class Panel extends Object2D {
         this.eventEmitter.emit('axisPointerUpdate', this.activeAxisPointers);
     }
 
+    static showRangeError(visible: boolean, message : string = null) {
+        let element = document.querySelector<HTMLElement>('.valis-error-message'); 
+
+        if (!element) {
+            return;
+        }
+
+        element.style.display = visible ? 'inline' : 'none';
+        element.textContent = message ? message : element.textContent;
+    }
+
     protected fillX(obj: Object2D) {
         obj.x = this.spacing.x * 0.5;
         obj.originX = 0;
@@ -703,6 +723,7 @@ export class Panel extends Object2D {
             onEditSave = { (rangeSpecifier: string) => this.finishEditing(rangeSpecifier) }
             onEditStart = { () => this.startEditing() }
             onNextContig = { () => {
+                Panel.showRangeError(false);
                 let contig = this.availableContigAtOffset(this.contig, 1);
                 this.setContig(contig);
                 const idx = this.availableContigs.findIndex(c => c.id === contig);
@@ -711,6 +732,7 @@ export class Panel extends Object2D {
                 }
             }}
             onPreviousContig={() => {
+                Panel.showRangeError(false)
                 let contig = this.availableContigAtOffset(this.contig, -1);
                 this.setContig(contig);
                 const idx = this.availableContigs.findIndex(c => c.id === contig);
@@ -734,6 +756,7 @@ export class Panel extends Object2D {
     }
 
     protected startEditing() {
+        Panel.showRangeError(false);
         this.isEditing = true;
         this.updatePanelHeader();
     }
@@ -752,12 +775,46 @@ export class Panel extends Object2D {
 
             const ranges = parts[1].split('-');
             this.setContig(contig);
-            this.setRange(parseFloat(ranges[0].replace(/,/g, '')), parseFloat(ranges[1].replace(/,/g, '')));
+
+            let rawRange0 = ranges[0].replace(/,/g, '').trim();
+            let rawRange1 = ranges[1].replace(/,/g, '').trim();
+
+            if (rawRange0 === '' || rawRange1 === '') {
+                throw new Error('One of the numbers is empty or not a valid number');
+            }
+
+            // Number vs parseFloat- https://stackoverflow.com/a/13676265/178550
+            let range0 = Number(rawRange0);
+            let range1 = Number(rawRange1);
+            let allMaxX = this.readMaxX();
+
+            if (allMaxX > 0 && range1 > allMaxX) {
+                throw new Error(`Second range: ${range1} must be less than max range: ${allMaxX}`);
+            }
+
+            if (range0 < 0) {
+                throw new Error(`First range ${range0} must be less greater than 0`);
+            }
+
+            if (range1 < 0) {
+                throw new Error(`Second range ${range1} must be less greater than 0`);
+            }
+
+            if (isNaN(range0) || isNaN(range1)) {
+                throw new Error(`Specifiers have one or more invalid numbers. The numbers are: ${isNaN(range0) ? rawRange0 : range0}, ${isNaN(range1) ? rawRange1 : range1}`);
+            }
+
+            if (range1 < range0) {
+                throw new Error(`The second range: (${range1}) must be greater than the second: (${range0})`);
+            }
+
+            this.setRange(range0, range1);
         } catch (e) {
             console.error(`Could not parse specifier "${specifier}"`);
+            const message = e.message || 'Error reading chromosome';
+            Panel.showRangeError(true, message);
         }
     }
-
 }
 
 interface PanelProps {
@@ -892,6 +949,17 @@ class PanelHeader extends React.Component<PanelProps,{}> {
                 cursor: 'pointer',
             }}>
                 {headerContents}
+                <span
+                    className="valis-error-message"
+                    style={{ 
+                        display: 'none',
+                        color: 'red',
+                        position: 'relative',
+                        top: '-5px',
+                        fontSize: '0.9em',
+                }}>
+                        The chromosome range is not valid
+                </span>
             </div>
         </div>
     }

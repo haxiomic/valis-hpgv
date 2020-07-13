@@ -23,11 +23,11 @@ export declare class TileLoader<TilePayload, BlockPayload> {
     /**
      * Callback is executed synchronously
      */
-    forEachTile(x0: number, x1: number, samplingDensity: number, loadEmptyTiles: boolean, callback: (tile: Tile<TilePayload>) => void): void;
+    forEachTile(x0: number, x1: number, samplingDensity: number, loadEmptyTiles: boolean, callback: (tile: Tile<TilePayload>) => void, errorLoadingCallback?: () => void): void;
     /**
      * Callback is executed synchronously
      */
-    forEachTileAtLod(x0: number, x1: number, lodLevel: number, loadEmptyTiles: boolean, callback: (tile: Tile<TilePayload>) => void): void;
+    forEachTileAtLod(x0: number, x1: number, lodLevel: number, loadEmptyTiles: boolean, callback: (tile: Tile<TilePayload>) => void, errorLoadingCallback?: () => void): void;
     getTile(x: number, samplingDensity: number, loadEmptyTiles: boolean): Tile<TilePayload>;
     getTileAtLod(x: number, lodLevel: number, loadEmptyTiles: boolean): Tile<TilePayload>;
     isWithinInitializedLodRange(samplingDensity: number): boolean;
@@ -103,8 +103,9 @@ declare class TileRequestManager {
     maxActiveRequests: number;
     private requestStack;
     private activeRequests;
+    private errorLoadingCallback;
     constructor(maxActiveRequests?: number);
-    loadTile(tile: Tile<any>, requestPayload: (tile: Tile<any>) => Promise<any> | any): void;
+    loadTile(tile: Tile<any>, requestPayload: (tile: Tile<any>) => Promise<any> | any, errorLoadingCallback?: () => void): void;
     removeFromQueue(tile: Tile<any>): void;
     bringToFrontOfQueue(tile: Tile<any>): void;
     private tryLoadTile;

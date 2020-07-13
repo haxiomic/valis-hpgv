@@ -38,12 +38,25 @@ export class TileLoader<TilePayload, BlockPayload> {
         x1: number,
         samplingDensity: number,
         loadEmptyTiles: boolean,
-        callback: (tile: Tile<TilePayload>) => void
+        callback: (tile: Tile<TilePayload>) => void,
+        errorLoadingCallback?: () => void
     ) {
         let lodLevelFractional = Scalar.log2(Math.max(samplingDensity, 1));
         let lodLevel = Math.floor(lodLevelFractional);
 
-        return this.forEachTileAtLod(x0, x1, lodLevel, loadEmptyTiles, callback);
+        if (!errorLoadingCallback) {
+            errorLoadingCallback = () => {
+                const message: string = 'Error reading chromosome';
+                const element = document.querySelector<HTMLElement>('.valis-error-message'); 
+        
+                if (element) {
+                    element.style.display = 'inline';
+                    element.textContent = message ? message : element.textContent;
+                }
+            };
+        }
+
+        return this.forEachTileAtLod(x0, x1, lodLevel, loadEmptyTiles, callback, errorLoadingCallback);
     }
     
     /**
@@ -54,7 +67,8 @@ export class TileLoader<TilePayload, BlockPayload> {
         x1: number,
         lodLevel: number,
         loadEmptyTiles: boolean,
-        callback: (tile: Tile<TilePayload>) => void
+        callback: (tile: Tile<TilePayload>) => void,
+        errorLoadingCallback?: () => void
     ) {
         // clamp to positive numbers
         x0 = Math.max(x0, 0);
@@ -94,7 +108,7 @@ export class TileLoader<TilePayload, BlockPayload> {
                 let tile = block.rows[rowIndex];
 
                 if (loadEmptyTiles) {
-                    this.touchTileRequest(tile);
+                    this.touchTileRequest(tile, errorLoadingCallback);
                 }
 
                 callback(tile);
@@ -190,10 +204,10 @@ export class TileLoader<TilePayload, BlockPayload> {
     /**
      * Request tile if not requested, if tile loading then bump priority
      */
-    private touchTileRequest(tile: Tile<TilePayload>) {
+    private touchTileRequest(tile: Tile<TilePayload>, errorLoadingCallback?: () => void) {
         if (tile.state === TileState.Empty) {
             // no data requests have been made yet for this tile
-            this.requestManager.loadTile(tile, (tile) => this.getTilePayload(tile));
+            this.requestManager.loadTile(tile, (tile) => this.getTilePayload(tile), errorLoadingCallback);
         } else if (tile.state === TileState.Loading) {
             this.requestManager.bringToFrontOfQueue(tile);
         }
@@ -379,6 +393,7 @@ class TileRequestManager {
         requestPayload: (tile: Tile<any>) => Promise<any> | any
     }>();
     private activeRequests = 0;
+    private errorLoadingCallback: () => void;
 
     constructor(maxActiveRequests = 4) {
         this.maxActiveRequests = maxActiveRequests;
@@ -386,9 +401,12 @@ class TileRequestManager {
 
     public loadTile(
         tile: Tile<any>,
-        requestPayload: (tile: Tile<any>) => Promise<any> | any
+        requestPayload: (tile: Tile<any>) => Promise<any> | any,
+        errorLoadingCallback?: () => void
     ) {
         // console.log('Requesting tile', tile.key, TileState[tile.state]);
+
+        this.errorLoadingCallback = errorLoadingCallback;
 
         if (tile.state !== TileState.Empty) {
             console.warn(`Tile loading was requested when state was "${TileState[tile.state]} (${tile.state})" and not "Empty"`);
@@ -444,7 +462,7 @@ class TileRequestManager {
                     // result is a promise
                     result
                         .then((payload: any) => this.tileLoadComplete(tile, payload))
-                        .catch((reason: any) => this.tileLoadFailed(tile, reason));
+                        .catch((reason: any) => { this.tileLoadFailed(tile, reason); } );
                 } else {
                     // assume result is the payload
                     this.tileLoadComplete(tile, result);
@@ -477,6 +495,10 @@ class TileRequestManager {
         tileInternal.emitLoadFailed(reason);
         console.warn(`Tile payload request failed: ${reason}`, tile.key);
         this.tileLoadEnd(tile);
+
+        if (this.errorLoadingCallback) {
+            this.errorLoadingCallback();
+        }
     }
 
     private tileLoadEnd(tile: Tile<any>) {

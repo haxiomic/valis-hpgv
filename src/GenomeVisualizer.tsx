@@ -112,6 +112,7 @@ export class GenomeVisualizer {
     setLocation(genomicLocation: GenomicLocation) {
         this.setContig(genomicLocation.contig);
         this.setRange(genomicLocation.x0, genomicLocation.x1);
+        Panel.showRangeError(false);
     }
 
     /**
