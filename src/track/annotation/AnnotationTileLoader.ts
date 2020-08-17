@@ -210,7 +210,7 @@ export class AnnotationTileLoader extends TileLoader<TilePayload, void> {
 }
 
 function transformAnnotationsBigBed(dataset: Array<BigBedData>): TilePayload {
-    return dataset.map((data: BigBedData) => {
+    let x =  dataset.map((data: BigBedData) => {
         let gene: Gene = {
             type: GenomeFeatureType.Gene,
 
@@ -246,10 +246,15 @@ function transformAnnotationsBigBed(dataset: Array<BigBedData>): TilePayload {
                 utr: [],
                 other: [],
             }],
-            score: data.score
+            score: data.score,
+            color: data.color,
         };
         return gene;
     });
+
+    console.log('reading big bed file starting')
+    console.log(dataset);
+    return x;
 }
 
 function transformAnnotationsBigZoom(dataset: Array<BigZoomData>): TilePayload {

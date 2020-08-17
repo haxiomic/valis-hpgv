@@ -147,6 +147,9 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
     }
 
     protected updateMicroAnnotations(x0: number, x1: number, span: number, samplingDensity: number, continuousLodLevel: number, opacity: number) {
+        
+        console.warn('in updateMicroAnnotations testinging.......');
+
         this._annotationCache.markAllUnused();
 
         let namesOpacity = 1.0 - Scalar.linstep(this.namesLodThresholdLow, this.namesLodThresholdHigh, continuousLodLevel);
@@ -172,6 +175,9 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
             if (tile.state !== TileState.Complete) {
                 return;
             }
+
+            
+
 
             for (let gene of tile.payload) {
                 // @! temp performance hack, only use node when visible
@@ -285,6 +291,9 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
     }
 
     protected updateMacroAnnotations(x0: number, x1: number, span: number, samplingDensity: number, opacity: number) {
+
+        console.warn('updateMacroAnnotations testing.........');
+
         let tileLoader = this.getTileLoader();
         let macroSamplingDensity = 1 << tileLoader.macroLod;
         tileLoader.forEachTile(x0, x1, macroSamplingDensity, true, (tile) => {
@@ -324,8 +333,18 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
                         color = rgbaLerp(color, maxScoreColor, Math.max(0, Math.min(1, gene.score / 1000)));
                     }
 
+                    ////
+                    //color = [0.9411764705882353, 0.97254901960784315, 0.95294117647058826, 0];
+                    /////
+
                     let colorLowerAlpha = color.slice();
                     colorLowerAlpha[3] *= .689655172;
+
+                    //////////
+                    console.warn('=====start=====');
+                    console.warn(color);
+                    console.warn('========end========');
+                    /////////
 
                     if (this.compact) {
                         instanceData.push({
