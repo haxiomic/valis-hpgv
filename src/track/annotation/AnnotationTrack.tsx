@@ -107,6 +107,8 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
         this._onStageAnnotations.removeAll();
         this.displayNeedUpdate = true;
 
+        return;
+
         for (let propertyName in this.colors) {
             let color = styleProxy.getColor(propertyName);
             if (color != null) {
