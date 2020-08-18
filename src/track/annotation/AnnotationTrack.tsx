@@ -126,6 +126,7 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
             'color': [0, 0, 0 , 0],
             '--stroke': [0, 0, 0 , 0],
         }
+        this.sharedState.colors = this.colors;
         ///////
 
         //////
