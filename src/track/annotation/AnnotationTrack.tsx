@@ -55,7 +55,7 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
 
     protected colors = {
         '--transcript-arrow': [138 / 0xff, 136 /0xff, 191 /0xff, 0.38],
-        '--transcript': [107 / 0xff, 109 / 0xff, 136 / 0xff, 0.17],
+        '--transcript': [1, 230, 1, 1],
         '--coding': [26 / 0xff, 174 / 0xff, 222 / 0xff, 0.4],
         '--non-coding': [82 / 0xff, 75 / 0xff, 165 / 0xff, 0.4],
         '--coding-max-score': [26 / 0xff, 174 / 0xff, 222 / 0xff, 0.4],
