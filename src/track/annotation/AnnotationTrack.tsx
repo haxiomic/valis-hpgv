@@ -107,8 +107,6 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
         this._onStageAnnotations.removeAll();
         this.displayNeedUpdate = true;
 
-        return;
-
         for (let propertyName in this.colors) {
             let color = styleProxy.getColor(propertyName);
             if (color != null) {
@@ -116,12 +114,22 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
             }
         }
 
+        //////
+        console.warn('===colors=====');
+        console.warn(this.colors);
+        console.warn('========');
+        //////
+
         for (let propertyName in this.sharedState.style) {
             let num = styleProxy.getNumber(propertyName);
             if (num !== null) {
                 (this.sharedState.style as { [key: string]: number })[propertyName] = num;
             }
         }
+
+        console.warn('====shared state====');
+        console.warn(this.sharedState);
+        console.warn('========');
     }
 
     protected _macroTileCache = new UsageCache<IntervalInstances>(null, (instances) => instances.releaseGPUResources());
