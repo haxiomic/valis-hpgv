@@ -117,7 +117,7 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
         ////////
         this.colors = {
             '--transcript-arrow': [0, 0, 0 , 0],
-            '--transcript': [0, 0, 0 , 0],
+            '--transcript': [0.641176470588, 0.88888, 0.741176470588  , 0],
             '--coding': [0, 0, 0 , 0],
             '--non-coding': [0, 0, 0 , 0],
             '--coding-max-score': [0, 0, 0 , 0],
@@ -128,7 +128,7 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
         }
         this.sharedState.colors = {
             '--transcript-arrow': [0, 0, 0 , 0],
-            '--transcript': [0, 0.88888, 0 , 0],
+            '--transcript': [0.641176470588, 0.88888, 0.741176470588 , 0],
             '--coding': [0, 0, 0 , 0],
             '--non-coding': [0, 0, 0 , 0],
             '--coding-max-score': [0, 0, 0 , 0],
