@@ -54,15 +54,15 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
     readonly displayLabels: boolean;
 
     protected colors = {
-        '--transcript-arrow': [138 / 0xff, 136 /0xff, 191 /0xff, 0],
-        '--transcript': [50, 230, 50, 0],
-        '--coding': [26 / 0xff, 174 / 0xff, 222 / 0xff, 0],
-        '--non-coding': [82 / 0xff, 75 / 0xff, 165 / 0xff, 0],
-        '--coding-max-score': [26 / 0xff, 174 / 0xff, 222 / 0xff, 0],
-        '--non-coding-max-score': [82 / 0xff, 75 / 0xff, 165 / 0xff, 0],
-        '--untranslated': [138 / 0xff, 136 / 0xff, 191 / 0xff, 0],
-        'color': [1, 1, 1, 0],
-        '--stroke': [1, 1, 1, 0],
+        '--transcript-arrow': [0, 0, 0 , 0],
+        '--transcript': [0, 0, 0 , 0],
+        '--coding': [0, 0, 0 , 0],
+        '--non-coding': [0, 0, 0 , 0],
+        '--coding-max-score': [0, 0, 0 , 0],
+        '--non-coding-max-score': [0, 0, 0 , 0],
+        '--untranslated': [0, 0, 0 , 0],
+        'color': [0, 0, 0 , 0],
+        '--stroke': [0, 0, 0 , 0],
     }
 
     protected sharedState = {
