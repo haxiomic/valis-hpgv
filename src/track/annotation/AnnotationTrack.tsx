@@ -114,6 +114,20 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
             }
         }
 
+        ////////
+        this.colors = {
+            '--transcript-arrow': [0, 0, 0 , 0],
+            '--transcript': [0, 0, 0 , 0],
+            '--coding': [0, 0, 0 , 0],
+            '--non-coding': [0, 0, 0 , 0],
+            '--coding-max-score': [0, 0, 0 , 0],
+            '--non-coding-max-score': [0, 0, 0 , 0],
+            '--untranslated': [0, 0, 0 , 0],
+            'color': [0, 0, 0 , 0],
+            '--stroke': [0, 0, 0 , 0],
+        }
+        ///////
+
         //////
         console.warn('===colors=====');
         console.warn(this.colors);
