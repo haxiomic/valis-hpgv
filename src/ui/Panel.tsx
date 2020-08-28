@@ -789,15 +789,15 @@ export class Panel extends Object2D {
             let allMaxX = this.readMaxX();
 
             if (allMaxX > 0 && coordinate1 > allMaxX) {
-                throw new Error(`Second coordinate: ${coordinate1} must be less than max coordinate: ${allMaxX}`);
+                throw new Error(`Second coordinate ${coordinate1} must be less than max coordinate ${allMaxX}`);
             }
 
             if (isNaN(coordinate0) || isNaN(coordinate1)) {
-                throw new Error(`Coordinates (${isNaN(coordinate0) ? rawCoordinate0 : coordinate0} and ${isNaN(coordinate1) ? rawCoordinate1 : coordinate1}) are invalid`);
+                throw new Error(`Coordinates ${isNaN(coordinate0) ? rawCoordinate0 : coordinate0} and/or ${isNaN(coordinate1) ? rawCoordinate1 : coordinate1} are invalid`);
             }
 
             if (coordinate1 < coordinate0) {
-                throw new Error(`The second coordinate (${coordinate1}) must be greater than the first (${coordinate0})`);
+                throw new Error(`The second coordinate ${coordinate1} must be greater than the first ${coordinate0}`);
             }
 
             this.setRange(coordinate0, coordinate1);
