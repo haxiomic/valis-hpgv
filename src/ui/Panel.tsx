@@ -139,7 +139,7 @@ export class Panel extends Object2D {
         this.setResizable(false);
 
         this.setDataSource(dataSource);
-        Panel.showRangeError(false);
+        Panel.showCoordinateError(false);
     }
 
     applyStyle(styleProxy: StyleProxy) {
@@ -185,7 +185,7 @@ export class Panel extends Object2D {
         this.add(trackView);
 
         this.trackViews.add(trackView);
-        Panel.showRangeError(false);
+        Panel.showCoordinateError(false);
     }
 
     removeTrackView(trackView: TrackObject) {
@@ -200,7 +200,7 @@ export class Panel extends Object2D {
         this.remove(trackView);
 
         this.trackViews.delete(trackView);
-        Panel.showRangeError(false);
+        Panel.showCoordinateError(false);
     }
 
     private _dataSourceId = 0;
@@ -673,7 +673,7 @@ export class Panel extends Object2D {
         this.eventEmitter.emit('axisPointerUpdate', this.activeAxisPointers);
     }
 
-    static showRangeError(visible: boolean, message : string = null) {
+    static showCoordinateError(visible: boolean, message : string = null) {
         let element = document.querySelector<HTMLElement>('.valis-error-message'); 
 
         if (!element) {
@@ -723,7 +723,7 @@ export class Panel extends Object2D {
             onEditSave = { (rangeSpecifier: string) => this.finishEditing(rangeSpecifier) }
             onEditStart = { () => this.startEditing() }
             onNextContig = { () => {
-                Panel.showRangeError(false);
+                Panel.showCoordinateError(false);
                 let contig = this.availableContigAtOffset(this.contig, 1);
                 this.setContig(contig);
                 const idx = this.availableContigs.findIndex(c => c.id === contig);
@@ -732,7 +732,7 @@ export class Panel extends Object2D {
                 }
             }}
             onPreviousContig={() => {
-                Panel.showRangeError(false)
+                Panel.showCoordinateError(false)
                 let contig = this.availableContigAtOffset(this.contig, -1);
                 this.setContig(contig);
                 const idx = this.availableContigs.findIndex(c => c.id === contig);
@@ -756,7 +756,7 @@ export class Panel extends Object2D {
     }
 
     protected startEditing() {
-        Panel.showRangeError(false);
+        Panel.showCoordinateError(false);
         this.isEditing = true;
         this.updatePanelHeader();
     }
@@ -773,46 +773,38 @@ export class Panel extends Object2D {
                 contig = 'chr' + chromosomeContigMatch[1].toUpperCase();
             }
 
-            const ranges = parts[1].split('-');
+            const coordinates = parts[1].split('-');
             this.setContig(contig);
 
-            let rawRange0 = ranges[0].replace(/,/g, '').trim();
-            let rawRange1 = ranges[1].replace(/,/g, '').trim();
+            let rawCoordinate0 = coordinates[0].replace(/,/g, '').trim();
+            let rawCoordinate1 = coordinates[1].replace(/,/g, '').trim();
 
-            if (rawRange0 === '' || rawRange1 === '') {
-                throw new Error('One of the numbers is empty or not a valid number');
+            if (rawCoordinate0 === '' || rawCoordinate1 === '') {
+                throw new Error('One of the coordinates is empty or not a valid number');
             }
 
             // Number vs parseFloat- https://stackoverflow.com/a/13676265/178550
-            let range0 = Number(rawRange0);
-            let range1 = Number(rawRange1);
+            let coordinate0 = Number(rawCoordinate0);
+            let coordinate1 = Number(rawCoordinate1);
             let allMaxX = this.readMaxX();
 
-            if (allMaxX > 0 && range1 > allMaxX) {
-                throw new Error(`Second range: ${range1} must be less than max range: ${allMaxX}`);
+            if (allMaxX > 0 && coordinate1 > allMaxX) {
+                throw new Error(`Second coordinate: ${coordinate1} must be less than max coordinate: ${allMaxX}`);
             }
 
-            if (range0 < 0) {
-                throw new Error(`First range ${range0} must be less greater than 0`);
+            if (isNaN(coordinate0) || isNaN(coordinate1)) {
+                throw new Error(`Coordinates (${isNaN(coordinate0) ? rawCoordinate0 : coordinate0} and ${isNaN(coordinate1) ? rawCoordinate1 : coordinate1}) are invalid`);
             }
 
-            if (range1 < 0) {
-                throw new Error(`Second range ${range1} must be less greater than 0`);
+            if (coordinate1 < coordinate0) {
+                throw new Error(`The second coordinate (${coordinate1}) must be greater than the first (${coordinate0})`);
             }
 
-            if (isNaN(range0) || isNaN(range1)) {
-                throw new Error(`Specifiers have one or more invalid numbers. The numbers are: ${isNaN(range0) ? rawRange0 : range0}, ${isNaN(range1) ? rawRange1 : range1}`);
-            }
-
-            if (range1 < range0) {
-                throw new Error(`The second range: (${range1}) must be greater than the second: (${range0})`);
-            }
-
-            this.setRange(range0, range1);
+            this.setRange(coordinate0, coordinate1);
         } catch (e) {
             console.error(`Could not parse specifier "${specifier}"`);
             const message = e.message || 'Error reading chromosome';
-            Panel.showRangeError(true, message);
+            Panel.showCoordinateError(true, message);
         }
     }
 }
@@ -957,8 +949,9 @@ class PanelHeader extends React.Component<PanelProps,{}> {
                         position: 'relative',
                         top: '-5px',
                         fontSize: '0.9em',
+                        fontWeight: 400,
                 }}>
-                        The chromosome range is not valid
+                        The chromosome coordinate is not valid
                 </span>
             </div>
         </div>
