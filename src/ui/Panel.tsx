@@ -680,8 +680,10 @@ export class Panel extends Object2D {
             return;
         }
 
+        const textContent : string = message ? message : element.textContent;
+
+        element.textContent = visible ? textContent : '';
         element.style.display = visible ? 'inline' : 'none';
-        element.textContent = message ? message : element.textContent;
     }
 
     protected fillX(obj: Object2D) {
