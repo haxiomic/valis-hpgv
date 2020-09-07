@@ -16,6 +16,8 @@ export type TrackModel = {
 
     expandable?: boolean,
 
+    fileVariantType?: string,
+
     color?: Array<number>,
 
     // @! not yet implemented

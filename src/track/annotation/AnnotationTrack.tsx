@@ -135,7 +135,7 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
             let macroOpacity: number = Scalar.linstep(this.macroLodThresholdLow, this.macroLodThresholdHigh, continuousLodLevel);
             let microOpacity: number = 1.0 - macroOpacity;
 
-            if (microOpacity > 0) {
+            if (true || microOpacity > 0) {
                 this.updateMicroAnnotations(this.x0, this.x1, span, basePairsPerDOMPixel, continuousLodLevel, microOpacity);
             }
 
@@ -184,7 +184,9 @@ export class AnnotationTrack extends TrackObject<AnnotationTrackModel, Annotatio
 
                 let annotationKey = this.contig + ':' + this.annotationKey(gene);
 
-                this.colors['--transcript'] =  CSSUtil.getBedFileRGBA(gene.color, gene.score);
+                this.colors['--transcript'] = gene.pValue ? 
+                    CSSUtil.getColorFromPValue(gene.pValue, gene.score) :
+                    CSSUtil.getBedFileRGBA(gene.color, gene.score);
 
                 let annotation = this._annotationCache.get(annotationKey, () => {
                     // create gene object

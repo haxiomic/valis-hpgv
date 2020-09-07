@@ -15,7 +15,9 @@ export declare type Transcript = TranscriptInfo & {
 declare type TilePayload = Array<Gene>;
 declare enum AnnotationFormat {
     ValisGenes = 0,
-    BigBed = 1
+    BigBed = 1,
+    BigBedNarrowPeak = 2,
+    BigBedBroadPeak = 3
 }
 export declare class AnnotationTileLoader extends TileLoader<TilePayload, void> {
     protected readonly dataSource: IDataSource;

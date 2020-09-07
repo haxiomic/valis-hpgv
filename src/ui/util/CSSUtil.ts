@@ -36,6 +36,30 @@ export class CSSUtil {
         return [rgba0 / 0xff, rgba1 / 0xff, rgba2 / 0xff, alpha];  
     }
 
+    static getColorFromPValue(pValue: number, score: number) {
+        const alpha : number = (score || 1000) / 1000;
+
+        if (pValue === -1) {
+            return [128 / 0xff, 128 / 0xff, 128 / 0xff, alpha]; //grey
+        }
+        
+        const pValueLog = Math.log10(pValue);
+
+        if (pValueLog <= 0.05) {
+            return [255 / 0xff, 0 / 0xff, 0 / 0xff, alpha]; // red
+        } else if (pValueLog > 0.05 && pValueLog <= 0.25) {
+            return [255 / 0xff, 165 / 0xff, 0 / 0xff, alpha]; // orange
+        } else if (pValueLog > 0.25 && pValueLog <= 0.45) {
+            return [255 / 0xff, 255 / 0xff, 0 / 0xff, alpha]; //yellow
+        } else if (pValueLog > 0.45 && pValueLog <= 0.65) {
+            return [0 / 0xff, 255 / 0xff, 0 / 0xff, alpha]; //green
+        } else if (pValueLog > 0.65 && pValueLog <= 0.85) {
+            return [75 / 0xff, 0 / 0xff, 130 / 0xff, alpha]; //indigo
+        } else {
+            return [143 / 0xff, 0 / 0xff, 255 / 0xff, alpha]; //violet
+        }
+    }
+
     private static _1pxCtx: CanvasRenderingContext2D;
     private static get1pxCtx() {
         if (this._1pxCtx == null) {

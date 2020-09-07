@@ -1,6 +1,8 @@
 export enum GenomicFileFormat {
     BigWig,
     BigBed,
+    BigBedNarrowPeak,
+    BigBedBroadPeak,
     ValisGenes,
     ValisDna,
     ValisVariants,
@@ -25,9 +27,15 @@ export class Formats {
         
     }
 
-    static determineFormat(path: string): GenomicFileFormat | undefined {
+    static determineFormat(path: string, fileVariantType: string = null): GenomicFileFormat | undefined {
         let fileExtension = path.substr(path.lastIndexOf('.') + 1).toLowerCase();
-        return this.extensionMap[fileExtension];
+        const extension = this.extensionMap[fileExtension];
+    
+        if (extension === GenomicFileFormat.BigBed && fileVariantType === 'narrowPeak') {
+            return GenomicFileFormat.BigBedNarrowPeak;
+        }
+
+        return extension;
     }
 
 }

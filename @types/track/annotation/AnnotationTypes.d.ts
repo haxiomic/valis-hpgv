@@ -29,6 +29,10 @@ export interface GeneInfo extends GenomeFeature {
     transcriptCount: number;
     score?: number;
     color?: string;
+    signalValue?: number;
+    pValue?: number;
+    qValue?: number;
+    peak?: number;
 }
 export declare enum TranscriptClass {
     Unspecified = 0,
