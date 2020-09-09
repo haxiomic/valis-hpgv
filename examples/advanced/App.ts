@@ -6,31 +6,10 @@ let config = {
     highlightLocation: 'chr1:54877700',
     tracks: [
         {
-            name: 'GRCh37',
-            type: 'sequence',
-            path: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vdna-dir',
-        },
-        {
-            name: 'Valis Genes',
-            type: 'annotation',
-            path: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vgenes-dir',
-            displayLabels: false,
-        },
-        {
             name: 'bigBed',
             type: 'annotation',
-            path: 'https://www.encodeproject.org/files/ENCFF609BMS/@@download/ENCFF609BMS.bigBed',
+            path: 'https://test.encodedcc.org/files/TSTFF026516/@@download/TSTFF026516.bigBed,
         },
-        {
-            name: 'bigWig',
-            type: 'signal',
-            path: 'https://www.encodeproject.org/files/ENCFF833POA/@@download/ENCFF833POA.bigWig',
-        },
-        {
-            name: 'bigWig',
-            type: 'signal',
-            path: 'https://www.encodeproject.org/files/ENCFF985ZQU/@@download/ENCFF985ZQU.bigWig',
-        }
     ],
 };
 
