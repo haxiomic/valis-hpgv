@@ -8,7 +8,7 @@ let config = {
         {
             name: 'bigBed',
             type: 'annotation',
-            path: 'https://test.encodedcc.org/files/TSTFF026516/@@download/TSTFF026516.bigBed,
+            path: 'https://test.encodedcc.org/files/TSTFF026516/@@download/TSTFF026516.bigBed',
         },
     ],
 };
