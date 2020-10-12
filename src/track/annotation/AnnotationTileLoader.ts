@@ -1,9 +1,16 @@
 import IDataSource from "../../data-source/IDataSource";
 import { Tile, TileLoader, TileState } from "../TileLoader";
-import { GeneInfo, GenomeFeature, GenomeFeatureType, Strand, TranscriptComponentClass, TranscriptComponentInfo, TranscriptInfo, GeneClass, SoGeneClass, TranscriptClass } from "./AnnotationTypes";
+import { GeneInfo, GenomeFeature, GenomeFeatureType, Strand, TranscriptComponentClass, 
+    TranscriptComponentInfo, TranscriptInfo, GeneClass, SoGeneClass, TranscriptClass,
+    BigBedBroadPeakColumns, BigBedNarrowPeakColumns, BigBedMethylColumns,
+    BigBedTssPeakColumns, BigBedIdrPeakColumns 
+} from "./AnnotationTypes";
 import TrackModel from "../TrackModel";
 import { UCSCBig, BigLoader } from "../../formats";
-import { BigBedData, BigZoomData } from "bigwig-reader";
+import { 
+    BigBedData, BigZoomData, BigBedDataNarrowPeak, BigBedDataBroadPeak, BigBedDataMethyl, BigBedDataTssPeak, BigBedDataIdrPeak,
+    parseBigBed, parseBigBedBroadPeak, parseBigBedIdrPeak, parseBigBedMethyl, parseBigBedNarrowPeak, parseBigBedTssPeak
+}  from "genomic-reader";
 import { Formats, GenomicFileFormat } from "../../formats/Formats";
 import { Contig, AnnotationTrackModel } from "../..";
 import Axios from "axios";
@@ -11,7 +18,8 @@ import Axios from "axios";
 // Tile payload is a list of genes extended with nesting
 export type Gene = GeneInfo & {
     transcripts: Array<Transcript>;
-};
+} & BigBedBroadPeakColumns & BigBedNarrowPeakColumns & BigBedMethylColumns
+& BigBedTssPeakColumns & BigBedIdrPeakColumns;
 
 export type Transcript = TranscriptInfo & {
     exon: Array<TranscriptComponentInfo>,
@@ -25,6 +33,11 @@ type TilePayload = Array<Gene>;
 enum AnnotationFormat {
     ValisGenes,
     BigBed,
+    BigBedDataBroadPeak,
+    BigBedDataNarrowPeak,
+    BigBedDataMethyl,
+    BigBedDataTssPeak,
+    BigBedDataIdrPeak,
 }
 
 export class AnnotationTileLoader extends TileLoader<TilePayload, void> {
@@ -44,13 +57,23 @@ export class AnnotationTileLoader extends TileLoader<TilePayload, void> {
     static getAnnotationFormat(model: AnnotationTrackModel) {
         // determine annotation file format
         if (model.path != null) {
-            let format = Formats.determineFormat(model.path);
+            let format = Formats.determineFormat(model.path, model.fileFormatType);
 
             switch (format) {
                 case GenomicFileFormat.ValisGenes:
                     return AnnotationFormat.ValisGenes;
                 case GenomicFileFormat.BigBed:
                     return AnnotationFormat.BigBed;
+                case GenomicFileFormat.BigBedNarrowPeak:
+                    return AnnotationFormat.BigBedDataNarrowPeak;
+                case GenomicFileFormat.BigBedBroadPeak:
+                    return AnnotationFormat.BigBedDataBroadPeak;
+                case GenomicFileFormat.BigBedDataMethyl:
+                    return AnnotationFormat.BigBedDataMethyl;
+                case GenomicFileFormat.BigBedDataTssPeak:
+                    return AnnotationFormat.BigBedDataTssPeak;    
+                case GenomicFileFormat.BigBedDataIdrPeak:
+                    return AnnotationFormat.BigBedDataIdrPeak;
                 default:
                     // we have to guess
                     if (/bigbed/ig.test(model.path)) {
@@ -85,6 +108,11 @@ export class AnnotationTileLoader extends TileLoader<TilePayload, void> {
                     }
                     break;
                 case AnnotationFormat.BigBed:
+                case AnnotationFormat.BigBedDataNarrowPeak:
+                case AnnotationFormat.BigBedDataBroadPeak:
+                case AnnotationFormat.BigBedDataMethyl:
+                case AnnotationFormat.BigBedDataTssPeak:
+                case AnnotationFormat.BigBedDataIdrPeak:
                     if (model.path != null) {
                         return UCSCBig.getBigLoader(model.path).then(b => UCSCBig.getContigs(b.header));
                     }
@@ -124,58 +152,91 @@ export class AnnotationTileLoader extends TileLoader<TilePayload, void> {
     protected getTilePayload(tile: Tile<TilePayload>): Promise<TilePayload> | TilePayload {
         let isMacro = tile.lodLevel >= this.macroLod;
         if (this.model.path != null) {
-            switch (this.annotationFileFormat) {
-                case AnnotationFormat.ValisGenes: {
-                    // using path override
-                    return AnnotationTileLoader.loadValisGenesAnnotations(this.model.path, this.contig, tile.x, tile.span, isMacro).then(transformAnnotationsValisGene);
+            if (this.annotationFileFormat === AnnotationFormat.ValisGenes) {
+                // using path override
+                return AnnotationTileLoader.loadValisGenesAnnotations(this.model.path, this.contig, tile.x, tile.span, isMacro).then(transformAnnotationsValisGene);
+            }
+
+            let parser = parseBigBed;
+            let transformer = transformAnnotationsBigBed;
+
+            switch(this.annotationFileFormat) {
+                case AnnotationFormat.BigBedDataNarrowPeak: {
+                    parser = parseBigBedNarrowPeak;
+                    transformer = transformAnnotationsBigBedDataNarrowPeak;
+                    break;
+                } 
+                case AnnotationFormat.BigBedDataBroadPeak: {
+                    parser = parseBigBedBroadPeak;
+                    transformer = transformAnnotationsBigBedDataBroadPeak;
+                    break;
+                }
+                case AnnotationFormat.BigBedDataMethyl: {
+                    parser = parseBigBedMethyl;
+                    transformer = transformAnnotationsBigBedDataMethyl;
+                    break;
+                }
+                case AnnotationFormat.BigBedDataTssPeak: {
+                    parser = parseBigBedTssPeak;
+                    transformer = transformAnnotationsBigBedDataTssPeak;
+                    break;
+                }
+                case AnnotationFormat.BigBedDataIdrPeak: {
+                    parser = parseBigBedIdrPeak;
+                    transformer = transformAnnotationsBigBedDataIdrPeak;
+                    break;
                 }
                 case AnnotationFormat.BigBed: {
-                    return this.getBigLoader().then(loader => {
-                        // THIS ONLY WORKS IF WE'RE NOT USING ZOOM LEVELS:
-                        // if the data has already been loaded into a higher LOD tile then we can just get it from there
-                        // we can happily take all entries that cross the tiles span because the deduplication is done in the track renderer
-                        let macroTile = this.getTileAtLod(tile.x + tile.span * 0.5, this.macroLod, false);
-
-                        if (macroTile.state === TileState.Complete) {
-                            // extract intersecting genes
-                            let intersectingGenes = new Array<Gene>();
-                            for (let gene of macroTile.payload) {
-                                let notOverlapping = ((gene.startIndex + gene.length) < tile.x) || (gene.startIndex > (tile.x + tile.span));
-                                if (!notOverlapping) {
-                                    intersectingGenes.push(gene);
-                                }
-                            }
-
-                            return intersectingGenes;
-                        } else {
-                            return loader.reader.readBigBedData(this.contig, tile.x, this.contig, tile.x + tile.span).then(transformAnnotationsBigBed);
-                        }
-
-                        /*
-                        let zoomIndex: number | null  = loader.lodZoomIndexMap[tile.lodLevel];
-
-                        if (zoomIndex == null || true) {
-                            return loader.reader.readBigBedData(this.contig, tile.x, this.contig, tile.x + tile.span).then(transformAnnotationsBigBed);
-                        } else {
-                            // I haven't found a file in the wild where using zoom index tiles actually helps
-                            // we lose strand information so the macro/micro transition doesn't feel great
-                            // it's useful if macro tiles require lots of data but so far that doesn't seem to be the case
-                            console.log('BigBED using zoomIndex', zoomIndex);
-                            return loader.reader.readZoomData(
-                                this.contig,
-                                tile.x,
-                                this.contig,
-                                tile.x + tile.span,
-                                zoomIndex
-                            ).then(transformAnnotationsBigZoom);
-                        }
-                        */
-                    });
+                    parser = parseBigBed;
+                    transformer = transformAnnotationsBigBed;
+                    break;
                 }
                 default: {
                     return [];
                 }
             }
+
+            return this.getBigLoader().then(loader => {
+                // THIS ONLY WORKS IF WE'RE NOT USING ZOOM LEVELS:
+                // if the data has already been loaded into a higher LOD tile then we can just get it from there
+                // we can happily take all entries that cross the tiles span because the deduplication is done in the track renderer
+                let macroTile = this.getTileAtLod(tile.x + tile.span * 0.5, this.macroLod, false);
+
+                if (macroTile.state === TileState.Complete) {
+                    // extract intersecting genes
+                    let intersectingGenes = new Array<Gene>();
+                    for (let gene of macroTile.payload) {
+                        let notOverlapping = ((gene.startIndex + gene.length) < tile.x) || (gene.startIndex > (tile.x + tile.span));
+                        if (!notOverlapping) {
+                            intersectingGenes.push(gene);
+                        }
+                    }
+
+                    return intersectingGenes;
+                } else {
+                    return loader.reader.readBigBedData(this.contig, tile.x, this.contig, tile.x + tile.span, parser).then(transformer);
+                }
+
+                /*
+                let zoomIndex: number | null  = loader.lodZoomIndexMap[tile.lodLevel];
+
+                if (zoomIndex == null || true) {
+                    return loader.reader.readBigBedData(this.contig, tile.x, this.contig, tile.x + tile.span).then(transformAnnotationsBigBed);
+                } else {
+                    // I haven't found a file in the wild where using zoom index tiles actually helps
+                    // we lose strand information so the macro/micro transition doesn't feel great
+                    // it's useful if macro tiles require lots of data but so far that doesn't seem to be the case
+                    console.log('BigBED using zoomIndex', zoomIndex);
+                    return loader.reader.readZoomData(
+                        this.contig,
+                        tile.x,
+                        this.contig,
+                        tile.x + tile.span,
+                        zoomIndex
+                    ).then(transformAnnotationsBigZoom);
+                }
+                */
+            });
         } else {
             return this.dataSource.loadAnnotations(this.contig, tile.x, tile.span, isMacro).then(transformAnnotationsValisGene);
         }
@@ -248,6 +309,202 @@ function transformAnnotationsBigBed(dataset: Array<BigBedData>): TilePayload {
             }],
             score: data.score,
             color: String(data.color) // prevent error just in case of non-string
+        };
+        return gene;
+    });
+}
+
+function transformAnnotationsBigBedDataNarrowPeak(dataset: Array<BigBedDataNarrowPeak>): TilePayload {
+    return dataset.map((data: BigBedDataNarrowPeak) => {
+        let gene: Gene = {
+            type: GenomeFeatureType.Gene,
+
+            name: data.name === '.' ? undefined : data.name,
+
+            startIndex: data.start,
+            length: data.end - data.start,
+
+            strand: data.strand as Strand,
+            class: GeneClass.Unspecified,
+            soClass: 'gene',
+            
+            transcriptCount: 0,
+            transcripts: [{
+                type: GenomeFeatureType.Transcript,
+
+                startIndex: data.start,
+                length: data.end - data.start,
+                
+                class: TranscriptClass.Unspecified,
+                soClass: 'transcript',
+                exon: [],
+                cds: [],
+                utr: [],
+                other: [],
+            }],
+            score: data.score,
+
+            signalValue: data.signalValue,
+            pValue: data.pValue,
+            qValue: data.qValue,
+            peak: data.peak,
+        };
+        return gene;
+    });
+}
+
+function transformAnnotationsBigBedDataBroadPeak(dataset: Array<BigBedDataBroadPeak>): TilePayload {
+    return dataset.map((data: BigBedDataBroadPeak) => {
+        let gene: Gene = {
+            type: GenomeFeatureType.Gene,
+
+            name: data.name === '.' ? undefined : data.name,
+
+            startIndex: data.start,
+            length: data.end - data.start,
+
+            strand: data.strand as Strand,
+            class: GeneClass.Unspecified,
+            soClass: 'gene',
+            
+            transcriptCount: 0,
+            transcripts: [{
+                type: GenomeFeatureType.Transcript,
+
+                startIndex: data.start,
+                length: data.end - data.start,
+                
+                class: TranscriptClass.Unspecified,
+                soClass: 'transcript',
+                exon: [],
+                cds: [],
+                utr: [],
+                other: [],
+            }],
+            score: data.score,
+            signalValue: data.signalValue,
+            pValue: data.pValue,
+            qValue: data.qValue,
+        };
+        return gene;
+    });
+}
+
+function transformAnnotationsBigBedDataIdrPeak(dataset: Array<BigBedDataIdrPeak>): TilePayload {
+    return dataset.map((data: BigBedDataIdrPeak) => {
+        let gene: Gene = {
+            type: GenomeFeatureType.Gene,
+
+            name: data.name === '.' ? undefined : data.name,
+
+            startIndex: data.start,
+            length: data.end - data.start,
+
+            strand: data.strand as Strand,
+            class: GeneClass.Unspecified,
+            soClass: 'gene',
+            
+            transcriptCount: 0,
+            transcripts: [{
+                type: GenomeFeatureType.Transcript,
+
+                startIndex: data.start,
+                length: data.end - data.start,
+                
+                class: TranscriptClass.Unspecified,
+                soClass: 'transcript',
+                exon: [],
+                cds: [],
+                utr: [],
+                other: [],
+            }],
+            score: data.score,
+            localIDR: data.localIDR,
+            globalIDR: data.globalIDR,
+            rep1_chromStart: data.rep1_chromStart,
+            rep1_chromEnd: data.rep1_chromEnd,
+            rep1_count: data.rep1_count,
+            rep2_chromStart: data.rep2_chromStart,
+            rep2_chromEnd: data.rep2_chromEnd,
+            rep2_count: data.rep2_count,
+        };
+        return gene;
+    });
+}
+
+function transformAnnotationsBigBedDataMethyl(dataset: Array<BigBedDataMethyl>): TilePayload {
+    return dataset.map((data: BigBedDataMethyl) => {
+        let gene: Gene = {
+            type: GenomeFeatureType.Gene,
+
+            name: data.name === '.' ? undefined : data.name,
+
+            startIndex: data.start,
+            length: data.end - data.start,
+
+            strand: data.strand as Strand,
+            class: GeneClass.Unspecified,
+            soClass: 'gene',
+            
+            transcriptCount: 0,
+            transcripts: [{
+                type: GenomeFeatureType.Transcript,
+
+                startIndex: data.start,
+                length: data.end - data.start,
+                
+                class: TranscriptClass.Unspecified,
+                soClass: 'transcript',
+                exon: [],
+                cds: [],
+                utr: [],
+                other: [],
+            }],
+            score: data.score,
+            thickStart: data.thickStart,
+            thickEnd: data.thickEnd,
+            reserved: data.reserved,
+            readCount: data.readCount,
+            percentMeth: data.percentMeth,
+        };
+        return gene;
+    });
+}
+
+function transformAnnotationsBigBedDataTssPeak(dataset: Array<BigBedDataTssPeak>): TilePayload {
+    return dataset.map((data: BigBedDataTssPeak) => {
+        let gene: Gene = {
+            type: GenomeFeatureType.Gene,
+
+            name: data.name === '.' ? undefined :  data.name,
+
+            startIndex: data.start,
+            length: data.end - data.start,
+
+            strand: data.strand as Strand,
+            class: GeneClass.Unspecified,
+            soClass: 'gene',
+            
+            transcriptCount: 0,
+            transcripts: [{
+                type: GenomeFeatureType.Transcript,
+
+                startIndex: data.start,
+                length: data.end - data.start,
+                
+                class: TranscriptClass.Unspecified,
+                soClass: 'transcript',
+                exon: [],
+                cds: [],
+                utr: [],
+                other: [],
+            }],
+            score: data.score,
+            count: data.count,
+            gene_id: String(data.gene_id),
+            gene_name: String(data.gene_name),
+            tss_id: String(data.tss_id),
+            peak_cov: String(data.peak_cov),
         };
         return gene;
     });

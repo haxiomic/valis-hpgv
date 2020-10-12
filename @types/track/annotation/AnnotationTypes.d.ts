@@ -30,6 +30,41 @@ export interface GeneInfo extends GenomeFeature {
     score?: number;
     color?: string;
 }
+export interface BigBedBroadPeakColumns {
+    signalValue?: number;
+    pValue?: number;
+    qValue?: number;
+}
+export interface BigBedNarrowPeakColumns {
+    signalValue?: number;
+    pValue?: number;
+    qValue?: number;
+    peak?: number;
+}
+export interface BigBedMethylColumns {
+    thickStart?: number;
+    thickEnd?: number;
+    reserved?: number;
+    readCount?: number;
+    percentMeth?: number;
+}
+export interface BigBedTssPeakColumns {
+    count?: number;
+    gene_id?: string;
+    gene_name?: string;
+    tss_id?: string;
+    peak_cov?: string;
+}
+export interface BigBedIdrPeakColumns {
+    localIDR?: number;
+    globalIDR?: number;
+    rep1_chromStart?: number;
+    rep1_chromEnd?: number;
+    rep1_count?: number;
+    rep2_chromStart?: number;
+    rep2_chromEnd?: number;
+    rep2_count?: number;
+}
 export declare enum TranscriptClass {
     Unspecified = 0,
     ProteinCoding = 1,
