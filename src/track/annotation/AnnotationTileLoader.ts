@@ -537,7 +537,7 @@ function transformAnnotationsBigBedDataTssPeak(dataset: Array<BigBedDataTssPeak>
         let gene: Gene = {
             type: GenomeFeatureType.Gene,
 
-            name: data.name === '.' ? undefined : data.name,
+            name: data.name === '.' ? undefined :  data.name,
 
             startIndex: data.start,
             length: data.end - data.start,
