@@ -734,7 +734,7 @@ export class Panel extends Object2D {
                 }
             }}
             onPreviousContig={() => {
-                Panel.showCoordinateError(false)
+                Panel.showCoordinateError(false);
                 let contig = this.availableContigAtOffset(this.contig, -1);
                 this.setContig(contig);
                 const idx = this.availableContigs.findIndex(c => c.id === contig);
