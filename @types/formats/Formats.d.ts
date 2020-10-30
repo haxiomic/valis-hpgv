@@ -6,9 +6,11 @@ export declare enum GenomicFileFormat {
     ValisVariants = 4,
     BigBedNarrowPeak = 5,
     BigBedBroadPeak = 6,
-    BigBedDataMethyl = 7,
-    BigBedDataTssPeak = 8,
-    BigBedDataIdrPeak = 9
+    BigBedDataTssPeak = 7,
+    BigBedDataIdrPeak = 8,
+    BigBedData3Plus = 9,
+    BigBedData6Plus = 10,
+    BigBedData9Plus = 11
 }
 export declare class Formats {
     static extensionMap: {

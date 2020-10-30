@@ -37,12 +37,14 @@ export interface GeneInfo extends GenomeFeature {
 	color?: string,
 }
 
+// columns in Broad Peak but not in UCSC bed
 export interface BigBedBroadPeakColumns {
 	signalValue?: number,
 	pValue?: number,
 	qValue?: number,
 }
 
+// columns in Narrow Peak but not in UCSC bed
 export interface BigBedNarrowPeakColumns {
 	signalValue?: number,
 	pValue?: number,
@@ -50,14 +52,7 @@ export interface BigBedNarrowPeakColumns {
 	peak?: number,
 }
 
-export interface BigBedMethylColumns {
-	thickStart?: number,
-	thickEnd?: number,
-	reserved?: number,
-	readCount?: number,
-	percentMeth?: number,
-}
-
+// columns in TSS but not in UCSC bed
 export interface BigBedTssPeakColumns {
 	count?: number,
 	gene_id?: string,
@@ -66,6 +61,7 @@ export interface BigBedTssPeakColumns {
 	peak_cov?: string,
 }
 
+// columns in IDR Peak but not in UCSC bed
 export interface BigBedIdrPeakColumns {
 	localIDR?: number,
 	globalIDR?: number,
@@ -76,6 +72,37 @@ export interface BigBedIdrPeakColumns {
 	rep2_chromEnd?: number,
 	rep2_count?: number,
 }
+
+// Definition of BigBed3+. Only columns that are not unambigious are used and the rest ignored
+export interface BigBedData3Plus {
+    chr: string,
+    start: number,
+    end: number,
+}
+
+// Definition of BigBed6+. Only columns that are not unambigious are used and the rest ignored
+export interface BigBedData6Plus {
+    chr: string,
+    start: number,
+    end: number,
+    name?: string,
+    score?: number,
+    strand?: string,
+}
+
+// Definition of BigBed9+. Only columns that are not unambigious are used and the rest ignored
+export interface BigBedData9Plus {
+    chr: string;
+    start: number;
+    end: number;
+    name?: string;
+    score?: number;
+    strand?: string;
+    cdStart?: number;
+    cdEnd?: number;
+    color?: string;
+}
+
 
 export enum TranscriptClass {
 	Unspecified,

@@ -2,14 +2,14 @@ import IDataSource from "../../data-source/IDataSource";
 import { Tile, TileLoader, TileState } from "../TileLoader";
 import { GeneInfo, GenomeFeature, GenomeFeatureType, Strand, TranscriptComponentClass, 
     TranscriptComponentInfo, TranscriptInfo, GeneClass, SoGeneClass, TranscriptClass,
-    BigBedBroadPeakColumns, BigBedNarrowPeakColumns, BigBedMethylColumns,
-    BigBedTssPeakColumns, BigBedIdrPeakColumns 
+    BigBedBroadPeakColumns, BigBedNarrowPeakColumns,
+    BigBedTssPeakColumns, BigBedIdrPeakColumns, BigBedData3Plus, BigBedData6Plus, BigBedData9Plus
 } from "./AnnotationTypes";
 import TrackModel from "../TrackModel";
 import { UCSCBig, BigLoader } from "../../formats";
 import { 
-    BigBedData, BigZoomData, BigBedDataNarrowPeak, BigBedDataBroadPeak, BigBedDataMethyl, BigBedDataTssPeak, BigBedDataIdrPeak,
-    parseBigBed, parseBigBedBroadPeak, parseBigBedIdrPeak, parseBigBedMethyl, parseBigBedNarrowPeak, parseBigBedTssPeak
+    BigBedData, BigZoomData, BigBedDataNarrowPeak, BigBedDataBroadPeak, BigBedDataTssPeak, BigBedDataIdrPeak,
+    parseBigBed, parseBigBedBroadPeak, parseBigBedIdrPeak, parseBigBedNarrowPeak, parseBigBedTssPeak
 }  from "genomic-reader";
 import { Formats, GenomicFileFormat } from "../../formats/Formats";
 import { Contig, AnnotationTrackModel } from "../..";
@@ -18,8 +18,8 @@ import Axios from "axios";
 // Tile payload is a list of genes extended with nesting
 export type Gene = GeneInfo & {
     transcripts: Array<Transcript>;
-} & BigBedBroadPeakColumns & BigBedNarrowPeakColumns & BigBedMethylColumns
-& BigBedTssPeakColumns & BigBedIdrPeakColumns;
+} & BigBedBroadPeakColumns & BigBedNarrowPeakColumns
+& BigBedTssPeakColumns & BigBedIdrPeakColumns
 
 export type Transcript = TranscriptInfo & {
     exon: Array<TranscriptComponentInfo>,
@@ -35,9 +35,11 @@ enum AnnotationFormat {
     BigBed,
     BigBedDataBroadPeak,
     BigBedDataNarrowPeak,
-    BigBedDataMethyl,
     BigBedDataTssPeak,
     BigBedDataIdrPeak,
+    BigBedData3Plus,
+    BigBedData6Plus,
+    BigBedData9Plus,
 }
 
 export class AnnotationTileLoader extends TileLoader<TilePayload, void> {
@@ -68,12 +70,16 @@ export class AnnotationTileLoader extends TileLoader<TilePayload, void> {
                     return AnnotationFormat.BigBedDataNarrowPeak;
                 case GenomicFileFormat.BigBedBroadPeak:
                     return AnnotationFormat.BigBedDataBroadPeak;
-                case GenomicFileFormat.BigBedDataMethyl:
-                    return AnnotationFormat.BigBedDataMethyl;
                 case GenomicFileFormat.BigBedDataTssPeak:
                     return AnnotationFormat.BigBedDataTssPeak;    
                 case GenomicFileFormat.BigBedDataIdrPeak:
                     return AnnotationFormat.BigBedDataIdrPeak;
+                case GenomicFileFormat.BigBedData3Plus:
+                    return AnnotationFormat.BigBedData3Plus;
+                case GenomicFileFormat.BigBedData6Plus:
+                    return AnnotationFormat.BigBedData6Plus;
+                case GenomicFileFormat.BigBedData9Plus:
+                    return AnnotationFormat.BigBedData9Plus
                 default:
                     // we have to guess
                     if (/bigbed/ig.test(model.path)) {
@@ -110,9 +116,11 @@ export class AnnotationTileLoader extends TileLoader<TilePayload, void> {
                 case AnnotationFormat.BigBed:
                 case AnnotationFormat.BigBedDataNarrowPeak:
                 case AnnotationFormat.BigBedDataBroadPeak:
-                case AnnotationFormat.BigBedDataMethyl:
                 case AnnotationFormat.BigBedDataTssPeak:
                 case AnnotationFormat.BigBedDataIdrPeak:
+                case AnnotationFormat.BigBedData3Plus:
+                case AnnotationFormat.BigBedData6Plus:
+                case AnnotationFormat.BigBedData9Plus:
                     if (model.path != null) {
                         return UCSCBig.getBigLoader(model.path).then(b => UCSCBig.getContigs(b.header));
                     }
@@ -171,11 +179,6 @@ export class AnnotationTileLoader extends TileLoader<TilePayload, void> {
                     transformer = transformAnnotationsBigBedDataBroadPeak;
                     break;
                 }
-                case AnnotationFormat.BigBedDataMethyl: {
-                    parser = parseBigBedMethyl;
-                    transformer = transformAnnotationsBigBedDataMethyl;
-                    break;
-                }
                 case AnnotationFormat.BigBedDataTssPeak: {
                     parser = parseBigBedTssPeak;
                     transformer = transformAnnotationsBigBedDataTssPeak;
@@ -184,6 +187,21 @@ export class AnnotationTileLoader extends TileLoader<TilePayload, void> {
                 case AnnotationFormat.BigBedDataIdrPeak: {
                     parser = parseBigBedIdrPeak;
                     transformer = transformAnnotationsBigBedDataIdrPeak;
+                    break;
+                }
+                case AnnotationFormat.BigBedData3Plus: {
+                    parser = parseBigBed3Plus;
+                    transformer = transformAnnotationsBigBedData3Plus;
+                    break;
+                }
+                case AnnotationFormat.BigBedData6Plus: {
+                    parser = parseBigBed6Plus;
+                    transformer = transformAnnotationsBigBedData6Plus;
+                    break;
+                }
+                case AnnotationFormat.BigBedData9Plus: {
+                    parser = parseBigBed9Plus;
+                    transformer = transformAnnotationsBigBedData9Plus;
                     break;
                 }
                 case AnnotationFormat.BigBed: {
@@ -432,45 +450,6 @@ function transformAnnotationsBigBedDataIdrPeak(dataset: Array<BigBedDataIdrPeak>
     });
 }
 
-function transformAnnotationsBigBedDataMethyl(dataset: Array<BigBedDataMethyl>): TilePayload {
-    return dataset.map((data: BigBedDataMethyl) => {
-        let gene: Gene = {
-            type: GenomeFeatureType.Gene,
-
-            name: data.name === '.' ? undefined : data.name,
-
-            startIndex: data.start,
-            length: data.end - data.start,
-
-            strand: data.strand as Strand,
-            class: GeneClass.Unspecified,
-            soClass: 'gene',
-            
-            transcriptCount: 0,
-            transcripts: [{
-                type: GenomeFeatureType.Transcript,
-
-                startIndex: data.start,
-                length: data.end - data.start,
-                
-                class: TranscriptClass.Unspecified,
-                soClass: 'transcript',
-                exon: [],
-                cds: [],
-                utr: [],
-                other: [],
-            }],
-            score: data.score,
-            thickStart: data.thickStart,
-            thickEnd: data.thickEnd,
-            reserved: data.reserved,
-            readCount: data.readCount,
-            percentMeth: data.percentMeth,
-        };
-        return gene;
-    });
-}
-
 function transformAnnotationsBigBedDataTssPeak(dataset: Array<BigBedDataTssPeak>): TilePayload {
     return dataset.map((data: BigBedDataTssPeak) => {
         let gene: Gene = {
@@ -505,6 +484,108 @@ function transformAnnotationsBigBedDataTssPeak(dataset: Array<BigBedDataTssPeak>
             gene_name: String(data.gene_name),
             tss_id: String(data.tss_id),
             peak_cov: String(data.peak_cov),
+        };
+        return gene;
+    });
+}
+
+function transformAnnotationsBigBedData3Plus(dataset: Array<BigBedData3Plus>): TilePayload {
+    return dataset.map((data: BigBedData3Plus) => {
+        let gene: Gene = {
+            type: GenomeFeatureType.Gene,
+
+            startIndex: data.start,
+            length: data.end - data.start,
+
+            strand: '' as Strand, // not set in BigBed3+ in Valis, but Gene object requires it to be set
+            class: GeneClass.Unspecified,
+            soClass: 'gene',
+            
+            transcriptCount: 0,
+            transcripts: [{
+                type: GenomeFeatureType.Transcript,
+
+                startIndex: data.start,
+                length: data.end - data.start,
+                
+                class: TranscriptClass.Unspecified,
+                soClass: 'transcript',
+                exon: [],
+                cds: [],
+                utr: [],
+                other: [],
+            }],
+        };
+        return gene;
+    });
+}
+
+function transformAnnotationsBigBedData6Plus(dataset: Array<BigBedData6Plus>): TilePayload {
+    return dataset.map((data: BigBedData6Plus) => {
+        let gene: Gene = {
+            type: GenomeFeatureType.Gene,
+
+            name: data.name === '.' ? undefined :  data.name,
+
+            startIndex: data.start,
+            length: data.end - data.start,
+
+            strand: data.strand as Strand,
+            class: GeneClass.Unspecified,
+            soClass: 'gene',
+            
+            transcriptCount: 0,
+            transcripts: [{
+                type: GenomeFeatureType.Transcript,
+
+                startIndex: data.start,
+                length: data.end - data.start,
+                
+                class: TranscriptClass.Unspecified,
+                soClass: 'transcript',
+                exon: [],
+                cds: [],
+                utr: [],
+                other: [],
+            }],
+            score: data.score,
+            
+        };
+        return gene;
+    });
+}
+
+function transformAnnotationsBigBedData9Plus(dataset: Array<BigBedData9Plus>): TilePayload {
+    return dataset.map((data: BigBedData9Plus) => {
+        let gene: Gene = {
+            type: GenomeFeatureType.Gene,
+
+            name: data.name === '.' ? undefined :  data.name,
+
+            startIndex: data.start,
+            length: data.end - data.start,
+
+            strand: data.strand as Strand,
+            class: GeneClass.Unspecified,
+            soClass: 'gene',
+            
+            transcriptCount: 0,
+            transcripts: [{
+                type: GenomeFeatureType.Transcript,
+
+                startIndex: data.start,
+                length: data.end - data.start,
+                
+                class: TranscriptClass.Unspecified,
+                soClass: 'transcript',
+                exon: [],
+                cds: [],
+                utr: [],
+                other: [],
+            }],
+            score: data.score,
+            color: String(data.color) // prevent error just in case of non-string
+            
         };
         return gene;
     });
@@ -609,6 +690,76 @@ function transformAnnotationsValisGene(flatFeatures: Array<GenomeFeature>): Tile
     }
 
     return payload;
+}
+
+export const parseBigBed3Plus = function (chrom: string, startBase: number, endBase: number, rest: string):  BigBedData3Plus {
+    // only 3 columns are supported to avoid genomic-reader crashing on columns with ambigious types
+    const entry: BigBedData3Plus = {
+        chr: chrom, // first column- chr
+        start: startBase, // second column- start
+        end: endBase //third column- end
+    }
+
+    return entry;
+}
+
+export const parseBigBed6Plus = function (chrom: string, startBase: number, endBase: number, rest: string):  BigBedData6Plus {
+    // only 6 columns are supported to avoid genomic-reader crashing on columns with ambigious types
+    const entry: BigBedData6Plus = {
+        chr: chrom, // first column- chr
+        start: startBase, // second column- start
+        end: endBase //third column- end
+    }
+
+    let tokens = rest.split("\t");
+    if (tokens.length > 0) {
+        entry.name = tokens[0]; // fourth column- name
+    }
+    if (tokens.length > 1) {
+        entry.score = parseFloat(tokens[1]); // fifth column score
+    }
+    if (tokens.length > 2) {
+        entry.strand = tokens[2]; //sixth column- strand
+    }
+
+    return entry;
+}
+
+export const parseBigBed9Plus = function (chrom: string, startBase: number, endBase: number, rest: string):  BigBedData9Plus {
+    // only 9 columns are supported to avoid genomic-reader crashing on columns with ambigious types
+    const entry: BigBedData9Plus = {
+        chr: chrom, // first column- chr
+        start: startBase, // second column- start
+        end: endBase //third column- end
+    }
+
+    let tokens = rest.split("\t");
+    if (tokens.length > 0) {
+        entry.name = tokens[0]; // fourth column- name
+    }
+    if (tokens.length > 1) {
+        entry.score = parseFloat(tokens[1]); // fifth column score
+    }
+    if (tokens.length > 2) {
+        entry.strand = tokens[2]; //sixth column- strand
+    }
+    if (tokens.length > 3) {
+        entry.cdStart = parseInt(tokens[3]);
+    }
+    if (tokens.length > 4) {
+        entry.cdEnd = parseInt(tokens[4]);
+    }
+    if (tokens.length > 5 && tokens[5] !== "." && tokens[5] !== "0") {
+        let color: string;
+        if (tokens[5].includes(",")) {
+            color = tokens[5].startsWith("rgb") ? tokens[5] : "rgb(" + tokens[5] + ")";
+        } else {
+            color = tokens[5];
+        }
+        entry.color = color;
+    }
+
+    return entry;
 }
 
 export default AnnotationTileLoader;

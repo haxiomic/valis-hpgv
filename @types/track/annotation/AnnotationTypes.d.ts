@@ -41,13 +41,6 @@ export interface BigBedNarrowPeakColumns {
     qValue?: number;
     peak?: number;
 }
-export interface BigBedMethylColumns {
-    thickStart?: number;
-    thickEnd?: number;
-    reserved?: number;
-    readCount?: number;
-    percentMeth?: number;
-}
 export interface BigBedTssPeakColumns {
     count?: number;
     gene_id?: string;
@@ -64,6 +57,30 @@ export interface BigBedIdrPeakColumns {
     rep2_chromStart?: number;
     rep2_chromEnd?: number;
     rep2_count?: number;
+}
+export interface BigBedData3Plus {
+    chr: string;
+    start: number;
+    end: number;
+}
+export interface BigBedData6Plus {
+    chr: string;
+    start: number;
+    end: number;
+    name?: string;
+    score?: number;
+    strand?: string;
+}
+export interface BigBedData9Plus {
+    chr: string;
+    start: number;
+    end: number;
+    name?: string;
+    score?: number;
+    strand?: string;
+    cdStart?: number;
+    cdEnd?: number;
+    color?: string;
 }
 export declare enum TranscriptClass {
     Unspecified = 0,
