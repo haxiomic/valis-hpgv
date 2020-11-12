@@ -112,6 +112,7 @@ export class GenomeVisualizer {
     setLocation(genomicLocation: GenomicLocation) {
         this.setContig(genomicLocation.contig);
         this.setRange(genomicLocation.x0, genomicLocation.x1);
+        Panel.showCoordinateError(false);
     }
 
     /**
@@ -278,7 +279,7 @@ export class GenomeVisualizer {
                 pixelRatio={props.pixelRatio || window.devicePixelRatio || 1}
                 style={{
                     // default style
-                    fontFamily: 'sans-serif',
+                    fontFamily: 'Mada, sans-serif',
                     ...props.style
                 }}
                 onWillUnmount={() => {
